@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="tabs">
+      <ul>
+        <li><a href="#tabs-1">Develop</a></li>
+        <li><a href="#tabs-2">Examples</a></li>
+        <li><a href="#tabs-3">Documentation</a></li>
+      </ul>
+
+      <div id="tabs-1">
+        <div class="column">
+          <h2>Quick start</h2>
+          <ul>
+            <li><a href="ide://new-project">Start a new project</a></li>
+            <li><a href="ide://open-project">Open an existing project</a></li>
+          </ul>
+        </div>
+
+        <div class="column">
+          <h2>Recent projects</h2>
+          TODO
+          <p>No recent projects</p>
+        </div>
+
+        <div class="column">
+          <h2>Sketch book</h2>
+          {% for sketch in sketches %}
+          {% if forloop.first %}<ul>{% endif %}
+          <li><a href="ide://open-sketch/{{ sketch }}">{{ sketch }}</a></li>
+          {% if forloop.last %}</ul>{% endif %}
+          {% empty %}
+          <p>No sketches</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="tabs-2">
+        <h2>Start using an example</h2>
+        {% for cat in exampleCategories %}
+        <div class="column">
+          <h3>{{ cat.name }}</h3>
+          {% for example in cat.examples %}
+          {% if forloop.first %}<ul>{% endif %}
+            <li><a href="ide://new-project/{{ cat.name }}/{{ example }}">{{ example }}</a></li>
+          {% if forloop.last %}</ul>{% endif %}
+          {% empty %}
+          <p>No examples</p>
+          {% endfor %}
+        </div>
+        {% empty %}
+        <p>No examples found.</p>
+        {% endfor %}
+      </div>
+
+      <div id="tabs-3">
+        <iframe id="docs-frame" class="auto-height" scrolling="no"></iframe>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      <!--
+         function openDocumentation(file)
+         {
+           $('#docs-frame').attr('src', 'file://' + '{{ referencePath|escapejs }}/' + file);
+         }
+
+         $(document).ready(function ()
+         {
+           var tabs = $('#tabs');
+           tabs.tabs();
+           openDocumentation('index.html');
+         });
+        -->
+    </script>
+{% endblock %}

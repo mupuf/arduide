@@ -1,0 +1,19 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource>
+    <file>images/arduino.png</file>
+    <file>images/16x16/document-new.png</file>
+    <file>images/16x16/document-open.png</file>
+    <file>images/16x16/document-save.png</file>
+    <file>images/16x16/document-close.png</file>
+    <file>images/16x16/application-exit.png</file>
+    <file>images/16x16/view-refresh.png</file>
+    <file>images/16x16/edit-copy.png</file>
+    <file>images/16x16/edit-cut.png</file>
+    <file>images/16x16/edit-paste.png</file>
+    <file>images/16x16/help-hint.png</file>
+    <file>images/16x16/run-build.png</file>
+    <file>images/16x16/run-build-install.png</file>
+    <file>images/16x16/terminal.png</file>
+  </qresource>
+</RCC>
