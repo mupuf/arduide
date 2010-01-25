@@ -15,6 +15,7 @@ class OutputView : public QTextBrowser, public ILogger
 public:
     OutputView(QWidget *parent = NULL);
     void log(const QString &text);
+    void logImportant(const QString &text);
     void logError(const QString &text);
     void logCommand(const QStringList &command);
 };

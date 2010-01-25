@@ -38,7 +38,7 @@ bool Builder::build(const QString &code, bool upload)
         return false;
     }
 
-    mLogger.log(tr("Compiling for %0...").arg(mBoard->name()));
+    mLogger.logImportant(tr("Compiling for %0...").arg(mBoard->name()));
     mBuildDir.clear();
 
     const QString &buildPath = mBuildDir.path();
@@ -158,6 +158,7 @@ bool Builder::build(const QString &code, bool upload)
     }
 
     // link it all together into the .elf file
+    mLogger.logImportant(tr("Linking..."));
     QString elfFileName = QDir(buildPath).filePath("sketch.elf");
     if (! link(elfFileName, QStringList() << objects << coreFileName, ldflags))
     {
@@ -183,19 +184,19 @@ bool Builder::build(const QString &code, bool upload)
 
     if (! upload)
     {
-        mLogger.log(tr("Success."));
+        mLogger.logImportant(tr("Success."));
         return true;
     }
 
     // upload
-    mLogger.log(tr("Uploading to %0...").arg(mDevice));
+    mLogger.logImportant(tr("Uploading to %0...").arg(mDevice));
     if (! uploadViaBootloader(hexFileName))
     {
         mLogger.logError(tr("Uploading failed."));
         return false;
     }
     else
-        mLogger.log(tr("Success."));
+        mLogger.logImportant(tr("Success."));
 
     return true;
 }

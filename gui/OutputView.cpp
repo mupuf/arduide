@@ -21,6 +21,17 @@ void OutputView::log(const QString &text)
     }
 }
 
+void OutputView::logImportant(const QString &text)
+{
+    int oldWeight = fontWeight();
+    setFontWeight(QFont::Bold);
+    QColor oldColor = textColor();
+    setTextColor(Qt::white);
+    log(text);
+    setFontWeight(oldWeight);
+    setTextColor(oldColor);
+}
+
 void OutputView::logError(const QString &text)
 {
     QColor oldColor = textColor();

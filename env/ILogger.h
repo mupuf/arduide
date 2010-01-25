@@ -12,6 +12,7 @@ class ILogger
 {
 public:
     virtual void log(const QString &text) = 0;
+    virtual void logImportant(const QString &text) = 0;
     virtual void logError(const QString &text) = 0;
     virtual void logCommand(const QStringList &command) = 0;
 };
@@ -23,6 +24,7 @@ private:
 
 public:
     void log(const QString &text);
+    void logImportant(const QString &text);
     void logError(const QString &text);
     void logCommand(const QStringList &command);
     static NullLogger &instance();

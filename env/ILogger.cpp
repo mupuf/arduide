@@ -9,6 +9,10 @@ void NullLogger::log(const QString &)
 {
 }
 
+void NullLogger::logImportant(const QString &)
+{
+}
+
 void NullLogger::logError(const QString &)
 {
 }
