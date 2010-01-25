@@ -18,6 +18,11 @@ Device::Device(const QString &description, const QString &port)
 DeviceList Device::listDevices()
 {
     DeviceList l;
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+    //TODO
+#elif defined(Q_OS_DARWIN)
+    //TODO
+#else
     QDBusInterface manager("org.freedesktop.Hal", "/org/freedesktop/Hal/Manager", "org.freedesktop.Hal.Manager", QDBusConnection::systemBus());
     QVariantList devices = manager.call("FindDeviceByCapability", "serial").arguments();
     if (devices.size() == 1)
@@ -31,5 +36,6 @@ DeviceList Device::listDevices()
                 l.append(Device(description[0].toString(), port[0].toString()));
         }
     }
+#endif
     return l;
 }
