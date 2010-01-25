@@ -147,6 +147,8 @@ bool Builder::build(const QString &code, bool upload)
         mLogger.logError(tr("Uploading failed."));
         return false;
     }
+    else
+        mLogger.log(tr("Success."));
 
     return true;
 }

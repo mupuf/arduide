@@ -75,6 +75,16 @@ void Settings::setBoard(const QString &board)
     mSettings.setValue("board", board);
 }
 
+bool Settings::verboseUpload()
+{
+    return mSettings.value("verboseUpload", false).toBool();
+}
+
+void Settings::setVerboseUpload(bool verbose)
+{
+    mSettings.setValue("verboseUpload", verbose);
+}
+
 bool Settings::isCorrect()
 {
     return QFileInfo(arduinoPath()).isDir() && QFileInfo(sketchPath()).isDir();

@@ -23,6 +23,8 @@ public:
     void setDevicePort(const QString &port);
     QString board();
     void setBoard(const QString &board);
+    bool verboseUpload();
+    void setVerboseUpload(bool verbose);
 
     bool isCorrect();
 

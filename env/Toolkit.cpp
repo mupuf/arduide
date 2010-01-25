@@ -146,6 +146,10 @@ QString Toolkit::avrdudePath()
 QStringList Toolkit::avrdudeFlags(const Board *board)
 {
     QStringList flags;
+    if (Settings::instance().verboseUpload())
+        flags << "-v" << "-v" << "-v" << "-v";
+    else
+        flags << "-q" << "-q";
     flags
         << "-C"
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
