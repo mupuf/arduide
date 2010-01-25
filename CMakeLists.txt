@@ -4,6 +4,7 @@ include(FindQt4)
 find_package(Qt4 COMPONENTS QtCore QtGui QtDbus QtWebkit REQUIRED)
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
+include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
 include(${QT_USE_FILE})
 
 add_definitions(-DPROJECT_URL="http://mupuf.org/")
@@ -21,13 +22,16 @@ file(GLOB arduino_SOURCES
   "main.cpp"
   "gui/*.h" "gui/*.cpp"
   "env/*.cpp" "env/*.h"
-  "utils/*.cpp" "utils/*.h")
+  "utils/*.cpp" "utils/*.h"
+  "utils/qxt/*.cpp" "utils/qxt/*.h")
 
 file(GLOB arduino_UIS
   "gui/*.ui")
 
 file(GLOB arduino_MOCS
-  "gui/*.h" "env/*.h")
+  "gui/*.h"
+  "env/*.h"
+  "utils/qxt/*.h")
 
 file(GLOB arduino_QRCS
   "resources/*.qrc")

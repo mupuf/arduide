@@ -9,7 +9,11 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QProcess>
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
 #include <QDebug>
+
+#include <qxtsignalwaiter.h>
 
 #include "../env/Board.h"
 #include "../env/Toolkit.h"
@@ -244,7 +248,13 @@ int Builder::runCommand(const QStringList &command)
 
     mLogger.log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
 
-    return proc.exitCode();
+    QFutureWatcher<int> watcher;
+    QxtSignalWaiter waiter(&watcher, SIGNAL(finished()));
+    QFuture<int> futureExitCode = QtConcurrent::run(&proc, &QProcess::exitCode);
+    watcher.setFuture(futureExitCode);
+    waiter.wait();
+
+    return futureExitCode.result();
 }
 
 bool Builder::extractEEPROM(const QString &input, const QString &output)
