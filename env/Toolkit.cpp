@@ -138,6 +138,11 @@ QString Toolkit::corePath(const Board *board)
     return QDir(hardwarePath()).filePath(QString("cores/%0").arg(board->attribute("build.core")));
 }
 
+QString Toolkit::libraryPath(const QString &libraryName)
+{
+    return QDir(hardwarePath()).filePath(QString("libraries/%0").arg(libraryName));
+}
+
 QString Toolkit::avrdudePath()
 {
     return QDir(hardwarePath()).filePath("tools/avrdude");

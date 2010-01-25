@@ -34,6 +34,7 @@ public:
     static QStringList avrSFlags(const Board *board);
     static QStringList avrLdFlags(const Board *board);
     static QString corePath(const Board *board);
+    static QString libraryPath(const QString &libraryName);
     static QString avrdudePath();
     static QStringList avrdudeFlags(const Board *board);
 

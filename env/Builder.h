@@ -25,7 +25,7 @@ public:
     bool build(const QString &code, bool upload = false);
 
 private:
-    QStringList compile(const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags);
+    QStringList compile(const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags, const QString &outputDirectory = QString());
     enum SourceType
     {
         CSource,

@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QRegExp>
 #include <QProcess>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
@@ -70,8 +71,54 @@ bool Builder::build(const QString &code, bool upload)
         mLogger.logError(tr("Archiving failed."));
         return false;
     }
+    objects.clear();
 
-    // TODO: compile the libraries
+    // compile the libraries
+    QRegExp importRegexp("^\\s*#include\\s+[<\"](\\S+)[\">]");
+    foreach (const QString &line, code.split('\n'))
+    {
+        if (importRegexp.indexIn(line) != -1)
+        {
+            QString library = importRegexp.cap(1);
+            library = QFileInfo(library).baseName();
+            QString libPath = Toolkit::libraryPath(library);
+            QString utilityPath = QDir(libPath).filePath("utility");
+            bool libPathExists = QFileInfo(libPath).exists();
+            bool utilityPathExists = QFileInfo(utilityPath).exists();
+            QStringList libSources, utilitySources;
+
+            if (libPathExists)
+                includePaths << libPath;
+            if (utilityPathExists)
+                includePaths << utilityPath;
+
+            if (libPathExists)
+            {
+                QString outputDirectory = QDir(buildPath).filePath(library);
+                if (! QDir().mkdir(outputDirectory))
+                {
+                    mLogger.logError(tr("Failed to create build directory."));
+                    return false;
+                }
+                foreach (const QString &source, QDir(libPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
+                    libSources << QDir(libPath).filePath(source);
+                objects << compile(libSources, includePaths, cflags, cxxflags, sflags, outputDirectory);
+            }
+
+            if (utilityPathExists)
+            {
+                QString outputDirectory = QDir(buildPath).filePath(QString("%0/utility").arg(library));
+                if (! QDir().mkdir(outputDirectory))
+                {
+                    mLogger.logError(tr("Failed to create build directory."));
+                    return false;
+                }
+                foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
+                    utilitySources << QDir(utilityPath).filePath(source);
+                objects << compile(utilitySources, includePaths, cflags, cxxflags, sflags, outputDirectory);
+            }
+        }
+    }
 
     // compile the sketch
     QString sketchFileName = QDir(buildPath).filePath("sketch.cpp");
@@ -103,7 +150,7 @@ bool Builder::build(const QString &code, bool upload)
     QStringList sketchCxxFlags = cxxflags;
     sketchCxxFlags << "-include" << "WProgram.h";
 
-    objects = compile(QStringList() << sketchFileName, includePaths, cflags, sketchCxxFlags, sflags);
+    objects << compile(QStringList() << sketchFileName, includePaths, cflags, sketchCxxFlags, sflags);
     if (objects.isEmpty())
     {
         mLogger.logError(tr("Compilation failed."));
@@ -153,7 +200,7 @@ bool Builder::build(const QString &code, bool upload)
     return true;
 }
 
-QStringList Builder::compile(const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags)
+QStringList Builder::compile(const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags, const QString &outputDirectory)
 {
     Q_ASSERT(mBoard != NULL);
 
@@ -168,7 +215,7 @@ QStringList Builder::compile(const QStringList &sources, const QStringList &incl
         QStringList cmdline;
         SourceType sourceType = identifySource(source);
         QString objectFileName = QFileInfo(source).fileName() + ".o";
-        objectFileName = QDir(mBuildDir.path()).filePath(objectFileName);
+        objectFileName = QDir(outputDirectory.isNull() ? mBuildDir.path() : outputDirectory).filePath(objectFileName);
         switch (sourceType)
         {
         case CSource:
