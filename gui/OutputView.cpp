@@ -15,6 +15,7 @@ OutputView::OutputView(QWidget *parent)
 void OutputView::log(const QString &text)
 {
     append(text);
+    ensureCursorVisible();
 }
 
 void OutputView::logError(const QString &text)
