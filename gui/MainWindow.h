@@ -39,6 +39,8 @@ private:
     QComboBox *boardBox;
     QAction *refreshDevicesAct;
 
+    QActionGroup *buildActions;
+
 private slots:
     Editor *currentEditor();
 

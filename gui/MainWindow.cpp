@@ -38,6 +38,10 @@ void MainWindow::initialize()
 
 void MainWindow::setupActions()
 {
+    buildActions = new QActionGroup(this);
+    buildActions->addAction(action_Build);
+    buildActions->addAction(action_Upload);
+
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
     connect(refreshDevicesAct, SIGNAL(triggered()), this, SLOT(fillDeviceBox()));
     connect(action_New, SIGNAL(triggered()), this, SLOT(newProject()));
@@ -289,6 +293,8 @@ void MainWindow::build()
     Editor *editor = currentEditor();
     if (editor)
     {
+        buildActions->setEnabled(false);
+
         const Board *board = Board::boardInfo(Settings::instance().board());
         dockWidget->show();
         outputView->clear();
@@ -296,6 +302,8 @@ void MainWindow::build()
         Builder builder(*outputView);
         builder.setBoard(board);
         builder.build(editor->text());
+
+        buildActions->setEnabled(true);
     }
 }
 
@@ -304,6 +312,8 @@ void MainWindow::upload()
     Editor *editor = currentEditor();
     if (editor)
     {
+        buildActions->setEnabled(false);
+
         const Board *board = Board::boardInfo(Settings::instance().board());
         QString device = Settings::instance().devicePort();
         dockWidget->show();
@@ -313,6 +323,8 @@ void MainWindow::upload()
         builder.setBoard(board);
         builder.setDevice(device);
         builder.build(editor->text(), true);
+
+        buildActions->setEnabled(true);
     }
 }
 
