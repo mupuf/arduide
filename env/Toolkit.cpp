@@ -54,7 +54,7 @@ QString Toolkit::hardwarePath()
 
 QString Toolkit::avrPath()
 {
-#if defined(Q_OS_WIN32) || defined(Q_OS_DARWIN)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
     return QDir(hardwarePath()).filePath("tools/avr/bin");
 #else
     // the AVR toolchain should be already present in the PATH
@@ -148,7 +148,7 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
     QStringList flags;
     flags
         << "-C"
-#if defined(Q_OS_WIN32) || defined(Q_OS_DARWIN)
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
         << QDir(hardwarePath()).filePath("tools/avr/etc/avrdude.conf")
 #else
         << QDir(hardwarePath()).filePath("tools/avrdude.conf")
