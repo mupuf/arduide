@@ -37,20 +37,37 @@
 
       <div id="tabs-2">
         <h2>Start using an example</h2>
-        {% for cat in exampleCategories %}
-        <div class="column">
-          <h3>{{ cat.name }}</h3>
-          {% for example in cat.examples %}
-          {% if forloop.first %}<ul>{% endif %}
-            <li><a href="ide://new-project/{{ cat.name }}/{{ example }}">{{ example }}</a></li>
-          {% if forloop.last %}</ul>{% endif %}
-          {% empty %}
-          <p>No examples</p>
+        <div>
+          {% for cat in exampleCategories %}
+          <div class="column">
+            <h3>{{ cat.name }}</h3>
+            {% for example in cat.examples %}
+            {% if forloop.first %}<ul>{% endif %}
+              <li><a href="ide://new-project/{{ cat.name }}/{{ example }}">{{ example }}</a></li>
+              {% if forloop.last %}</ul>{% endif %}
+            {% empty %}
+            <p>No examples</p>
+            {% endfor %}
+          </div>
           {% endfor %}
         </div>
-        {% empty %}
-        <p>No examples found.</p>
-        {% endfor %}
+
+        <hr />
+
+        <div>
+          {% for lib in librariesWithExamples %}
+          <div class="column">
+            <h3>{{ lib.name }}</h3>
+            {% for example in lib.examples %}
+            {% if forloop.first %}<ul>{% endif %}
+              <li><a href="ide://new-project/{{ lib.name }}/{{ example }}">{{ example }}</a></li>
+              {% if forloop.last %}</ul>{% endif %}
+            {% empty %}
+            <p>No examples</p>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
       </div>
 
       <div id="tabs-3">

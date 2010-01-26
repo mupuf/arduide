@@ -8,6 +8,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QFile>
+#include <QDebug>
 
 #include "../env/Board.h"
 
@@ -138,9 +139,33 @@ QString Toolkit::corePath(const Board *board)
     return QDir(hardwarePath()).filePath(QString("cores/%0").arg(board->attribute("build.core")));
 }
 
+QStringList Toolkit::libraries()
+{
+    return QDir(libraryPath()).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+}
+
 QString Toolkit::libraryPath(const QString &libraryName)
 {
-    return QDir(hardwarePath()).filePath(QString("libraries/%0").arg(libraryName));
+    return (libraryName.isNull()) ?
+        QDir(hardwarePath()).filePath("libraries") :
+        QDir(hardwarePath()).filePath(QString("libraries/%0").arg(libraryName));
+}
+
+QStringList Toolkit::librariesWithExamples()
+{
+    QStringList libs;
+    foreach (const QString &library, libraries())
+    {
+        QString examplesPath = QDir(libraryPath(library)).filePath("examples");
+        if (QFileInfo(examplesPath).isDir())
+            libs << library;
+    }
+    return libs;
+}
+
+QStringList Toolkit::findLibraryExamples(const QString &library)
+{
+    return findSketchesInDirectory(QDir(libraryPath(library)).filePath("examples"));
 }
 
 QString Toolkit::avrdudePath()

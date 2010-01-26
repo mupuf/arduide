@@ -41,9 +41,23 @@ void Browser::quickstart()
         foreach (const QString &example, Toolkit::findExamples(cat))
             examples.append(example);
         catDescription.insert("examples", examples);
-        exampleCategories.append(catDescription);
+        exampleCategories << catDescription;
     }
+
+    QVariantList librariesWithExamples;
+    foreach (const QString& lib, Toolkit::librariesWithExamples())
+    {
+        QVariantHash libDescription;
+        libDescription.insert("name", lib);
+        QVariantList examples;
+        foreach (const QString &example, Toolkit::findLibraryExamples(lib))
+            examples.append(example);
+        libDescription.insert("examples", examples);
+        librariesWithExamples << libDescription;
+    }
+
     mapping.insert("exampleCategories", exampleCategories);
+    mapping.insert("librariesWithExamples", librariesWithExamples);
 
     QVariantList sketches;
     foreach (const QString &sketch, Toolkit::findSketchesInDirectory(Settings::instance().sketchPath()))
@@ -57,6 +71,7 @@ void Browser::quickstart()
 void Browser::initializeContext(QVariantHash &mapping)
 {
     mapping.insert("applicationName", qApp->applicationName());
+    mapping.insert("applicationUrl", PROJECT_URL);
     mapping.insert("referencePath", Toolkit::referencePath());
 }
 

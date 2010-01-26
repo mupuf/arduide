@@ -38,15 +38,6 @@ div#links-box
     position: absolute;
     top: 12px;
     right: 12px;
-    border-style: solid;
-    border-width: 1px;
-    background-color: #cccccc;
-}
-
-div#links-box ul
-{
-    list-style: none;
-    padding: 0px;
 }
 
 div#tabs

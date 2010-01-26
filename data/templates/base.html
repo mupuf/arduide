@@ -17,10 +17,11 @@
       <h1 id="title">{{ applicationName }}</h1>
       <hr id="title-separator" />
 
-      <div id="links-box">
-        <ul>
-          <li>Arduino homepage: <a href="http://arduino.cc/">http://arduino.cc/</a></li>
-        </ul>
+      <div id="links-box" class="ui-widget-header ui-corner-all">
+        <table>
+          <tr><td>Arduino homepage:</td><td><a href="http://arduino.cc/">http://arduino.cc/</td></tr>
+          <tr><td>IDE homepage: </td><td><a href="{{ applicationUrl }}">{{ applicationUrl }}</a></td></tr>
+        </table>
       </div>
 
       {% block content %}{% endblock %}
