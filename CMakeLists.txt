@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 2.6)
 
 include(FindQt4)
+include(FindBoost)
 find_package(Qt4 COMPONENTS QtCore QtGui QtDbus QtWebkit REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
+include(${QT_USE_FILE})
+include_directories(${Boost_INCLUDE_DIRS})
+
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
-include(${QT_USE_FILE})
 
 add_definitions(-DPROJECT_URL="http://mupuf.org/")
 
@@ -44,4 +48,4 @@ add_executable(arduino
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
-target_link_libraries(arduino ${QT_LIBRARIES} qscintilla2 grantlee_core_library)
+target_link_libraries(arduino ${QT_LIBRARIES} ${Boost_LIBRARIES} qscintilla2 grantlee_core_library)
