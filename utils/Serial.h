@@ -10,6 +10,8 @@
 
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/serial_port.hpp>
+#include <boost/asio/completion_condition.hpp>
+#include <boost/asio/read.hpp>
 
 class Serial : public QIODevice
 {
@@ -19,6 +21,7 @@ public:
     boost::asio::serial_port::native_type serialDescriptor();
 
     bool setDTR(bool enabled);
+    bool flushBuffer();
 
     // QIODevice implementation
     bool isSequential() const;

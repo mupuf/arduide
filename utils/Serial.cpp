@@ -100,3 +100,24 @@ bool Serial::setDTR(bool enabled)
     return true;
 #endif
 }
+
+bool Serial::flushBuffer()
+{
+    if (! isOpen())
+        return false;
+
+    boost::system::error_code error;
+    std::size_t n;
+    do
+    {
+        n = boost::asio::read(mSerial, boost::asio::null_buffers(), boost::asio::transfer_all(), error);
+        if (error)
+            return false;
+        usleep(100000);
+    } while (n > 0);
+
+    if (! setDTR(false))
+        return false;
+    usleep(100000);
+    setDTR(true);
+}
