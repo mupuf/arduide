@@ -43,7 +43,7 @@
             <h3>{{ cat.name }}</h3>
             {% for example in cat.examples %}
             {% if forloop.first %}<ul>{% endif %}
-              <li><a href="ide://new-project/{{ cat.name }}/{{ example }}">{{ example }}</a></li>
+              <li><a href="ide://example/{{ cat.name }}/{{ example }}">{{ example }}</a></li>
               {% if forloop.last %}</ul>{% endif %}
             {% empty %}
             <p>No examples</p>
@@ -60,7 +60,7 @@
             <h3>{{ lib.name }}</h3>
             {% for example in lib.examples %}
             {% if forloop.first %}<ul>{% endif %}
-              <li><a href="ide://new-project/{{ lib.name }}/{{ example }}">{{ example }}</a></li>
+              <li><a href="ide://library-example/{{ lib.name }}/{{ example }}">{{ example }}</a></li>
               {% if forloop.last %}</ul>{% endif %}
             {% empty %}
             <p>No examples</p>

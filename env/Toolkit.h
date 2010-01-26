@@ -38,6 +38,7 @@ public:
     static QString libraryPath(const QString &libraryName = QString());
     static QStringList librariesWithExamples();
     static QStringList findLibraryExamples(const QString &library);
+    static QString libraryExampleFileName(const QString &library, const QString &example);
     static QString avrdudePath();
     static QStringList avrdudeFlags(const Board *board);
 

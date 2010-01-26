@@ -80,24 +80,35 @@ void Browser::handleLink(const QUrl &url)
     if (url.scheme() == "ide")
     {
         if (url.host() == "new-project")
+            // empty project
+            emit newProjectRequested();
+        else if (url.host() == "example")
         {
-            if (url.path().isEmpty())
-                // empty project
-                emit newProjectRequested();
-            else
-            {
-                // from example
-                QFileInfo fi(url.path());
-                QString filename = Toolkit::exampleFileName(fi.dir().dirName(), fi.fileName());
+            // new project from example
+            QFileInfo fi(url.path());
+            QString filename = Toolkit::exampleFileName(fi.dir().dirName(), fi.fileName());
 
-                QFile f(filename);
-                if (f.open(QFile::ReadOnly))
-                {
-                    QString code = QString::fromLocal8Bit(f.readAll());
-                    emit newProjectRequested(code);
-                } else
-                    QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
-            }
+            QFile f(filename);
+            if (f.open(QFile::ReadOnly))
+            {
+                QString code = QString::fromLocal8Bit(f.readAll());
+                emit newProjectRequested(code);
+            } else
+                QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
+        }
+        else if (url.host() == "library-example")
+        {
+            // new project from example
+            QFileInfo fi(url.path());
+            QString filename = Toolkit::libraryExampleFileName(fi.dir().dirName(), fi.fileName());
+
+            QFile f(filename);
+            if (f.open(QFile::ReadOnly))
+            {
+                QString code = QString::fromLocal8Bit(f.readAll());
+                emit newProjectRequested(code);
+            } else
+                QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
         }
         else if (url.host() == "open-project")
         {

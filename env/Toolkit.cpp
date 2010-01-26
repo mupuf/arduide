@@ -168,6 +168,12 @@ QStringList Toolkit::findLibraryExamples(const QString &library)
     return findSketchesInDirectory(QDir(libraryPath(library)).filePath("examples"));
 }
 
+QString Toolkit::libraryExampleFileName(const QString &library, const QString &example)
+{
+    static const QString format = "%0/examples/%1/%1.pde";
+    return format.arg(libraryPath(library)).arg(example);
+}
+
 QString Toolkit::avrdudePath()
 {
     return QDir(hardwarePath()).filePath("tools/avrdude");
