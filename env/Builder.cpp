@@ -19,6 +19,8 @@
 #include "../env/Board.h"
 #include "../env/Toolkit.h"
 
+#include "../utils/Serial.h"
+
 Builder::Builder(ILogger &logger, QObject *parent)
     : QObject(parent), mLogger(logger), mBuildDir("arduino-build"), mBoard(NULL)
 {
@@ -352,7 +354,10 @@ bool Builder::uploadViaBootloader(const QString &hexFileName)
     QString disableFlushing = mBoard->attribute("upload.disable_flushing");
     if (disableFlushing.isNull() || disableFlushing.toLower() == "false")
     {
-        //TODO
+        Serial ser(mDevice);
+        ser.open(QIODevice::ReadWrite);
+        ser.flushBuffer();
+        ser.close();
     }
 
     return runCommand(command) == 0;
