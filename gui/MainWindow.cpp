@@ -87,7 +87,7 @@ void MainWindow::createDeviceChooser()
     deviceToolBar->addWidget(boardBox);
 }
 
-void MainWindow::newProject(const QString &code, Editor **pEditor)
+void MainWindow::newProject(const QString &code, Editor **pEditor, const QString &name)
 {
     Editor *editor;
     if (! code.isEmpty())
@@ -95,8 +95,7 @@ void MainWindow::newProject(const QString &code, Editor **pEditor)
     else
         editor = EditorFactory::createEditor();
 
-    QString name = createUniqueName("New project");
-    int tab = tabWidget->addTab(editor, name);
+    int tab = tabWidget->addTab(editor, (name.isNull()) ? createUniqueName("New project") : name);
     tabWidget->setCurrentIndex(tab);
 
     if (pEditor)
@@ -144,7 +143,10 @@ void MainWindow::closeTab(int index)
                     QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::No) == QMessageBox::Yes);
             if (close)
+            {
+                names.removeOne(tabWidget->tabText(index));
                 tabWidget->removeTab(index);
+            }
         }
     }
 }
@@ -220,7 +222,7 @@ void MainWindow::open(const QString &_fileName)
 
     // create a new project and obtain the associated editor
     Editor *editor;
-    newProject(QString::fromLocal8Bit(file.readAll()), &editor);
+    newProject(QString::fromLocal8Bit(file.readAll()), &editor, createUniqueName(QFileInfo(fileName).fileName()));
     editor->setFileName(fileName);
     file.close();
 }
@@ -228,7 +230,19 @@ void MainWindow::open(const QString &_fileName)
 void MainWindow::save()
 {
     Editor *e = currentEditor();
-    if (e) e->save();
+    if (e)
+    {
+        QString fileName = e->fileName();
+        int index;
+        e->save();
+        if (fileName != e->fileName())
+        {
+            // the file name changed, update the tab text
+            index = tabWidget->currentIndex();
+            names.removeOne(tabWidget->tabText(index));
+            tabWidget->setTabText(index, createUniqueName(QFileInfo(fileName).fileName()));
+        }
+    }
 }
 
 void MainWindow::copy()

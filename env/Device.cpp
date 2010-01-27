@@ -5,7 +5,14 @@
 
 #include "Device.h"
 
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+    //TODO
+#elif defined(Q_OS_DARWIN)
+    //TODO
+#else
 #include <QDBusInterface>
+#endif
+
 #include <QStringList>
 #include <QDebug>
 

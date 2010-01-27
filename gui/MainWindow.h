@@ -45,7 +45,7 @@ private slots:
     Editor *currentEditor();
 
     void closeTab(int index = -1);
-    void newProject(const QString &code = QString(), Editor **pEditor = NULL);
+    void newProject(const QString &code = QString(), Editor **pEditor = NULL, const QString &name = QString());
     void open(const QString &fileName = QString());
     void save();
     void fillDeviceBox();
