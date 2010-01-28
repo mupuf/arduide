@@ -49,3 +49,6 @@ add_executable(arduino
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
 target_link_libraries(arduino ${QT_LIBRARIES} ${Boost_LIBRARIES} qscintilla2 grantlee_core_library)
+install(TARGETS arduino DESTINATION bin)
+
+install(DIRECTORY "${arduino_DATA_PATH}/" DESTINATION share/arduino-ide)
