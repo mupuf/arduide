@@ -26,6 +26,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 void FirstTimeWizard::setupActions()
 {
     connect(arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
+    connect(sketchbookPathButton, SIGNAL(clicked()), this, SLOT(chooseSketchbookPath()));
 }
 
 void FirstTimeWizard::chooseArduinoPath()
@@ -33,6 +34,13 @@ void FirstTimeWizard::chooseArduinoPath()
     QString path = QFileDialog::getExistingDirectory(this);
     if (! path.isEmpty())
         arduinoPathEdit->setText(path);
+}
+
+void FirstTimeWizard::chooseSketchbookPath()
+{
+	QString path = QFileDialog::getExistingDirectory(this);
+	if (! path.isEmpty())
+		sketchbookPathEdit->setText(path);
 }
 
 bool FirstTimeWizard::validateCurrentPage()

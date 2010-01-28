@@ -21,6 +21,7 @@ private:
 
 private slots:
     void chooseArduinoPath();
+    void chooseSketchbookPath();
 };
 
 #endif // FIRSTTIMEWIZARD_H
