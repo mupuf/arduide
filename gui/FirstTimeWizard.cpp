@@ -38,9 +38,9 @@ void FirstTimeWizard::chooseArduinoPath()
 
 void FirstTimeWizard::chooseSketchbookPath()
 {
-	QString path = QFileDialog::getExistingDirectory(this);
-	if (! path.isEmpty())
-		sketchbookPathEdit->setText(path);
+    QString path = QFileDialog::getExistingDirectory(this);
+    if (! path.isEmpty())
+        sketchbookPathEdit->setText(path);
 }
 
 bool FirstTimeWizard::validateCurrentPage()
