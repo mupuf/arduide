@@ -20,7 +20,7 @@ public:
 
 signals:
     void newProjectRequested();
-    void newProjectRequested(const QString &initialCode, const QString &name);
+    void newProjectRequested(const QString &initialCode);
     void openProjectRequested();
     void openProjectRequested(const QString &fileName);
 
