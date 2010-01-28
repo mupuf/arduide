@@ -92,7 +92,7 @@ void Browser::handleLink(const QUrl &url)
             if (f.open(QFile::ReadOnly))
             {
                 QString code = QString::fromLocal8Bit(f.readAll());
-                emit newProjectRequested(code);
+			 emit newProjectRequested(code, fi.fileName());
             } else
                 QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
         }
@@ -106,7 +106,7 @@ void Browser::handleLink(const QUrl &url)
             if (f.open(QFile::ReadOnly))
             {
                 QString code = QString::fromLocal8Bit(f.readAll());
-                emit newProjectRequested(code);
+			 emit newProjectRequested(code, fi.fileName());
             } else
                 QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
         }

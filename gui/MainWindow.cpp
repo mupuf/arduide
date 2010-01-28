@@ -58,7 +58,7 @@ void MainWindow::setupActions()
     connect(boardBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setBoardAtIndex(int)));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
-    connect(browser, SIGNAL(newProjectRequested(const QString &)), this, SLOT(newProject(const QString &)));
+    connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
 }
@@ -87,7 +87,7 @@ void MainWindow::createDeviceChooser()
     deviceToolBar->addWidget(boardBox);
 }
 
-void MainWindow::newProject(const QString &code, Editor **pEditor, const QString &name)
+void MainWindow::newProject(const QString &code, const QString &name, Editor **pEditor)
 {
     Editor *editor;
     if (! code.isEmpty())
@@ -222,7 +222,7 @@ void MainWindow::open(const QString &_fileName)
 
     // create a new project and obtain the associated editor
     Editor *editor;
-    newProject(QString::fromLocal8Bit(file.readAll()), &editor, createUniqueName(QFileInfo(fileName).fileName()));
+    newProject(QString::fromLocal8Bit(file.readAll()), createUniqueName(QFileInfo(fileName).fileName()), &editor);
     editor->setFileName(fileName);
     file.close();
 }
