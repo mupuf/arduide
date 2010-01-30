@@ -224,6 +224,7 @@ void MainWindow::open(const QString &_fileName)
     Editor *editor;
     newProject(QString::fromLocal8Bit(file.readAll()), createUniqueName(QFileInfo(fileName).fileName()), &editor);
     editor->setFileName(fileName);
+    Settings::instance().addRecentProject(fileName);
     file.close();
 }
 
@@ -235,6 +236,7 @@ void MainWindow::save()
         QString fileName = e->fileName();
         int index;
         e->save();
+        Settings::instance().addRecentProject(fileName);
         if (fileName != e->fileName())
         {
             // the file name changed, update the tab text
