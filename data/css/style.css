@@ -1,3 +1,8 @@
+html
+{
+    height: 100%;
+}
+
 body
 {
     background-color: white;
@@ -5,6 +10,7 @@ body
     margin: 0px;
     padding: 0px;
     width: 100%;
+    height: 100%;
 }
 
 ul
@@ -15,6 +21,7 @@ ul
 div#wrapper
 {
     width: 100%;
+    height: 100%;
 }
 
 img#logo
