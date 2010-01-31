@@ -240,7 +240,7 @@ void MainWindow::save()
             // the file name changed, update the tab text
             index = tabWidget->currentIndex();
             names.removeOne(tabWidget->tabText(index));
-            tabWidget->setTabText(index, createUniqueName(QFileInfo(fileName).fileName()));
+            tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
         }
     }
 }
