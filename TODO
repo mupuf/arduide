@@ -11,6 +11,9 @@ General:
  * port to Mac and Windows
    - device enumeration: Device.cpp
    - Serial.cpp
+ * help menu:
+   - community links: arduino forum, maybe other resources
+   - about dialog
 
 Browser:
  * ability to search documentation
@@ -32,15 +35,18 @@ Editor:
  * improve the editor (denis)
    - automatic indentation
    - ctrl+shift selection
+   - tab switching (Ctrl-PageUp, Ctrl-PageDown)
  * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...)
  * auto-completion
    - need to find out how to lex implicit includes (WProgram.h)
+ * code snippets
 
 Plugin ideas:
  * serial debugger
  * serial communication
    - connect the IDE to the Arduino and make simple reads/writes
  * simulation
+ * pastebin
 
 Features from the original IDE:
  * make menu items for the libraries: they add the needed includes at the top of the current source.
