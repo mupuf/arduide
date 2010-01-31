@@ -18,6 +18,7 @@
 
 #include "PageRenderer.h"
 #include "../env/Toolkit.h"
+#include "../env/ProjectHistory.h"
 
 Browser::Browser(QWidget *parent)
     : QWebView(parent)
@@ -58,6 +59,22 @@ void Browser::quickstart()
 
     mapping.insert("exampleCategories", exampleCategories);
     mapping.insert("librariesWithExamples", librariesWithExamples);
+    
+    QVariantList projects;
+    ProjectHistory& pHistory=ProjectHistory::instance();
+    QStringList projects_s=pHistory.history(10);
+    for(int i=0; i<projects_s.size(); i++)
+    {  
+        QString name=QFileInfo(projects_s.at(i)).fileName();
+        name=name.left(name.lastIndexOf('.'));
+        
+        QVariantHash projDescription;
+        projDescription.insert("name", name);
+        projDescription.insert("path", projects_s.at(i));
+        
+        projects << projDescription;
+    }
+    mapping.insert("projects", projects);
 
     QVariantList sketches;
     foreach (const QString &sketch, Toolkit::findSketchesInDirectory(Settings::instance().sketchPath()))
@@ -149,4 +166,10 @@ void Browser::openDocumentation(const QString &fileName)
     Grantlee::Context context(mapping);
 
     page()->mainFrame()->evaluateJavaScript(t->render(&context));
+}
+
+void Browser::refresh()
+{
+    // we should handle this in better way (reload and show the right page)
+    quickstart();
 }

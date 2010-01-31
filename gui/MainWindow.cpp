@@ -20,7 +20,7 @@
 #include "../env/Builder.h"
 #include "../env/Settings.h"
 
-MainWindow::MainWindow()
+MainWindow::MainWindow() : pHistory(ProjectHistory::instance())
 {
     setupUi(this);
     dockWidget->hide();
@@ -61,6 +61,8 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
+    
+    connect(&pHistory, SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 }
 
 void MainWindow::createBrowserAndTabs()
@@ -225,6 +227,9 @@ void MainWindow::open(const QString &_fileName)
     newProject(QString::fromLocal8Bit(file.readAll()), createUniqueName(QFileInfo(fileName).fileName()), &editor);
     editor->setFileName(fileName);
     file.close();
+    
+    // update the history
+    pHistory.updateHistory(fileName);
 }
 
 void MainWindow::save()
@@ -242,6 +247,9 @@ void MainWindow::save()
             names.removeOne(tabWidget->tabText(index));
             tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
         }
+        
+        // update the history
+        pHistory.updateHistory(e->fileName());
     }
 }
 

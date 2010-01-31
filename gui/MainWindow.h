@@ -10,6 +10,7 @@
 
 #include <QComboBox>
 #include <QToolButton>
+#include "../env/ProjectHistory.h"
 
 class QUrl;
 class Browser;
@@ -29,6 +30,8 @@ private:
     void setupActions();
     void createBrowserAndTabs();
     void createDeviceChooser();
+    
+    ProjectHistory& pHistory;
 
     QStringList names;
     QString createUniqueName(const QString &name);

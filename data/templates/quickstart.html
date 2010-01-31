@@ -19,8 +19,13 @@
 
         <div class="column">
           <h2>Recent projects</h2>
-          TODO
+          {% for project in projects %}
+          {% if forloop.first %}<ul>{% endif %}
+          <li><a href="ide://open-project{{ project.path }}">{{ project.name }}</a></li>
+          {% if forloop.last %}</ul>{% endif %}
+          {% empty %}
           <p>No recent projects</p>
+          {% endfor %}
         </div>
 
         <div class="column">
