@@ -41,37 +41,6 @@ void Settings::setSketchPath(const QString &path)
     mSettings.setValue("sketchPath", path);
 }
 
-QStringList Settings::recentProjects()
-{
-    QStringList projects;
-    int size = mSettings.beginReadArray("recentProjects");
-    for (int i = 0; i < size; i++)
-    {
-        mSettings.setArrayIndex(i);
-        projects << mSettings.value("filename").toString();
-    }
-    mSettings.endArray();
-    return projects;
-}
-
-void Settings::addRecentProject(const QString &project)
-{
-    QStringList projects = recentProjects();
-    projects.removeAll(project);
-    while (projects.size() > 9)
-        projects.removeLast();
-
-    mSettings.beginWriteArray("recentProjects");
-    mSettings.setArrayIndex(0);
-    mSettings.setValue("filename", project);
-    for (int i = 0; i < projects.size(); i++)
-    {
-        mSettings.setArrayIndex(i + 1);
-        mSettings.setValue("filename", projects[i]);
-    }
-    mSettings.endArray();
-}
-
 QFont Settings::editorFont()
 {
     QVariant fontSetting = mSettings.value("editorFont");

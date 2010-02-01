@@ -59,30 +59,18 @@ void Browser::quickstart()
 
     mapping.insert("exampleCategories", exampleCategories);
     mapping.insert("librariesWithExamples", librariesWithExamples);
-    
-    QVariantList projects;
-    ProjectHistory& pHistory=ProjectHistory::instance();
-    QStringList projects_s=pHistory.history(10);
-    for(int i=0; i<projects_s.size(); i++)
-    {  
-        QString name=QFileInfo(projects_s.at(i)).fileName();
-        name=name.left(name.lastIndexOf('.'));
-        
-        QVariantHash projDescription;
-        projDescription.insert("name", name);
-        projDescription.insert("path", projects_s.at(i));
-        
-        projects << projDescription;
-    }
-    mapping.insert("projects", projects);
 
     QVariantList recentProjects;
-    foreach (const QString &sketch, Settings::instance().recentProjects())
+    ProjectHistory& pHistory=ProjectHistory::instance();
+    foreach (const QString &project, pHistory.history(10))
     {
-        QVariantHash project;
-        project["name"] = QFileInfo(sketch).completeBaseName();
-        project["filename"] = sketch;
-        recentProjects << project;
+        QString name=QFileInfo(project).fileName();
+        name=name.left(name.lastIndexOf('.'));
+        
+        QVariantHash projectInfo;
+        projectInfo["name"] = name;
+        projectInfo["filename"] = project;
+        recentProjects << projectInfo;
     }
     mapping.insert("recentProjects", recentProjects);
 
