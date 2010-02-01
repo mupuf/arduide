@@ -76,6 +76,16 @@ void Browser::quickstart()
     }
     mapping.insert("projects", projects);
 
+    QVariantList recentProjects;
+    foreach (const QString &sketch, Settings::instance().recentProjects())
+    {
+        QVariantHash project;
+        project["name"] = QFileInfo(sketch).completeBaseName();
+        project["filename"] = sketch;
+        recentProjects << project;
+    }
+    mapping.insert("recentProjects", recentProjects);
+
     QVariantList sketches;
     foreach (const QString &sketch, Toolkit::findSketchesInDirectory(Settings::instance().sketchPath()))
         sketches.append(sketch);

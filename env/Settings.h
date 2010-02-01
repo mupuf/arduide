@@ -7,6 +7,7 @@
 #define SETTINGS_H
 
 #include <QSettings>
+#include <QStringList>
 #include <QFont>
 
 class Settings
@@ -17,6 +18,8 @@ public:
     void setArduinoPath(const QString &path);
     QString sketchPath();
     void setSketchPath(const QString &path);
+    QStringList recentProjects();
+    void addRecentProject(const QString &project);
     QFont editorFont();
     void setEditorFont(QFont f);
     QString devicePort();

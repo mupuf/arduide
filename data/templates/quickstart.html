@@ -19,9 +19,9 @@
 
         <div class="column">
           <h2>Recent projects</h2>
-          {% for project in projects %}
+          {% for project in recentProjects %}
           {% if forloop.first %}<ul>{% endif %}
-          <li><a href="ide://open-project{{ project.path }}">{{ project.name }}</a></li>
+            <li><a href="ide://open-project/{{ project.filename }}">{{ project.name }}</a></li>
           {% if forloop.last %}</ul>{% endif %}
           {% empty %}
           <p>No recent projects</p>
@@ -32,7 +32,7 @@
           <h2>Sketch book</h2>
           {% for sketch in sketches %}
           {% if forloop.first %}<ul>{% endif %}
-          <li><a href="ide://open-sketch/{{ sketch }}">{{ sketch }}</a></li>
+            <li><a href="ide://open-sketch/{{ sketch }}">{{ sketch }}</a></li>
           {% if forloop.last %}</ul>{% endif %}
           {% empty %}
           <p>No sketches</p>
