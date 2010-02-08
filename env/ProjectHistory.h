@@ -13,13 +13,13 @@
 class ProjectHistory : public QObject
 {
     Q_OBJECT
-public: 
+public:
     ProjectHistory();
-    
+
     static ProjectHistory& instance();
-    
+
     QStringList history(unsigned int maxSize=0);
-    
+
 private:
     QSettings settings;
     const unsigned int historyLength;
