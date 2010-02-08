@@ -50,9 +50,13 @@ QFont Settings::editorFont()
     return font;
 }
 
-void Settings::setEditorFont(QFont f)
+void Settings::setEditorFont(const QFont &f)
 {
+    if (f == editorFont())
+        return; // no change
+
     mSettings.setValue("editorFont", f.toString());
+    emit fontChanged(f);
 }
 
 QString Settings::devicePort()

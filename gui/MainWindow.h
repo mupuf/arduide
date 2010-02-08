@@ -26,6 +26,9 @@ public:
     MainWindow();
     void initialize();
 
+public slots:
+    void setFont(const QFont &font);
+
 private:
     void setupActions();
     void createBrowserAndTabs();
@@ -44,9 +47,10 @@ private:
 
     QActionGroup *buildActions;
 
-private slots:
     Editor *currentEditor();
+    QList<Editor *> editors();
 
+private slots:
     void closeTab(int index = -1);
     void nextTab();
     void previousTab();

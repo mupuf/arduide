@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QShortcut>
 #include <QDebug>
+#include <Qsci/qscilexer.h>
 
 #include "../env/Settings.h"
 
@@ -143,4 +144,9 @@ void Editor::updateSelectionOrigin()
         selectionOrigin.line = lineFrom;
         selectionOrigin.index = indexFrom;
     }
+}
+
+void Editor::setLexerFont(const QFont &font)
+{
+    lexer()->setFont(font);
 }

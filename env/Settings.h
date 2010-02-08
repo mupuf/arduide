@@ -10,8 +10,10 @@
 #include <QStringList>
 #include <QFont>
 
-class Settings
+class Settings : public QObject
 {
+    Q_OBJECT
+
 public:
     static Settings &instance();
     QString arduinoPath();
@@ -19,7 +21,7 @@ public:
     QString sketchPath();
     void setSketchPath(const QString &path);
     QFont editorFont();
-    void setEditorFont(QFont f);
+    void setEditorFont(const QFont &f);
     QString devicePort();
     void setDevicePort(const QString &port);
     QString board();
@@ -28,6 +30,9 @@ public:
     void setVerboseUpload(bool verbose);
 
     bool isCorrect();
+
+signals:
+    void fontChanged(const QFont &f);
 
 private:
     static Settings *mInstance;

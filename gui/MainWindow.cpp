@@ -68,6 +68,8 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
 
     connect(&pHistory, SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
+
+    connect(&Settings::instance(), SIGNAL(fontChanged(const QFont &)), this, SLOT(setFont(const QFont &)));
 }
 
 void MainWindow::createBrowserAndTabs()
@@ -234,6 +236,19 @@ Editor *MainWindow::currentEditor()
     return qobject_cast<Editor *>(tabWidget->currentWidget());
 }
 
+QList<Editor *> MainWindow::editors()
+{
+    QList<Editor *> editors;
+    Editor *editor;
+    for (int i = 0; i < tabWidget->count(); i++)
+    {
+        editor = qobject_cast<Editor *>(tabWidget->widget(i));
+        if (editor != NULL)
+            editors << editor;
+    }
+    return editors;
+}
+
 void MainWindow::open(const QString &_fileName)
 {
     QString fileName(_fileName);
@@ -389,4 +404,11 @@ void MainWindow::configure()
 {
     ConfigDialog dialog(this);
     dialog.exec();
+}
+
+#include <Qsci/qscilexer.h>
+void MainWindow::setFont(const QFont &font)
+{
+    foreach (Editor *editor, editors())
+        editor->setLexerFont(font);
 }
