@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFile>
+#include <QShortcut>
 #include <QDebug>
 
 #include "../env/Settings.h"
@@ -15,6 +16,7 @@
 Editor::Editor(QWidget *parent)
     : QsciScintilla(parent)
 {
+    setupShortcuts();
 }
 
 void Editor::save()
@@ -44,4 +46,40 @@ void Editor::save()
     f.close();
 
     setModified(false);
+}
+
+void Editor::setupShortcuts()
+{
+    QShortcut *shortcut;
+    shortcut = new QShortcut(QKeySequence("Ctrl+Up"), this);
+    connect(shortcut, SIGNAL(activated()), this, SLOT(goToPreviousParagraph()));
+    shortcut = new QShortcut(QKeySequence("Ctrl+Down"), this);
+    connect(shortcut, SIGNAL(activated()), this, SLOT(goToNextParagraph()));
+}
+
+void Editor::goToPreviousParagraph()
+{
+    int line, index;
+    getCursorPosition(&line, &index);
+    while (line > 0)
+    {
+        line--;
+        if (text(line).trimmed().isEmpty())
+            break;
+    }
+    setCursorPosition(line, 0);
+}
+
+void Editor::goToNextParagraph()
+{
+    int line, index;
+    int lastLine = lines() - 1;
+    getCursorPosition(&line, &index);
+    while (line < lastLine)
+    {
+        line++;
+        if (text(line).trimmed().isEmpty())
+            break;
+    }
+    setCursorPosition(line, 0);
 }
