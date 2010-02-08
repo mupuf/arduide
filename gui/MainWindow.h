@@ -63,6 +63,7 @@ private slots:
     void toggleDock();
     void setDeviceAtIndex(int index);
     void setBoardAtIndex(int index);
+    void configure();
 
 protected:
     void closeEvent(QCloseEvent *event);

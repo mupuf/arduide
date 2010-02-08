@@ -48,9 +48,16 @@
     </property>
     <addaction name="actionToggle_dock"/>
    </widget>
+   <widget class="QMenu" name="menu_Settings">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="action_Configure_the_IDE"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
+   <addaction name="menu_Settings"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -295,6 +302,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+PgUp</string>
+   </property>
+  </action>
+  <action name="action_Configure_the_IDE">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/configure.png</normaloff>:/images/16x16/configure.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Configure the IDE</string>
    </property>
   </action>
  </widget>

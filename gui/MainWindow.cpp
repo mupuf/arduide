@@ -15,6 +15,7 @@
 
 #include "EditorFactory.h"
 #include "Browser.h"
+#include "ConfigDialog.h"
 #include "../env/Device.h"
 #include "../env/Board.h"
 #include "../env/Builder.h"
@@ -59,6 +60,7 @@ void MainWindow::setupActions()
     connect(boardBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setBoardAtIndex(int)));
     connect(actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
     connect(actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
+    connect(action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
@@ -381,4 +383,10 @@ void MainWindow::upload()
 void MainWindow::toggleDock()
 {
     dockWidget->setVisible(! dockWidget->isVisible());
+}
+
+void MainWindow::configure()
+{
+    ConfigDialog dialog(this);
+    dialog.exec();
 }

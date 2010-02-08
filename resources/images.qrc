@@ -15,5 +15,6 @@
     <file>images/16x16/run-build.png</file>
     <file>images/16x16/run-build-install.png</file>
     <file>images/16x16/terminal.png</file>
+    <file>images/16x16/configure.png</file>
   </qresource>
 </RCC>
