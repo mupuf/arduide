@@ -15,7 +15,7 @@ void initializeTemplates()
 {
     Grantlee::Engine *engine = Grantlee::Engine::instance();
     engine->setPluginDirs(QStringList() << GRANTLEE_PLUGIN_DIR "/");
-    Grantlee::FileSystemTemplateLoader::Ptr loader = FileSystemTemplateLoader::Ptr(new Grantlee::FileSystemTemplateLoader);
+    Grantlee::FileSystemTemplateLoader::Ptr loader = Grantlee::FileSystemTemplateLoader::Ptr(new Grantlee::FileSystemTemplateLoader);
     loader->setTemplateDirs(QStringList() << DATA_PATH "/templates");
     engine->addTemplateLoader(loader);
 }
