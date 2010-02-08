@@ -34,7 +34,7 @@ Editor:
    - fonts, indentation, style, ... (QScintilla)
  * improve the editor (denis)
    - automatic indentation
-   - ctrl+shift selection
+   - ctrl+shift selection [DONE]
    - tab switching (Ctrl-PageUp, Ctrl-PageDown) [DONE]
  * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...)
  * auto-completion
