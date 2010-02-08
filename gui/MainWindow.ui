@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -279,6 +279,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionGo_to_the_next_tab">
+   <property name="text">
+    <string>Go to the next tab</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+PgDown</string>
+   </property>
+  </action>
+  <action name="actionGo_to_the_previous_tab">
+   <property name="text">
+    <string>Go to the previous tab</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+PgUp</string>
    </property>
   </action>
  </widget>

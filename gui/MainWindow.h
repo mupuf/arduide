@@ -30,7 +30,7 @@ private:
     void setupActions();
     void createBrowserAndTabs();
     void createDeviceChooser();
-    
+
     ProjectHistory& pHistory;
 
     QStringList names;
@@ -48,6 +48,8 @@ private slots:
     Editor *currentEditor();
 
     void closeTab(int index = -1);
+    void nextTab();
+    void previousTab();
     void newProject(const QString &code = QString(), const QString &name = QString(), Editor **pEditor = NULL);
     void open(const QString &fileName = QString());
     void save();

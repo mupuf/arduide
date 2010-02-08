@@ -29,6 +29,7 @@ MainWindow::MainWindow() : pHistory(ProjectHistory::instance())
 void MainWindow::initialize()
 {
     createBrowserAndTabs();
+
     createDeviceChooser();
     fillDeviceBox();
     fillBoardsBox();
@@ -56,12 +57,14 @@ void MainWindow::setupActions()
     connect(actionToggle_dock, SIGNAL(triggered()), this, SLOT(toggleDock()));
     connect(deviceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setDeviceAtIndex(int)));
     connect(boardBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setBoardAtIndex(int)));
+    connect(actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
+    connect(actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
-    
+
     connect(&pHistory, SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 }
 
@@ -70,10 +73,35 @@ void MainWindow::createBrowserAndTabs()
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
     tabWidget->setMovable(true);
+    tabWidget->addAction(actionGo_to_the_next_tab);
+    tabWidget->addAction(actionGo_to_the_previous_tab);
+
     browser = new Browser;
     tabWidget->addTab(browser, tr("Browser"));
     setCentralWidget(tabWidget);
     browser->quickstart();
+}
+
+void MainWindow::nextTab()
+{
+    int index = tabWidget->currentIndex();
+    int count = tabWidget->count();
+    if (index != -1)
+    {
+        index = (index + 1) % count;
+        tabWidget->setCurrentIndex(index);
+    }
+}
+
+void MainWindow::previousTab()
+{
+    int index = tabWidget->currentIndex();
+    int count = tabWidget->count();
+    if (index != -1)
+    {
+        index--;
+        tabWidget->setCurrentIndex((index < 0) ? (count - 1) : index);
+    }
 }
 
 void MainWindow::createDeviceChooser()
@@ -227,7 +255,7 @@ void MainWindow::open(const QString &_fileName)
     newProject(QString::fromLocal8Bit(file.readAll()), createUniqueName(QFileInfo(fileName).fileName()), &editor);
     editor->setFileName(fileName);
     file.close();
-    
+
     // update the history
     pHistory.updateHistory(fileName);
 }
@@ -247,7 +275,7 @@ void MainWindow::save()
             names.removeOne(tabWidget->tabText(index));
             tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
         }
-        
+
         // update the history
         pHistory.updateHistory(e->fileName());
     }
