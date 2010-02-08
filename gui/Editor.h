@@ -24,8 +24,19 @@ private:
     void setupShortcuts();
 
     QString mFileName;
+    struct
+    {
+        int line;
+        int index;
+    } selectionOrigin;
 
 private slots:
+    void findPreviousParagraph(int *line, int *index);
+    void findNextParagraph(int *line, int *index);
+    void selectTillPreviousParagraph();
+    void selectTillNextParagraph();
+    void updateSelectionOrigin();
+
     void goToPreviousParagraph();
     void goToNextParagraph();
 };

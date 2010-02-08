@@ -22,6 +22,7 @@ Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
     editor->setEdgeMode(QsciScintilla::EdgeLine);
     editor->setEdgeColumn(90);
     editor->setFolding(QsciScintilla::BoxedTreeFoldStyle);
+    editor->setSelectionToEol(true);
     editor->setText(text);
     editor->setModified(false);
     return editor;
