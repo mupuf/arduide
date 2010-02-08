@@ -21,7 +21,13 @@ public slots:
     void save();
 
 private:
+    void setupShortcuts();
+
     QString mFileName;
+
+private slots:
+    void goToPreviousParagraph();
+    void goToNextParagraph();
 };
 
 #endif // EDITOR_H
