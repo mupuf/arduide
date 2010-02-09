@@ -21,7 +21,7 @@
           <h2>Recent projects</h2>
           {% for project in recentProjects %}
           {% if forloop.first %}<ul>{% endif %}
-            <li><a href="ide://open-project{{ project.filename }}">{{ project.name }}</a></li>
+            <li><a href="ide://open-project/{{ project.filename }}">{{ project.name }}</a></li>
           {% if forloop.last %}</ul>{% endif %}
           {% empty %}
           <p>No recent projects</p>

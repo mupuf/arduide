@@ -66,7 +66,7 @@ void Browser::quickstart()
     {
         QString name=QFileInfo(project).fileName();
         name=name.left(name.lastIndexOf('.'));
-        
+
         QVariantHash projectInfo;
         projectInfo["name"] = name;
         projectInfo["filename"] = project;
@@ -127,10 +127,11 @@ void Browser::handleLink(const QUrl &url)
         }
         else if (url.host() == "open-project")
         {
-            if (url.path().isEmpty())
+            QString path = QDir::cleanPath(url.path());
+            if (path.isEmpty())
                 emit openProjectRequested();
             else
-                emit openProjectRequested(url.path());
+                emit openProjectRequested(path);
         }
         else if (url.host() == "open-sketch")
         {
