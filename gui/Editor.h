@@ -20,6 +20,7 @@ public slots:
     void save();
     void setFileName(const QString &fileName) { mFileName = fileName; }
     void setLexerFont(const QFont &font);
+	void setIndentSize(int padding);
 
 private:
     void setupShortcuts();

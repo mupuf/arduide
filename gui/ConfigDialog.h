@@ -20,7 +20,6 @@ public:
 private slots:
     void chooseFont();
     void indentChanged(int value);
-    void autoIndentChanged(int checked);
 
 private:
     // page indexes

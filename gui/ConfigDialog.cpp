@@ -26,7 +26,6 @@ void ConfigDialog::setupUi()
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
     connect(uiEditor.spinIndentSize, SIGNAL(valueChanged(int)), this, SLOT(indentChanged(int)));
-	connect(uiEditor.checkAutoIndent, SIGNAL(stateChanged(int)), this, SLOT(autoIndentChanged(int)));
 }
 
 void ConfigDialog::initializePage(int index)
@@ -36,8 +35,6 @@ void ConfigDialog::initializePage(int index)
     case editorIndex:
         setupFontChooser();
         uiEditor.spinIndentSize->setValue(Settings::instance().editorIndentation());
-        uiEditor.checkAutoIndent->setCheckState(Settings::instance().editorAutoIndent()?Qt::Checked:Qt::Unchecked);
-		autoIndentChanged(uiEditor.checkAutoIndent->checkState());
         break;
     }
 }
@@ -65,12 +62,5 @@ void ConfigDialog::chooseFont()
 
 void ConfigDialog::indentChanged(int value)
 {
-    Settings::instance().setEditorIndentation(value);
-}
-
-void ConfigDialog::autoIndentChanged(int checked)
-{
-    bool value=(checked==Qt::Checked);
-    Settings::instance().setEditorAutoIndent(value);
-    uiEditor.checkAutoIndent->setText(value?tr("true"):tr("false"));
+	Settings::instance().setEditorIndentation(value);
 }
