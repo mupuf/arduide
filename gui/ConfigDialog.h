@@ -19,6 +19,7 @@ public:
 
 private slots:
     void chooseFont();
+    void indentChanged(int value);
 
 private:
     // page indexes

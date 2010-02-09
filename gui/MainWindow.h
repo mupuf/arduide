@@ -28,6 +28,7 @@ public:
 
 public slots:
     void setFont(const QFont &font);
+    void setIndentSize(int value);
 
 private:
     void setupActions();

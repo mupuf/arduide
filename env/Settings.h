@@ -22,6 +22,8 @@ public:
     void setSketchPath(const QString &path);
     QFont editorFont();
     void setEditorFont(const QFont &f);
+    int editorIndentation();
+    void setEditorIndentation(int padding);
     QString devicePort();
     void setDevicePort(const QString &port);
     QString board();
@@ -33,6 +35,7 @@ public:
 
 signals:
     void fontChanged(const QFont &f);
+	void indentationChanged(int padding);
 
 private:
     static Settings *mInstance;

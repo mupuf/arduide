@@ -25,6 +25,7 @@ void ConfigDialog::setupUi()
     addPage(page, QIcon(":/images/32x32/accessories-text-editor.png"), tr("Editor"));
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
+    connect(uiEditor.spinIndentSize, SIGNAL(valueChanged(int)), this, SLOT(indentChanged(int)));
 }
 
 void ConfigDialog::initializePage(int index)
@@ -33,6 +34,7 @@ void ConfigDialog::initializePage(int index)
     {
     case editorIndex:
         setupFontChooser();
+        uiEditor.spinIndentSize->setValue(Settings::instance().editorIndentation());
         break;
     }
 }
@@ -56,4 +58,9 @@ void ConfigDialog::chooseFont()
         Settings::instance().setEditorFont(f);
         setupFontChooser();
     }
+}
+
+void ConfigDialog::indentChanged(int value)
+{
+	Settings::instance().setEditorIndentation(value);
 }

@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -41,6 +41,8 @@
     <addaction name="action_Copy"/>
     <addaction name="action_Cut"/>
     <addaction name="action_Paste"/>
+    <addaction name="separator"/>
+    <addaction name="action_Configure_the_IDE"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -48,16 +50,16 @@
     </property>
     <addaction name="actionToggle_dock"/>
    </widget>
-   <widget class="QMenu" name="menu_Settings">
+   <widget class="QMenu" name="menu">
     <property name="title">
-     <string>&amp;Settings</string>
+     <string>?</string>
     </property>
-    <addaction name="action_Configure_the_IDE"/>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
-   <addaction name="menu_Settings"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -311,6 +313,14 @@
    </property>
    <property name="text">
     <string>&amp;Configure the IDE</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>
