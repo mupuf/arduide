@@ -24,7 +24,7 @@ Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
     editor->setFolding(QsciScintilla::BoxedTreeFoldStyle);
     editor->setSelectionToEol(true);
     editor->setAutoIndent(true);
-    editor->setTabWidth(Settings::instance().editorIndentation());
+    editor->setTabWidth(4);
     editor->setText(text);
     editor->setModified(false);
     return editor;

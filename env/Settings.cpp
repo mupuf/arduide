@@ -59,17 +59,6 @@ void Settings::setEditorFont(const QFont &f)
     emit fontChanged(f);
 }
 
-int Settings::editorIndentation()
-{
-    return mSettings.value("editorIndentation", 4).toInt();
-}
-
-void Settings::setEditorIndentation(int padding)
-{
-    mSettings.setValue("editorIndentation", padding);
-	emit indentationChanged(padding);
-}
-
 QString Settings::devicePort()
 {
     return mSettings.value("devicePort").toString();

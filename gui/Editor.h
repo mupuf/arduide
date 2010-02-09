@@ -15,12 +15,11 @@ class Editor : public QsciScintilla
 public:
     Editor(QWidget *parent = NULL);
     const QString &fileName() { return mFileName; }
+    void setFileName(const QString &fileName) { mFileName = fileName; }
+    void setLexerFont(const QFont &font);
 
 public slots:
     void save();
-    void setFileName(const QString &fileName) { mFileName = fileName; }
-    void setLexerFont(const QFont &font);
-	void setIndentSize(int padding);
 
 private:
     void setupShortcuts();

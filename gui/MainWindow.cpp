@@ -70,7 +70,6 @@ void MainWindow::setupActions()
     connect(&pHistory, SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 
     connect(&Settings::instance(), SIGNAL(fontChanged(const QFont &)), this, SLOT(setFont(const QFont &)));
-	connect(&Settings::instance(), SIGNAL(indentationChanged(int)), this, SLOT(setIndentSize(int)));
 }
 
 void MainWindow::createBrowserAndTabs()
@@ -412,10 +411,4 @@ void MainWindow::setFont(const QFont &font)
 {
     foreach (Editor *editor, editors())
         editor->setLexerFont(font);
-}
-
-void MainWindow::setIndentSize(int value)
-{
-    foreach (Editor *editor, editors())
-        editor->setIndentSize(value);
 }
