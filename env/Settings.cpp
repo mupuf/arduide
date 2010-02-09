@@ -67,7 +67,18 @@ int Settings::editorIndentation()
 void Settings::setEditorIndentation(int padding)
 {
     mSettings.setValue("editorIndentation", padding);
-	emit indentationChanged(padding);
+    emit indentationChanged(padding);
+}
+
+bool Settings::editorAutoIndent()
+{
+    return mSettings.value("editorAutoIndent", true).toBool();
+}
+
+void Settings::setEditorAutoIndent(bool value)
+{
+    mSettings.setValue("editorAutoIndent", value);
+    emit autoIndentChanged(value);
 }
 
 QString Settings::devicePort()

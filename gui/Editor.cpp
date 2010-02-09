@@ -150,8 +150,3 @@ void Editor::setLexerFont(const QFont &font)
 {
     lexer()->setFont(font);
 }
-
-void Editor::setIndentSize(int padding)
-{
-    setTabWidth(padding);
-}

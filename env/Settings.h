@@ -24,6 +24,8 @@ public:
     void setEditorFont(const QFont &f);
     int editorIndentation();
     void setEditorIndentation(int padding);
+    bool editorAutoIndent();
+    void setEditorAutoIndent(bool value);
     QString devicePort();
     void setDevicePort(const QString &port);
     QString board();
@@ -35,7 +37,8 @@ public:
 
 signals:
     void fontChanged(const QFont &f);
-	void indentationChanged(int padding);
+    void indentationChanged(int padding);
+    void autoIndentChanged(bool value);
 
 private:
     static Settings *mInstance;

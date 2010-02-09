@@ -23,7 +23,7 @@ Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
     editor->setEdgeColumn(90);
     editor->setFolding(QsciScintilla::BoxedTreeFoldStyle);
     editor->setSelectionToEol(true);
-    editor->setAutoIndent(true);
+    editor->setAutoIndent(Settings::instance().editorAutoIndent());
     editor->setTabWidth(Settings::instance().editorIndentation());
     editor->setText(text);
     editor->setModified(false);
