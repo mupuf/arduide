@@ -4,23 +4,30 @@ cmake_minimum_required(VERSION 2.8)
 if(CMAKE_HOST_WIN32)
 	SET(Boost_USE_STATIC_LIBS ON)
 elseif(CMAKE_HOST_APPLE)
-
 elseif(CMAKE_HOST_UNIX)
 	find_package(Qt4 COMPONENTS QtDbus REQUIRED)
+	include_directories("/usr/include/grantlee")
 endif(CMAKE_HOST_WIN32)
 
+# Grantlee
 include(FindGrantlee)
-set(QT_DONT_USE_QTGUI 0)
-include(FindQt4)
-include(FindBoost)
 find_package(Grantlee REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui QtWebkit REQUIRED)
-SET(Boost_ADDITIONAL_VERSIONS "1.41" "1.41.0")
-find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
-include(${QT_USE_FILE})
-include_directories(${Boost_INCLUDE_DIRS})
+set(QT_DONT_USE_QTGUI 0)
 include_directories(${Grantlee_INCLUDE_DIRS})
+MESSAGE("Grantlee_INCLUDE_DIRS = ${Grantlee_INCLUDE_DIRS}")
 
+# Qt
+include(FindQt4)
+find_package(Qt4 COMPONENTS QtCore QtGui QtWebkit REQUIRED)
+include(${QT_USE_FILE})
+
+# Boost
+SET(Boost_ADDITIONAL_VERSIONS "1.41" "1.41.0")
+include(FindBoost)
+find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
+include_directories(${Boost_INCLUDE_DIRS})
+
+# common
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
