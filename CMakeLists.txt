@@ -1,11 +1,25 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
+# OS-dependant dependancies
+if(CMAKE_HOST_WIN32)
+	SET(Boost_USE_STATIC_LIBS ON)
+elseif(CMAKE_HOST_APPLE)
+
+elseif(CMAKE_HOST_UNIX)
+	find_package(Qt4 COMPONENTS QtDbus REQUIRED)
+endif(CMAKE_HOST_WIN32)
+
+include(FindGrantlee)
+set(QT_DONT_USE_QTGUI 0)
 include(FindQt4)
 include(FindBoost)
-find_package(Qt4 COMPONENTS QtCore QtGui QtDbus QtWebkit REQUIRED)
+find_package(Grantlee REQUIRED)
+find_package(Qt4 COMPONENTS QtCore QtGui QtWebkit REQUIRED)
+SET(Boost_ADDITIONAL_VERSIONS "1.41" "1.41.0")
 find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
 include(${QT_USE_FILE})
 include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${Grantlee_INCLUDE_DIRS})
 
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/QScintilla-gpl-2.4.2/include")
@@ -55,7 +69,9 @@ add_executable(arduino
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
-target_link_libraries(arduino ${QT_LIBRARIES} ${Boost_LIBRARIES} grantlee_core_library)
+
+target_link_libraries(arduino ${QT_LIBRARIES} ${Boost_LIBRARIES} ${Grantlee_LIBRARIES} grantlee_core_library)
+
 install(TARGETS arduino DESTINATION bin)
 
 install(DIRECTORY "${arduino_DATA_PATH}/" DESTINATION share/arduino-ide)
