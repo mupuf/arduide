@@ -6,7 +6,7 @@
 #include "PageRenderer.h"
 
 #include <QDir>
-#include <grantlee/engine.h>
+#include <engine.h>
 
 PageRenderer::PageRenderer(const QString &pageName, const QVariantHash &mapping)
 {
