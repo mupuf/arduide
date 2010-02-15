@@ -6,7 +6,7 @@ if(CMAKE_HOST_WIN32)
 elseif(CMAKE_HOST_APPLE)
 elseif(CMAKE_HOST_UNIX)
 	find_package(Qt4 COMPONENTS QtDbus REQUIRED)
-	include_directories("/usr/include/grantlee")
+	include_directories("/usr/include/grantlee") #Bad bad bad !!
 endif(CMAKE_HOST_WIN32)
 
 # Grantlee
@@ -14,7 +14,6 @@ include(FindGrantlee)
 find_package(Grantlee REQUIRED)
 set(QT_DONT_USE_QTGUI 0)
 include_directories(${Grantlee_INCLUDE_DIRS})
-MESSAGE("Grantlee_INCLUDE_DIRS = ${Grantlee_INCLUDE_DIRS}")
 
 # Qt
 include(FindQt4)
