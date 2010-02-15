@@ -101,6 +101,20 @@ bool Serial::setDTR(bool enabled)
 #endif
 }
 
+
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+#include <windows.h>
+void wait_ms(int ms)
+{
+	Sleep(ms);
+}
+#else
+void wait_ms(int ms)
+{
+	msleep(ms);
+}
+#endif
+
 bool Serial::flushBuffer()
 {
     if (! isOpen())
@@ -113,11 +127,11 @@ bool Serial::flushBuffer()
         n = boost::asio::read(mSerial, boost::asio::null_buffers(), boost::asio::transfer_all(), error);
         if (error)
             return false;
-        usleep(100000);
+        wait_ms(100);
     } while (n > 0);
 
     if (! setDTR(false))
         return false;
-    usleep(100000);
+    wait_ms(100);
     setDTR(true);
 }
