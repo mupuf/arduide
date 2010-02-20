@@ -27,10 +27,7 @@ find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
 include_directories(${Boost_INCLUDE_DIRS})
 
 # QScintilla
-FIND_PATH(QSCINTILLA_INCLUDE_DIR qsciscintilla.h )
-IF(NOT QSCINTILLA_INCLUDE_DIR)
-    FIND_PATH(QSCINTILLA_INCLUDE_DIR qsciscintilla.h PATH /usr/include/Qsci)
-ENDIF()
+FIND_PATH(QSCINTILLA_INCLUDE_DIR Qsci/qsciscintilla.h )
 FIND_PATH(QSCINTILLA_LIBRARY_PATH NAMES qscintilla2 )
 
 # common
