@@ -26,13 +26,19 @@ include(FindBoost)
 find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
 include_directories(${Boost_INCLUDE_DIRS})
 
+# QScintilla
+FIND_PATH(QSCINTILLA_INCLUDE_DIR qsciscintilla.h )
+IF(NOT QSCINTILLA_INCLUDE_DIR)
+    FIND_PATH(QSCINTILLA_INCLUDE_DIR qsciscintilla.h PATH /usr/include/Qsci)
+ENDIF()
+FIND_PATH(QSCINTILLA_LIBRARY_PATH NAMES qscintilla2 )
+
 # common
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
-include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/QScintilla-gpl-2.4.2/include")
-include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/QScintilla-gpl-2.4.2/src")
-include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/QScintilla-gpl-2.4.2/Qt4")
+include_directories(BEFORE "${QSCINTILLA_INCLUDE_DIR}")
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
+link_directories(BEFORE "${QSCINTILLA_LIBRARY_PATH}")
 
 add_definitions(-DPROJECT_URL="http://mupuf.org/")
 
@@ -51,9 +57,7 @@ file(GLOB arduino_SOURCES
   "gui/*.h" "gui/*.cpp"
   "env/*.cpp" "env/*.h"
   "utils/*.cpp" "utils/*.h"
-  "utils/qxt/*.cpp" "utils/qxt/*.h"
-  "utils/QScintilla-gpl-2.4.2/Qt4/*.cpp" "utils/QScintilla-gpl-2.4.2/Qt4/*.h" "utils/QScintilla-gpl-2.4.2/Qt4/Qsci/*.h"
-  "utils/QScintilla-gpl-2.4.2/include/*.h" "utils/QScintilla-gpl-2.4.2/src/*.h" "utils/QScintilla-gpl-2.4.2/src/*.cpp")
+  "utils/qxt/*.cpp" "utils/qxt/*.h")
 
 file(GLOB arduino_UIS
   "gui/*.ui")
@@ -61,8 +65,7 @@ file(GLOB arduino_UIS
 file(GLOB arduino_MOCS
   "gui/*.h"
   "env/*.h"
-  "utils/qxt/*.h"
-  "utils/QScintilla-gpl-2.4.2/Qt4/*.h" "utils/QScintilla-gpl-2.4.2/Qt4/Qsci/*.h")
+  "utils/qxt/*.h")
 
 file(GLOB arduino_QRCS
   "resources/*.qrc")
@@ -76,7 +79,7 @@ add_executable(arduino
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
 
-target_link_libraries(arduino ${QT_LIBRARIES} ${Boost_LIBRARIES} ${Grantlee_LIBRARIES} grantlee_core_library)
+target_link_libraries(arduino ${QT_LIBRARIES} ${Boost_LIBRARIES} ${Grantlee_LIBRARIES} grantlee_core_library qscintilla2)
 
 install(TARGETS arduino DESTINATION bin)
 

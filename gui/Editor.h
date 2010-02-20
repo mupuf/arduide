@@ -6,7 +6,7 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include <Qsci/qsciscintilla.h>
+#include <qsciscintilla.h>
 
 class Editor : public QsciScintilla
 {
