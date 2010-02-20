@@ -21,6 +21,8 @@
 #include "../env/Builder.h"
 #include "../env/Settings.h"
 
+#include <qscilexer.h>
+
 MainWindow::MainWindow() : pHistory(ProjectHistory::instance())
 {
     setupUi(this);
@@ -406,7 +408,6 @@ void MainWindow::configure()
     dialog.exec();
 }
 
-#include <Qsci/qscilexer.h>
 void MainWindow::setFont(const QFont &font)
 {
     foreach (Editor *editor, editors())
