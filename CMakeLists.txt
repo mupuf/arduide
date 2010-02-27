@@ -27,18 +27,20 @@ find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
 include_directories(${Boost_INCLUDE_DIRS})
 
 # QScintilla
-FIND_PATH(QSCINTILLA_INCLUDE_DIR qsciscintilla.h )
+FIND_PATH(QSCINTILLA_INCLUDE_DIR Qsci/qsciscintilla.h )
 IF(NOT QSCINTILLA_INCLUDE_DIR)
-    FIND_PATH(QSCINTILLA_INCLUDE_DIR qsciscintilla.h PATH /usr/include/Qsci)
+    
 ENDIF()
 FIND_PATH(QSCINTILLA_LIBRARY_PATH NAMES qscintilla2 )
 
 # common
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
 include_directories(BEFORE "${QSCINTILLA_INCLUDE_DIR}")
+include_directories(BEFORE "${QSCINTILLA_INCLUDE_DIR}/Qsci")
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 link_directories(BEFORE "${QSCINTILLA_LIBRARY_PATH}")
+link_directories(BEFORE "${GRANTLEE_LIBRARY_PATH}")
 
 add_definitions(-DPROJECT_URL="http://mupuf.org/")
 
