@@ -111,7 +111,7 @@ void wait_ms(int ms)
 #else
 void wait_ms(int ms)
 {
-	msleep(ms);
+	usleep(ms*1000);
 }
 #endif
 

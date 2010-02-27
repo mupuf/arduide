@@ -21,7 +21,7 @@
 #include "../env/Builder.h"
 #include "../env/Settings.h"
 
-#include <qscilexer.h>
+#include <Qsci/qscilexer.h>
 
 MainWindow::MainWindow() : pHistory(ProjectHistory::instance())
 {

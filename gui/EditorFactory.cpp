@@ -6,7 +6,7 @@
 #include "EditorFactory.h"
 
 #include <QDebug>
-#include <qscilexercpp.h>
+#include <Qsci/qscilexercpp.h>
 
 #include "../env/Settings.h"
 

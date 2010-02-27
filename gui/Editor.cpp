@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QShortcut>
 #include <QDebug>
-#include <qscilexer.h>
+#include <Qsci/qscilexer.h>
 
 #include "../env/Settings.h"
 
