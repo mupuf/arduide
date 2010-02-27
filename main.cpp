@@ -5,7 +5,7 @@
 
 #include <QApplication>
 #include <QDebug>
-#include <engine.h>
+#include <grantlee.h>
 
 #include "gui/MainWindow.h"
 #include "gui/FirstTimeWizard.h"

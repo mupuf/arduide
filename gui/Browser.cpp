@@ -14,7 +14,7 @@
 #include <QWebFrame>
 #include <QDebug>
 
-#include <engine.h>
+#include <grantlee.h>
 
 #include "PageRenderer.h"
 #include "../env/Toolkit.h"
