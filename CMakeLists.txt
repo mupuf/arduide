@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6)
 
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
