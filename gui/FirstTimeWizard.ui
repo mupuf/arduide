@@ -155,6 +155,9 @@
         <property name="text">
          <string>More information at: &lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</string>
         </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>

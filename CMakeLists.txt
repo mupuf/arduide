@@ -8,11 +8,13 @@ set(PROJECT_NAME "Arduino IDE")
 set(PROJECT_URL "http://mupuf.org/project/arduide/")
 set(PROJECT_AUTHORS "Denis Martinez, Martin Peres")
 set(PROJECT_ORGANIZATION "MuPuF.org")
+set(PROJECT_LICENSE "GPLv2 or later")
 set(PROJECT_VERSION "0.1")
 add_definitions(-DPROJECT_NAME="${PROJECT_NAME}")
 add_definitions(-DPROJECT_URL="${PROJECT_URL}")
 add_definitions(-DPROJECT_AUTHORS="${PROJECT_AUTHORS}")
 add_definitions(-DPROJECT_ORGANIZATION="${PROJECT_ORGANIZATION}")
+add_definitions(-DPROJECT_LICENSE="${PROJECT_LICENSE}")
 add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
 # Data path

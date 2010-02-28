@@ -68,6 +68,7 @@ private slots:
     void setDeviceAtIndex(int index);
     void setBoardAtIndex(int index);
     void configure();
+    void about();
 
 protected:
     void closeEvent(QCloseEvent *event);
