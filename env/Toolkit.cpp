@@ -186,7 +186,11 @@ QString Toolkit::libraryExampleFileName(const QString &library, const QString &e
 
 QString Toolkit::avrdudePath()
 {
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
+    return QDir(hardwarePath()).filePath("tools/avr/bin/avrdude");
+#else
     return QDir(hardwarePath()).filePath("tools/avrdude");
+#endif
 }
 
 QStringList Toolkit::avrdudeFlags(const Board *board)
