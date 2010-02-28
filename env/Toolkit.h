@@ -19,6 +19,8 @@ public:
     static QString exampleFileName(const QString &category, const QString &example);
     static QString referencePath();
     static QString hardwarePath();
+    static QString boardsFileName();
+    static bool isValidArduinoPath(const QString &path);
     static QString avrPath();
 
     enum AVRTool

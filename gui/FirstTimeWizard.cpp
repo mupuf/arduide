@@ -11,6 +11,7 @@
 #include <QMessageBox>
 
 #include "../env/Settings.h"
+#include "../env/Toolkit.h"
 
 FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     : QWizard(parent)
@@ -48,7 +49,7 @@ bool FirstTimeWizard::validateCurrentPage()
     if (currentId() == 0)
     {
         QString path = arduinoPathEdit->text();
-        bool ok = QFileInfo(QDir(path).filePath("hardware/boards.txt")).isReadable();
+        bool ok = Toolkit::isValidArduinoPath(path);
         if (! ok)
         {
             QMessageBox::warning(this, tr("Invalid path"), tr("Please enter a valid path to your Arduino installation."));
