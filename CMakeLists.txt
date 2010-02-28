@@ -13,6 +13,7 @@ endif()
 
 # Qt
 set(Qt4_COMPONENTS QtCore QtGui QtWebkit)
+
 if(CMAKE_HOST_APPLE)
 elseif(CMAKE_HOST_UNIX)
   set(Qt4_COMPONENTS ${Qt4_COMPONENTS} QtDbus)
@@ -20,6 +21,12 @@ endif()
 include(FindQt4)
 find_package(Qt4 COMPONENTS ${Qt4_COMPONENTS} REQUIRED)
 include(${QT_USE_FILE})
+
+set(Qt4_LINK_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTWEBKIT_LIBRARY})
+if(CMAKE_HOST_APPLE)
+elseif(CMAKE_HOST_UNIX)
+  set(Qt4_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} ${QT_QTDBUS_LIBRARY})
+endif()
 
 # Grantlee
 include(${CMAKE_SOURCE_DIR}/cmake/FindGrantlee.cmake)
@@ -29,7 +36,7 @@ add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_DIR}")
 
 # QScintilla
 find_library(QScintilla_LIBRARY qscintilla2
-  HINTS /opt/local/libexec/qt4-mac/lib)
+  HINTS ${QT_LIBRARY_DIR})
 if(QScintilla_LIBRARY STREQUAL QScintilla_LIBRARY-NOTFOUND)
   message(SEND_ERROR "QScintilla library not found.")
 endif()
@@ -75,7 +82,7 @@ add_executable(arduino
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
 
-target_link_libraries(arduino ${QT_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY})
+target_link_libraries(arduino ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY})
 
 #PACKAGES
     #GENERAL
