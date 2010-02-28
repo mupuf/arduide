@@ -9,6 +9,8 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QMessageBox>
+#include <QDesktopServices>
+#include <QDebug>
 
 #include "../env/Settings.h"
 #include "../env/Toolkit.h"
@@ -32,14 +34,25 @@ void FirstTimeWizard::setupActions()
 
 void FirstTimeWizard::chooseArduinoPath()
 {
-    QString path = QFileDialog::getExistingDirectory(this);
+    QString path;
+#ifndef Q_OS_DARWIN
+    path = QFileDialog::getExistingDirectory(this);
+#else
+    path = QFileDialog::getOpenFileName(this,
+					QString(),
+					QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation),
+					tr("Applications (*.app)"));
+#endif
+
     if (! path.isEmpty())
         arduinoPathEdit->setText(path);
 }
 
 void FirstTimeWizard::chooseSketchbookPath()
 {
-    QString path = QFileDialog::getExistingDirectory(this);
+    QString path;
+    path = QFileDialog::getExistingDirectory(this);
+
     if (! path.isEmpty())
         sketchbookPathEdit->setText(path);
 }
@@ -48,7 +61,12 @@ bool FirstTimeWizard::validateCurrentPage()
 {
     if (currentId() == 0)
     {
-        QString path = arduinoPathEdit->text();
+        QString path;
+#ifndef Q_OS_DARWIN
+	path = arduinoPathEdit->text();
+#else
+	path = QDir(arduinoPathEdit->text()).filePath("Contents/Resources/Java");
+#endif
         bool ok = Toolkit::isValidArduinoPath(path);
         if (! ok)
         {
