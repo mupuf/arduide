@@ -9,6 +9,14 @@ add_definitions(-DPROJECT_URL="http://mupuf.org/")
 if(CMAKE_HOST_WIN32)
   set(Boost_USE_STATIC_LIBS ON)
 elseif(CMAKE_HOST_APPLE)
+  find_library(CoreFoundation_LIBRARY CoreFoundation)
+  find_library(IOKit_LIBRARY IOKit)
+  if(CoreFoundation_LIBRARY STREQUAL CoreFoundation_LIBRARY-NOTFOUND)
+    message(SEND_ERROR "CoreFoundation library not found.")
+  endif()
+  if(IOKit_LIBRARY STREQUAL IOKit_LIBRARY-NOTFOUND)
+    message(SEND_ERROR "IOKit library not found.")
+  endif()
 endif()
 
 # Qt
@@ -83,7 +91,7 @@ add_executable(arduino
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
 
-target_link_libraries(arduino ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY})
+target_link_libraries(arduino ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY})
 
 install(TARGETS arduino DESTINATION bin)
 
