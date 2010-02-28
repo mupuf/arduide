@@ -20,6 +20,19 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 {
     setupUi(this);
 
+    // default path to display in the box
+    QString defaultArduinoPath;
+#ifdef Q_OS_DARWIN
+    QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
+    defaultArduinoPath = QDir(applicationPath).filePath("Arduino.app");
+#elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+    QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
+    defaultArduinoPath = QDir(applicationPath).filePath("Arduino");
+#else
+    defaultArduinoPath = "/usr/share/arduino";
+#endif
+    arduinoPathEdit->setText(defaultArduinoPath);
+
     sketchbookPathEdit->setText(QDir(QDir::homePath()).filePath("sketchbook"));
     urlLabel->setText(QString("<a href=\"%0\">%0</a>").arg(PROJECT_URL));
 
