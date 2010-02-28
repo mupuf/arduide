@@ -53,6 +53,16 @@ QString Toolkit::hardwarePath()
     return QDir(Settings::instance().arduinoPath()).filePath("hardware");
 }
 
+QString Toolkit::boardsFileName()
+{
+    return QDir(hardwarePath()).filePath("arduino/boards.txt");
+}
+
+bool Toolkit::isValidArduinoPath(const QString &path)
+{
+    return QFileInfo(QDir(path).filePath("hardware/arduino/boards.txt")).isReadable();
+}
+
 QString Toolkit::avrPath()
 {
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
@@ -136,7 +146,7 @@ QStringList Toolkit::avrLdFlags(const Board *board)
 
 QString Toolkit::corePath(const Board *board)
 {
-    return QDir(hardwarePath()).filePath(QString("cores/%0").arg(board->attribute("build.core")));
+    return QDir(hardwarePath()).filePath(QString("arduino/cores/%0").arg(board->attribute("build.core")));
 }
 
 QStringList Toolkit::libraries()
@@ -147,8 +157,8 @@ QStringList Toolkit::libraries()
 QString Toolkit::libraryPath(const QString &libraryName)
 {
     return (libraryName.isNull()) ?
-        QDir(hardwarePath()).filePath("libraries") :
-        QDir(hardwarePath()).filePath(QString("libraries/%0").arg(libraryName));
+        QDir(Settings::instance().arduinoPath()).filePath("libraries") :
+        QDir(Settings::instance().arduinoPath()).filePath(QString("libraries/%0").arg(libraryName));
 }
 
 QStringList Toolkit::librariesWithExamples()

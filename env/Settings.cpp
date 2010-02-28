@@ -8,6 +8,8 @@
 #include <QFileInfo>
 #include <QDebug>
 
+#include "Toolkit.h"
+
 Settings *Settings::mInstance = NULL;
 
 Settings::Settings()
@@ -91,5 +93,5 @@ void Settings::setVerboseUpload(bool verbose)
 
 bool Settings::isCorrect()
 {
-    return QFileInfo(arduinoPath()).isDir() && QFileInfo(sketchPath()).isDir();
+    return Toolkit::isValidArduinoPath(arduinoPath()) && QFileInfo(sketchPath()).isDir();
 }

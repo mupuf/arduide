@@ -30,7 +30,7 @@ void Board::listBoards()
 {
     if (! mListed)
     {
-        QFile boardsFile(QDir(Toolkit::hardwarePath()).filePath("boards.txt"));
+        QFile boardsFile(Toolkit::boardsFileName());
         boardsFile.open(QFile::ReadOnly);
 
         while (! boardsFile.atEnd())
