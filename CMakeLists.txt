@@ -5,6 +5,22 @@ include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
 add_definitions(-DPROJECT_URL="http://mupuf.org/")
 
+# Data path
+option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everything in the same folder." OFF)
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  # when debugging, the data files are always searched inside the source directory
+  add_definitions(-DDATA_PATH="${CMAKE_SOURCE_DIR}/data")
+else()
+  set(arduino_DATA_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide")
+  if(USE_FHS_PATHS)
+    # search data files in a static directory (e.g. Unix)
+    add_definitions(-DDATA_PATH="${arduino_DATA_PATH}")
+  else()
+    # search data files in the current directory (e.g. Windows)
+    add_definitions(-DDATA_PATH=".")
+  endif()
+endif()
+
 # OS-dependent
 if(CMAKE_HOST_WIN32)
   set(Boost_USE_STATIC_LIBS ON)
@@ -55,17 +71,9 @@ include(FindBoost)
 find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
 include_directories(${Boost_INCLUDE_DIRS})
 
-# Data path
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  set(arduino_DATA_PATH "${CMAKE_SOURCE_DIR}/data" CACHE STRING "Path to the data files")
-else()
-  set(arduino_DATA_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide" CACHE STRING "Path to the data files")
-endif()
-add_definitions(-DDATA_PATH="${arduino_DATA_PATH}")
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/arduino-ide/")
-
+# Build
 file(GLOB arduino_SOURCES
-  "main.cpp"
+  "*.cpp" "*.h"
   "gui/*.h" "gui/*.cpp"
   "env/*.cpp" "env/*.h"
   "utils/*.cpp" "utils/*.h"
@@ -85,15 +93,24 @@ file(GLOB arduino_QRCS
 qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
 qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
-add_executable(arduino
+add_executable(arduino-ide
   ${arduino_SOURCES}
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
+target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY})
 
-target_link_libraries(arduino ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY})
-
-install(TARGETS arduino DESTINATION bin)
+# Install
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  message("Cannot install a Debug build, run CMake again if you would like to install.")
+else()
+  install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${arduino_DATA_PATH}")
+  if(USE_FHS_PATHS)
+    install(TARGETS arduino-ide DESTINATION bin)
+  else()
+    install(TARGETS arduino-ide DESTINATION "${arduino_DATA_PATH}")
+  endif()
+endif()
 
 ### Packages
 # General
