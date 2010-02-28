@@ -13,9 +13,9 @@
 IDEApplication::IDEApplication(int argc, char **argv)
     : QApplication(argc, argv)
 {
-    setOrganizationName("mupuf.org");
-    setApplicationName("Arduino IDE");
-    setApplicationVersion("0.1");
+    setOrganizationName(PROJECT_ORGANIZATION);
+    setApplicationName(PROJECT_NAME);
+    setApplicationVersion(PROJECT_VERSION);
 
     // fix the data path
     mDataPath = QDir(DATA_PATH).absolutePath();

@@ -3,7 +3,17 @@ cmake_minimum_required(VERSION 2.6)
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
-add_definitions(-DPROJECT_URL="http://mupuf.org/")
+
+set(PROJECT_NAME "Arduino IDE")
+set(PROJECT_URL "http://mupuf.org/project/arduide/")
+set(PROJECT_AUTHORS "Denis Martinez, Martin Peres")
+set(PROJECT_ORGANIZATION "MuPuF.org")
+set(PROJECT_VERSION "0.1")
+add_definitions(-DPROJECT_NAME="${PROJECT_NAME}")
+add_definitions(-DPROJECT_URL="${PROJECT_URL}")
+add_definitions(-DPROJECT_AUTHORS="${PROJECT_AUTHORS}")
+add_definitions(-DPROJECT_ORGANIZATION="${PROJECT_ORGANIZATION}")
+add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
 # Data path
 option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everything in the same folder." OFF)

@@ -34,7 +34,8 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     arduinoPathEdit->setText(defaultArduinoPath);
 
     sketchbookPathEdit->setText(QDir(QDir::homePath()).filePath("sketchbook"));
-    urlLabel->setText(QString("<a href=\"%0\">%0</a>").arg(PROJECT_URL));
+    projectLabel->setText(projectLabel->text().arg(PROJECT_NAME).arg(PROJECT_AUTHORS));
+    urlLabel->setText(urlLabel->text().arg(PROJECT_URL));
 
     setupActions();
 }
