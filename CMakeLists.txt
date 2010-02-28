@@ -35,7 +35,7 @@ if(QScintilla_LIBRARY STREQUAL QScintilla_LIBRARY-NOTFOUND)
 endif()
 
 # Boost
-set(Boost_ADDITIONAL_VERSIONS "1.41" "1.41.0")
+set(Boost_ADDITIONAL_VERSIONS "1.41" "1.41.0" "1.42" "1.42.0")
 include(FindBoost)
 find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
 include_directories(${Boost_INCLUDE_DIRS})
@@ -47,6 +47,7 @@ else()
   set(arduino_DATA_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide" CACHE STRING "Path to the data files")
 endif()
 add_definitions(-DDATA_PATH="${arduino_DATA_PATH}")
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/arduino-ide/")
 
 file(GLOB arduino_SOURCES
   "main.cpp"
@@ -76,6 +77,8 @@ add_executable(arduino
   ${arduino_MOC_SOURCES})
 
 target_link_libraries(arduino ${QT_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY})
+
+install(TARGETS arduino DESTINATION bin)
 
 #PACKAGES
     #GENERAL
