@@ -68,7 +68,12 @@ endif()
 include(${CMAKE_SOURCE_DIR}/cmake/FindGrantlee.cmake)
 find_package(Grantlee REQUIRED)
 include_directories(${Grantlee_INCLUDE_DIR})
-add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_DIR}")
+if(USE_FHS_PATHS)
+  add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_DIR}")
+else()
+  # grantlee plugins reside in the application directory
+  add_definitions(-DGRANTLEE_PLUGIN_DIR="./grantlee")
+endif()
 
 # QScintilla
 find_library(QScintilla_LIBRARY qscintilla2
@@ -121,6 +126,14 @@ else()
     install(TARGETS arduino-ide DESTINATION bin)
   else()
     install(TARGETS arduino-ide DESTINATION "${arduino_DATA_PATH}")
+
+    # in non-fhs mode we must also install the plugins in the application directory
+    file(GLOB Grantlee_PLUGINS "${Grantlee_DIR}")
+    install(DIRECTORY "${Grantlee_PLUGINS}/"
+      DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
+      PATTERN "*.so"
+      PATTERN "*.dylib"
+      PATTERN "*.dll")
   endif()
 endif()
 
