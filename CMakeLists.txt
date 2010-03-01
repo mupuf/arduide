@@ -19,16 +19,20 @@ add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
 # Data path
 option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everything in the same folder." OFF)
+
+# arduino_DATA_PATH is where the files are installed
+# the DATA_PATH define is where the files are found at runtime
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   # when debugging, the data files are always searched inside the source directory
   add_definitions(-DDATA_PATH="${CMAKE_SOURCE_DIR}/data")
 else()
-  set(arduino_DATA_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide")
   if(USE_FHS_PATHS)
     # search data files in a static directory (e.g. Unix)
+    set(arduino_DATA_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide")
     add_definitions(-DDATA_PATH="${arduino_DATA_PATH}")
   else()
     # search data files in the current directory (e.g. Windows)
+    set(arduino_DATA_PATH "/.") # install at the root of the package (CPack)
     add_definitions(-DDATA_PATH=".")
   endif()
 endif()
@@ -137,6 +141,8 @@ else()
 endif()
 
 ### Packages
+set(CPACK_SET_DESTDIR ON)
+
 # General
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};ALL;/")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
