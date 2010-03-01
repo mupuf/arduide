@@ -128,8 +128,7 @@ else()
     install(TARGETS arduino-ide DESTINATION "${arduino_DATA_PATH}")
 
     # in non-fhs mode we must also install the plugins in the application directory
-    file(GLOB Grantlee_PLUGINS "${Grantlee_DIR}")
-    install(DIRECTORY "${Grantlee_PLUGINS}/"
+    install(DIRECTORY "${Grantlee_DIR}/"
       DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
       PATTERN "*.so"
       PATTERN "*.dylib"
