@@ -5,6 +5,8 @@
 
 #include "Serial.h"
 
+#include "Compat.h"
+
 Serial::Serial(const QString &port)
     : mPort(port),
       mSerial(mIo)
@@ -79,42 +81,6 @@ qint64 Serial::writeData(const char *data, qint64 maxSize)
        return n;
 }
 
-bool Serial::setDTR(bool enabled)
-{
-#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
-    // TODO
-    return false;
-#else
-    if (! isOpen())
-        return false;
-    int fd = serialDescriptor();
-    unsigned int result = 0;
-    if (ioctl(fd, TIOCMGET, &result) == -1)
-        return false;
-    if (enabled)
-        result |= TIOCM_DTR;
-    else
-        result &= ~ TIOCM_DTR;
-    if (ioctl(fd, TIOCMSET, &result) == -1)
-        return false;
-    return true;
-#endif
-}
-
-
-#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
-#include <windows.h>
-void wait_ms(int ms)
-{
-	Sleep(ms);
-}
-#else
-void wait_ms(int ms)
-{
-	usleep(ms*1000);
-}
-#endif
-
 bool Serial::flushBuffer()
 {
     if (! isOpen())
@@ -127,11 +93,11 @@ bool Serial::flushBuffer()
         n = asio::read(mSerial, asio::null_buffers(), asio::transfer_all(), error);
         if (error)
             return false;
-        wait_ms(100);
+        Compat::sleep_ms(100);
     } while (n > 0);
 
-    if (! setDTR(false))
+    if (! Compat::setDTR(mSerial.native(), false))
         return false;
-    wait_ms(100);
-    setDTR(true);
+    Compat::sleep_ms(100);
+    Compat::setDTR(mSerial.native(), true);
 }

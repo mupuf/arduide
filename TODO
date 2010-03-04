@@ -36,7 +36,7 @@ Editor:
    - automatic indentation
    - ctrl+shift selection [DONE]
    - tab switching (Ctrl-PageUp, Ctrl-PageDown) [DONE]
- * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...)
+ * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...) [DONE]
  * auto-completion
    - need to find out how to lex implicit includes (WProgram.h)
  * code snippets

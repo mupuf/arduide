@@ -20,7 +20,6 @@ public:
 
     asio::serial_port::native_type serialDescriptor();
 
-    bool setDTR(bool enabled);
     bool flushBuffer();
 
     // QIODevice implementation
