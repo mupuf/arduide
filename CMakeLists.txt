@@ -45,6 +45,7 @@ endif()
 # OS-dependent
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(Win32_LIBRARIES wsock32)
+  set(GUI_TYPE WIN32)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   find_library(CoreFoundation_LIBRARY CoreFoundation)
   find_library(IOKit_LIBRARY IOKit)
@@ -54,6 +55,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   if(IOKit_LIBRARY STREQUAL "IOKit_LIBRARY-NOTFOUND")
     message(SEND_ERROR "IOKit library not found.")
   endif()
+  set(GUI_TYPE MACOSX_BUNDLE)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   find_library(UDEV_LIBRARY udev)
   check_include_file_cxx("libudev.h" LIBUDEV_H_FOUND)
@@ -128,6 +130,7 @@ qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
 qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
 add_executable(arduino-ide
+  ${GUI_TYPE}
   ${arduino_SOURCES}
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
