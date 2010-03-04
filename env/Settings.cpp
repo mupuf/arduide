@@ -46,7 +46,7 @@ void Settings::setSketchPath(const QString &path)
 QFont Settings::editorFont()
 {
     QVariant fontSetting = mSettings.value("editorFont");
-    QFont font("Monospace", 8);
+    QFont font("Monospace", 10);
     if (! fontSetting.isNull())
         font.fromString(fontSetting.toString());
     return font;

@@ -6,8 +6,11 @@
 #include "PageRenderer.h"
 
 #include <QDir>
+#include <QDebug>
 
 #include <grantlee.h>
+
+#include "IDEApplication.h"
 
 PageRenderer::PageRenderer(const QString &pageName, const QVariantHash &mapping)
 {
@@ -18,7 +21,7 @@ PageRenderer::PageRenderer(const QString &pageName, const QVariantHash &mapping)
         Grantlee::Context c(mapping);
 
         mUrl.setScheme("file");
-        mUrl.setPath(QDir(DATA_PATH).filePath(QString("templates/%0").arg(pageName)));
+        mUrl.setPath(QDir(ideApp->dataPath()).filePath(QString("templates/%0").arg(pageName)));
         mPage = t->render(&c);
     }
     catch(Grantlee::Exception e)

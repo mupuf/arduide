@@ -144,32 +144,21 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QLabel" name="label_8">
+       <widget class="QLabel" name="projectLabel">
         <property name="text">
-         <string>The Arduino IDE is an unofficial project by Denis Martinez.</string>
+         <string>%0 is an unofficial project by %1.</string>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>More information at:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="urlLabel">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-          <property name="openExternalLinks">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QLabel" name="urlLabel">
+        <property name="text">
+         <string>More information at: &lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

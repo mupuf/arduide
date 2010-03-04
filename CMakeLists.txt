@@ -3,56 +3,102 @@ cmake_minimum_required(VERSION 2.6)
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
-add_definitions(-DPROJECT_URL="http://mupuf.org/")
+
+set(PROJECT_NAME "Arduino IDE")
+set(PROJECT_SHORT_NAME "ArduIDE")
+set(PROJECT_URL "http://mupuf.org/project/arduide/")
+set(PROJECT_AUTHORS "Denis Martinez, Martin Peres")
+set(PROJECT_ORGANIZATION "MuPuF.org")
+set(PROJECT_LICENSE "GPLv2 or later")
+set(PROJECT_VERSION_MAJOR "0")
+set(PROJECT_VERSION_MINOR "1")
+set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
+add_definitions(-DPROJECT_NAME="${PROJECT_NAME}")
+add_definitions(-DPROJECT_URL="${PROJECT_URL}")
+add_definitions(-DPROJECT_AUTHORS="${PROJECT_AUTHORS}")
+add_definitions(-DPROJECT_ORGANIZATION="${PROJECT_ORGANIZATION}")
+add_definitions(-DPROJECT_LICENSE="${PROJECT_LICENSE}")
+add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
+
+# Data path
+option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everything in the same folder." OFF)
+
+# arduino_DATA_PATH is where the files are installed
+# the DATA_PATH define is where the files are found at runtime
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  # when debugging, the data files are always searched inside the source directory
+  add_definitions(-DDATA_PATH="${CMAKE_SOURCE_DIR}/data")
+else()
+  if(USE_FHS_PATHS)
+    # search data files in a static directory (e.g. Unix)
+    set(arduino_DATA_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide")
+    add_definitions(-DDATA_PATH="${arduino_DATA_PATH}")
+  else()
+    # search data files in the current directory (e.g. Windows)
+    set(arduino_DATA_PATH "/.") # install at the root of the package (CPack)
+    add_definitions(-DDATA_PATH=".")
+  endif()
+endif()
 
 # OS-dependent
-if(CMAKE_HOST_WIN32)
-  set(Boost_USE_STATIC_LIBS ON)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(Win32_LIBRARIES wsock32)
   set(GUI_TYPE WIN32)
-elseif(CMAKE_HOST_APPLE)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  find_library(CoreFoundation_LIBRARY CoreFoundation)
+  find_library(IOKit_LIBRARY IOKit)
+  if(CoreFoundation_LIBRARY STREQUAL "CoreFoundation_LIBRARY-NOTFOUND")
+    message(SEND_ERROR "CoreFoundation library not found.")
+  endif()
+  if(IOKit_LIBRARY STREQUAL "IOKit_LIBRARY-NOTFOUND")
+    message(SEND_ERROR "IOKit library not found.")
+  endif()
   set(GUI_TYPE MACOSX_BUNDLE)
 endif()
 
 # Qt
 set(Qt4_COMPONENTS QtCore QtGui QtWebkit)
-if(CMAKE_HOST_APPLE)
-elseif(CMAKE_HOST_UNIX)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(Qt4_COMPONENTS ${Qt4_COMPONENTS} QtDbus)
 endif()
 include(FindQt4)
 find_package(Qt4 COMPONENTS ${Qt4_COMPONENTS} REQUIRED)
 include(${QT_USE_FILE})
 
+set(Qt4_LINK_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTWEBKIT_LIBRARY})
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(Qt4_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} ${QT_QTDBUS_LIBRARY})
+endif()
+
 # Grantlee
 include(${CMAKE_SOURCE_DIR}/cmake/FindGrantlee.cmake)
 find_package(Grantlee REQUIRED)
 include_directories(${Grantlee_INCLUDE_DIR})
-add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_DIR}")
+if(USE_FHS_PATHS)
+  add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_DIR}")
+else()
+  # grantlee plugins reside in the application directory
+  add_definitions(-DGRANTLEE_PLUGIN_DIR="grantlee")
+endif()
 
 # QScintilla
 find_library(QScintilla_LIBRARY qscintilla2
-  HINTS /opt/local/libexec/qt4-mac/lib)
+  HINTS ${QT_LIBRARY_DIR})
 if(QScintilla_LIBRARY STREQUAL QScintilla_LIBRARY-NOTFOUND)
   message(SEND_ERROR "QScintilla library not found.")
 endif()
 
-# Boost
-set(Boost_ADDITIONAL_VERSIONS "1.41" "1.41.0" "1.42" "1.42.0")
-include(FindBoost)
-find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
-include_directories(${Boost_INCLUDE_DIRS})
-
-# Data path
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  set(arduino_DATA_PATH "${CMAKE_SOURCE_DIR}/data" CACHE STRING "Path to the data files")
-else()
-  set(arduino_DATA_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide" CACHE STRING "Path to the data files")
+# Asio
+include(CheckIncludeFileCXX)
+check_include_file_cxx("asio/version.hpp" ASIO_FOUND)
+if(NOT ASIO_FOUND)
+  message(SEND_ERROR "Asio not found.")
 endif()
-add_definitions(-DDATA_PATH="${arduino_DATA_PATH}")
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/arduino-ide/")
 
+# Build
 file(GLOB arduino_SOURCES
-  "main.cpp"
+  "*.cpp" "*.h"
   "gui/*.h" "gui/*.cpp"
   "env/*.cpp" "env/*.h"
   "utils/*.cpp" "utils/*.h"
@@ -72,59 +118,77 @@ file(GLOB arduino_QRCS
 qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
 qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
-add_executable(arduino
+add_executable(arduino-ide
   ${GUI_TYPE}
   ${arduino_SOURCES}
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
+target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES})
 
-target_link_libraries(arduino ${QT_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY})
+# Install
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  message("Cannot install a Debug build, run CMake again if you would like to install.")
+else()
+  install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${arduino_DATA_PATH}")
+  if(USE_FHS_PATHS)
+    install(TARGETS arduino-ide DESTINATION bin)
+  else()
+    install(TARGETS arduino-ide DESTINATION "${arduino_DATA_PATH}")
 
-install(TARGETS arduino DESTINATION bin)
+    # in non-fhs mode we must also install the plugins in the application directory
+    install(DIRECTORY "${Grantlee_DIR}/"
+      DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
+      PATTERN "*.so"
+      PATTERN "*.dylib"
+      PATTERN "*.dll")
+  endif()
+endif()
 
-#PACKAGES
-    #GENERAL
-    SET(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};ALL;/")
-    SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
-    SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ArduIDE is a Qt-based IDE for the open-source Arduino electronics prototyping platform.")
-    SET(CPACK_PACKAGE_EXECUTABLES "arduino;The Qt Arduino IDE.")
-    SET(CPACK_PACKAGE_FILE_NAME "arduide-0.1a")
-    SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Arduide 0.1 alpha")
-    SET(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "Arduide 0.1 alpha")
-    SET(CPACK_PACKAGE_NAME "ArduIDE")
-    SET(CPACK_PACKAGE_VENDOR "MùPùF.org")
-    SET(CPACK_PACKAGE_VERSION "0.1a")
-    SET(CPACK_PACKAGE_VERSION_MAJOR "0")
-    SET(CPACK_PACKAGE_VERSION_MINOR "1")
-    SET(CPACK_PACKAGE_VERSION_PATCH "0")
-    SET(CPACK_STRIP_FILES "")
-    SET(CPACK_GENERATOR "TGZ;DEB;RPM")
+### Packages
+set(CPACK_SET_DESTDIR ON)
 
-    SET(CPACK_CMAKE_GENERATOR "Unix Makefiles")
-    SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
-    SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
+# General
+set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};ALL;/")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} is a Qt-based IDE for the open-source Arduino electronics prototyping platform.")
+set(CPACK_PACKAGE_EXECUTABLES "arduino-ide;The Qt Arduino IDE.")
+set(CPACK_PACKAGE_FILE_NAME "${PROJECT_SHORT_NAME}-${PROJECT_VERSION}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME} ${PROJECT_VERSION}")
+set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${PROJECT_NAME} ${PROJECT_VERSION}")
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VENDOR "${PROJECT_ORGANIZATION}")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_STRIP_FILES "")
+set(CPACK_GENERATOR "TGZ;DEB;RPM")
 
-    #DEBIAN
-    SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin PERES <martin.peres@ensi-bourges.fr>")
-    SET(CPACK_DEBIAN_PACKAGE_SECTION "devel")
-    SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
-    SET(DEBIAN_PACKAGE_RECOMMENDS "libqtgui4 (>=4.0.0-1), libasio-dev (>=1.1.1-1)")
-    SET(DEBIAN_PACKAGE_SUGGESTS "")
-    SET(DEBIAN_PACKAGE_BUILDS_DEPENDS "cmake (>=2.6), libqt4-dev")
+set(CPACK_CMAKE_GENERATOR "Unix Makefiles")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
 
-    #RPM
-    SET(CPACK_RPM_PACKAGE_RELEASE "1")
-    SET(CPACK_RPM_PACKAGE_GROUP "MùPùF.org")
-    SET(CPACK_RPM_PACKAGE_LICENSE "LGPL v2+")
-    SET(CPACK_RPM_PACKAGE_REQUIRES "qt >= 4.0, asio")
+# Debian
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin PERES <martin.peres@ensi-bourges.fr>")
+set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12), libqtgui4 (>=4.4.0-1)")
+set(DEBIAN_PACKAGE_RECOMMENDS "")
+set(DEBIAN_PACKAGE_SUGGESTS "")
+set(DEBIAN_PACKAGE_BUILDS_DEPENDS "cmake (>=2.6), libqt4-dev")
 
-    #Binary TGZ
-    SET(CPACK_PACKAGE_CONTACT "http://arduide.mupuf.org")
-    #SET(CPACK_RESOURCE_FILE_WELCOME "")
-    SET(CPACK_SOURCE_GENERATOR "TGZ")
-    SET(CPACK_SOURCE_OUTPUT_CONFIG_FILE "CPackSourceConfig.cmake")
-    SET(CPACK_SOURCE_PACKAGE_FILE_NAME "arduide-0.1a.tar.gz")
-    SET(CPACK_SOURCE_STRIP_FILES "")
+# RPM
+set(CPACK_RPM_PACKAGE_RELEASE "1")
+set(CPACK_RPM_PACKAGE_GROUP "${PROJECT_ORGANIZATION}")
+set(CPACK_RPM_PACKAGE_LICENSE "${PROJECT_LICENSE}")
+set(CPACK_RPM_PACKAGE_REQUIRES "qt >= 4.0")
 
-INCLUDE(CPack)
+# Binary TGZ
+set(CPACK_PACKAGE_CONTACT "${PROJECT_URL}")
+#SET(CPACK_RESOURCE_FILE_WELCOME "")
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "CPackSourceConfig.cmake")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_SHORT_NAME}-${PROJECT_VERSION}.tar.gz")
+set(CPACK_SOURCE_STRIP_FILES "")
+
+include(CPack)

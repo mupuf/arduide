@@ -23,9 +23,13 @@
 
 #include <Qsci/qscilexer.h>
 
+#include "ui_AboutDialog.h"
+
 MainWindow::MainWindow() : pHistory(ProjectHistory::instance())
 {
     setupUi(this);
+    actionAbout->setText(actionAbout->text().arg(PROJECT_NAME));
+
     dockWidget->hide();
 }
 
@@ -63,6 +67,8 @@ void MainWindow::setupActions()
     connect(actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
     connect(actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
     connect(action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
+    connect(actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
@@ -412,4 +418,18 @@ void MainWindow::setFont(const QFont &font)
 {
     foreach (Editor *editor, editors())
         editor->setLexerFont(font);
+}
+
+void MainWindow::about()
+{
+    QDialog *dialog = new QDialog(this);
+    Ui::AboutDialog ui;
+    ui.setupUi(dialog);
+    ui.nameLabel->setText(ui.nameLabel->text().arg(PROJECT_NAME));
+    ui.urlLabel->setText(ui.urlLabel->text().arg(PROJECT_URL));
+    ui.authorsLabel->setText(ui.authorsLabel->text().arg(PROJECT_AUTHORS));
+    ui.licenseLabel->setText(ui.licenseLabel->text().arg(PROJECT_LICENSE));
+    ui.descriptionLabel->setText(ui.descriptionLabel->text().arg(PROJECT_NAME));
+    dialog->exec();
+    delete dialog;
 }

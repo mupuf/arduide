@@ -8,7 +8,11 @@
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
     //TODO
 #elif defined(Q_OS_DARWIN)
-    //TODO
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOKit/IOKitLib.h>
+#include <IOKit/serial/IOSerialKeys.h>
+#include <IOKit/IOBSD.h>
+#include <sys/param.h>
 #else
 #include <QDBusInterface>
 #endif
@@ -28,7 +32,48 @@ DeviceList Device::listDevices()
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
     //TODO
 #elif defined(Q_OS_DARWIN)
-    //TODO
+    kern_return_t kernResult;
+    io_iterator_t serialPortIterator;
+    io_object_t serialPort;
+    mach_port_t masterPort;
+    CFMutableDictionaryRef classesToMatch;
+    char deviceFilePath[MAXPATHLEN];
+    CFTypeRef deviceFilePathAsCFString;
+    kernResult = IOMasterPort(MACH_PORT_NULL, &masterPort);
+    if (kernResult == KERN_SUCCESS)
+    {
+	classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue);
+	if (classesToMatch != NULL)
+	{
+	    CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey), CFSTR(kIOSerialBSDRS232Type));
+	    kernResult = IOServiceGetMatchingServices(masterPort, classesToMatch, &serialPortIterator);
+	    if (kernResult == KERN_SUCCESS)
+	    {
+		while (serialPort = IOIteratorNext(serialPortIterator))
+		{
+		    deviceFilePathAsCFString = IORegistryEntryCreateCFProperty(serialPort, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0);
+		    if (deviceFilePathAsCFString)
+		    {
+			Boolean result = CFStringGetCString((CFStringRef) deviceFilePathAsCFString, deviceFilePath, MAXPATHLEN, kCFStringEncodingASCII);
+			CFRelease(deviceFilePathAsCFString);
+			if (result)
+			    l.append(Device(QObject::tr("Serial callout"), deviceFilePath));
+		    }
+
+		    deviceFilePathAsCFString = IORegistryEntryCreateCFProperty(serialPort, CFSTR(kIODialinDeviceKey), kCFAllocatorDefault, 0);
+		    if (deviceFilePathAsCFString)
+		    {
+			Boolean result = CFStringGetCString((CFStringRef) deviceFilePathAsCFString, deviceFilePath, MAXPATHLEN, kCFStringEncodingASCII);
+			CFRelease(deviceFilePathAsCFString);
+			if (result)
+			    l.append(Device(QObject::tr("Serial dialin"), deviceFilePath));
+		    }
+		    IOObjectRelease(serialPort);
+		}
+		IOObjectRelease(serialPortIterator);
+	    }
+	}
+    }
 #else
     QDBusInterface manager("org.freedesktop.Hal", "/org/freedesktop/Hal/Manager", "org.freedesktop.Hal.Manager", QDBusConnection::systemBus());
     QVariantList devices = manager.call("FindDeviceByCapability", "serial").arguments();

@@ -20,6 +20,7 @@ public:
     static QString referencePath();
     static QString hardwarePath();
     static QString boardsFileName();
+    static QString keywordsFileName();
     static bool isValidArduinoPath(const QString &path);
     static QString avrPath();
 
@@ -38,6 +39,7 @@ public:
     static QString corePath(const Board *board);
     static QStringList libraries();
     static QString libraryPath(const QString &libraryName = QString());
+    static QString libraryKeywordsFileName(const QString &libraryName);
     static QStringList librariesWithExamples();
     static QStringList findLibraryExamples(const QString &library);
     static QString libraryExampleFileName(const QString &library, const QString &example);
