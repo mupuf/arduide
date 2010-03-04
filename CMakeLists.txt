@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
+include(CheckIncludeFileCXX)
+
 include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
@@ -52,12 +54,22 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   if(IOKit_LIBRARY STREQUAL "IOKit_LIBRARY-NOTFOUND")
     message(SEND_ERROR "IOKit library not found.")
   endif()
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  find_library(UDEV_LIBRARY udev)
+  check_include_file_cxx("libudev.h" LIBUDEV_H_FOUND)
+  if(UDEV_LIBRARY AND LIBUDEV_H_FOUND)
+    # use udev
+    add_definitions(-DUSE_LIBUDEV)
+    set(UDEV_LIBRARIES ${UDEV_LIBRARY})
+  else()
+    # use dbus
+    set(USE_DBUS ON)
+  endif()
 endif()
 
 # Qt
 set(Qt4_COMPONENTS QtCore QtGui QtWebkit)
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(USE_DBUS)
   set(Qt4_COMPONENTS ${Qt4_COMPONENTS} QtDbus)
 endif()
 include(FindQt4)
@@ -88,7 +100,6 @@ if(QScintilla_LIBRARY STREQUAL QScintilla_LIBRARY-NOTFOUND)
 endif()
 
 # Asio
-include(CheckIncludeFileCXX)
 check_include_file_cxx("asio/version.hpp" ASIO_FOUND)
 if(NOT ASIO_FOUND)
   message(SEND_ERROR "Asio not found.")
@@ -121,7 +132,7 @@ add_executable(arduino-ide
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
-target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES})
+target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
 
 # Install
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
