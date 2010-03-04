@@ -6,16 +6,16 @@
 #include "EditorFactory.h"
 
 #include <QDebug>
-#include <Qsci/qscilexercpp.h>
 
+#include "LexerArduino.h"
 #include "../env/Settings.h"
 
 Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
 {
     Editor *editor = new Editor(parent);
-    QsciLexerCPP *lexerCPP = new QsciLexerCPP;
-    lexerCPP->setFont(Settings::instance().editorFont());
-    editor->setLexer(lexerCPP);
+    LexerArduino *lexer = new LexerArduino;
+    lexer->setFont(Settings::instance().editorFont());
+    editor->setLexer(lexer);
     editor->setMarginLineNumbers(1, true);
     editor->setMarginWidth(1, 40);
     editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);

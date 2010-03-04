@@ -58,6 +58,11 @@ QString Toolkit::boardsFileName()
     return QDir(hardwarePath()).filePath("arduino/boards.txt");
 }
 
+QString Toolkit::keywordsFileName()
+{
+    return QDir(Settings::instance().arduinoPath()).filePath("lib/keywords.txt");
+}
+
 bool Toolkit::isValidArduinoPath(const QString &path)
 {
     return QFileInfo(QDir(path).filePath("hardware/arduino/boards.txt")).isReadable();
@@ -159,6 +164,11 @@ QString Toolkit::libraryPath(const QString &libraryName)
     return (libraryName.isNull()) ?
         QDir(Settings::instance().arduinoPath()).filePath("libraries") :
         QDir(Settings::instance().arduinoPath()).filePath(QString("libraries/%0").arg(libraryName));
+}
+
+QString Toolkit::libraryKeywordsFileName(const QString &libraryName)
+{
+    return QDir(libraryPath(libraryName)).filePath("keywords.txt");
 }
 
 QStringList Toolkit::librariesWithExamples()
