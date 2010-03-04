@@ -41,7 +41,9 @@ else()
 endif()
 
 # OS-dependent
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(Win32_LIBRARIES wsock32)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   find_library(CoreFoundation_LIBRARY CoreFoundation)
   find_library(IOKit_LIBRARY IOKit)
   if(CoreFoundation_LIBRARY STREQUAL "CoreFoundation_LIBRARY-NOTFOUND")
@@ -119,7 +121,7 @@ add_executable(arduino-ide
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
-target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY})
+target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES})
 
 # Install
 if(CMAKE_BUILD_TYPE STREQUAL Debug)

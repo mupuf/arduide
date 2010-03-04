@@ -12,6 +12,10 @@
 #include <QDesktopServices>
 #include <QDebug>
 
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+#include <shlobj.h>
+#endif
+
 #include "../env/Settings.h"
 #include "../env/Toolkit.h"
 
@@ -26,8 +30,10 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
     defaultArduinoPath = QDir(applicationPath).filePath("Arduino.app");
 #elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
-    QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
-    defaultArduinoPath = QDir(applicationPath).filePath("Arduino");
+    // QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
+    TCHAR applicationPath[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES, NULL, 0, applicationPath)))
+        defaultArduinoPath = QDir(applicationPath).filePath("Arduino");
 #else
     defaultArduinoPath = "/usr/share/arduino";
 #endif
