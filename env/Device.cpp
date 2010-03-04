@@ -13,7 +13,12 @@
 #include <IOKit/serial/IOSerialKeys.h>
 #include <IOKit/IOBSD.h>
 #include <sys/param.h>
-#else
+#elif defined(USE_LIBUDEV)
+#include <libudev.h>
+#include <linux/serial.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#elif defined(USE_DBUS)
 #include <QDBusInterface>
 #endif
 
@@ -93,7 +98,43 @@ DeviceList Device::listDevices()
 	    }
 	}
     }
-#else
+#elif defined(USE_LIBUDEV)
+    udev *udev = udev_new();
+    udev_enumerate *enumerate = udev_enumerate_new(udev);
+    udev_enumerate_add_match_subsystem(enumerate, "tty");
+    udev_enumerate_scan_devices(enumerate);
+    udev_list_entry *list_entry = udev_enumerate_get_list_entry(enumerate);
+    udev_list_entry *list_entry_current;
+    udev_device *device, *parent_device;
+    const char *devnode, *subsystem;
+    serial_struct serial;
+    bool is_serial;
+    int fd;
+    udev_list_entry_foreach(list_entry_current, list_entry)
+    {
+        device = udev_device_new_from_syspath(udev, udev_list_entry_get_name(list_entry_current));
+        devnode = udev_device_get_devnode(device);
+        is_serial = false;
+        fd = open(devnode, O_RDONLY | O_NONBLOCK);
+        if (fd >= 0)
+            if (ioctl(fd, TIOCGSERIAL, &serial) != -1)
+                if (serial.type == 0)
+                    is_serial = true;
+        if (is_serial)
+        {
+            subsystem = NULL;
+            // get the parent subsystem, use it as the device description
+            parent_device = udev_device_get_parent(device);
+            if (parent_device)
+                subsystem = udev_device_get_subsystem(parent_device);
+            if (subsystem == NULL)
+                subsystem = "unknown";
+            l << Device(subsystem, devnode);
+        }
+    }
+    udev_enumerate_unref(enumerate);
+    udev_unref(udev);
+#elif defined(UDE_DBUS)
     QDBusInterface manager("org.freedesktop.Hal", "/org/freedesktop/Hal/Manager", "org.freedesktop.Hal.Manager", QDBusConnection::systemBus());
     QVariantList devices = manager.call("FindDeviceByCapability", "serial").arguments();
     if (devices.size() == 1)
@@ -107,6 +148,8 @@ DeviceList Device::listDevices()
                 l.append(Device(description[0].toString(), port[0].toString()));
         }
     }
+#else
+#error "No method available for enumerating devices."
 #endif
     return l;
 }

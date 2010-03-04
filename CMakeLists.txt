@@ -66,6 +66,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   else()
     # use dbus
     set(USE_DBUS ON)
+    add_definitions(-DUSE_DBUS)
   endif()
 endif()
 
