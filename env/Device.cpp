@@ -6,7 +6,7 @@
 #include "Device.h"
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
-    //TODO
+#include <windows.h>
 #elif defined(Q_OS_DARWIN)
 #include <CoreFoundation/CoreFoundation.h>
 #include <IOKit/IOKitLib.h>
@@ -30,7 +30,26 @@ DeviceList Device::listDevices()
 {
     DeviceList l;
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
-    //TODO
+    HKEY key;
+    LONG res = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Hardware\\DeviceMap\\SerialComm", 0, KEY_READ, &key);
+    DWORD index = 0;
+    CHAR valueName[256];
+    CHAR valueData[256];
+    DWORD valueNameSize, valueDataSize;
+    DWORD valueType;
+    if (res == ERROR_SUCCESS)
+    {
+        while (res == ERROR_SUCCESS)
+        {
+            valueNameSize = 256;
+            valueDataSize = 256;
+            res = RegEnumValueA(key, index, valueName, &valueNameSize, NULL, &valueType, (BYTE *) valueData, &valueDataSize);
+            if (res == ERROR_SUCCESS && valueType == REG_SZ)
+                l << Device(valueName, valueData);
+            index++;
+        }
+        RegCloseKey(key);
+    }
 #elif defined(Q_OS_DARWIN)
     kern_return_t kernResult;
     io_iterator_t serialPortIterator;
