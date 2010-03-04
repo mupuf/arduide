@@ -11,7 +11,7 @@ Serial::Serial(const QString &port)
 {
 }
 
-boost::asio::serial_port::native_type Serial::serialDescriptor()
+asio::serial_port::native_type Serial::serialDescriptor()
 {
     return mSerial.native();
 }
@@ -26,7 +26,7 @@ bool Serial::open(OpenMode mode)
     // mode is ignored
     (void) mode;
 
-    boost::system::error_code error;
+    asio::error_code error;
     mSerial.open(mPort.toStdString(), error);
     if (error)
     {
@@ -55,8 +55,8 @@ void Serial::close()
 
 qint64 Serial::readData(char *data, qint64 maxSize)
 {
-   boost::system::error_code error;
-   std::size_t n = mSerial.read_some(boost::asio::buffer(data, maxSize), error);
+   asio::error_code error;
+   std::size_t n = mSerial.read_some(asio::buffer(data, maxSize), error);
    if (error)
    {
        setErrorString(QString::fromStdString(error.message()));
@@ -68,8 +68,8 @@ qint64 Serial::readData(char *data, qint64 maxSize)
 
 qint64 Serial::writeData(const char *data, qint64 maxSize)
 {
-   boost::system::error_code error;
-   std::size_t n = mSerial.write_some(boost::asio::buffer(data, maxSize), error);
+   asio::error_code error;
+   std::size_t n = mSerial.write_some(asio::buffer(data, maxSize), error);
    if (error)
    {
        setErrorString(QString::fromStdString(error.message()));
@@ -120,11 +120,11 @@ bool Serial::flushBuffer()
     if (! isOpen())
         return false;
 
-    boost::system::error_code error;
+    asio::error_code error;
     std::size_t n;
     do
     {
-        n = boost::asio::read(mSerial, boost::asio::null_buffers(), boost::asio::transfer_all(), error);
+        n = asio::read(mSerial, asio::null_buffers(), asio::transfer_all(), error);
         if (error)
             return false;
         wait_ms(100);

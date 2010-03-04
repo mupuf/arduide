@@ -42,7 +42,6 @@ endif()
 
 # OS-dependent
 if(CMAKE_HOST_WIN32)
-  set(Boost_USE_STATIC_LIBS ON)
 elseif(CMAKE_HOST_APPLE)
   find_library(CoreFoundation_LIBRARY CoreFoundation)
   find_library(IOKit_LIBRARY IOKit)
@@ -89,11 +88,12 @@ if(QScintilla_LIBRARY STREQUAL QScintilla_LIBRARY-NOTFOUND)
   message(SEND_ERROR "QScintilla library not found.")
 endif()
 
-# Boost
-set(Boost_ADDITIONAL_VERSIONS "1.41" "1.41.0" "1.42" "1.42.0")
-include(FindBoost)
-find_package(Boost COMPONENTS system REQUIRED) # for boost::asio
-include_directories(${Boost_INCLUDE_DIRS})
+# Asio
+include(CheckIncludeFileCXX)
+check_include_file_cxx("asio/version.hpp" ASIO_FOUND)
+if(NOT ASIO_FOUND)
+  message(SEND_ERROR "Asio not found.")
+endif()
 
 # Build
 file(GLOB arduino_SOURCES
@@ -122,7 +122,7 @@ add_executable(arduino-ide
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
-target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${Boost_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY})
+target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY})
 
 # Install
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -167,13 +167,11 @@ set(CPACK_CMAKE_GENERATOR "Unix Makefiles")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
 
-# wrong dep asio -> boost
-
 # Debian
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin PERES <martin.peres@ensi-bourges.fr>")
 set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
-set(DEBIAN_PACKAGE_RECOMMENDS "libqtgui4 (>=4.0.0-1), libasio-dev (>=1.1.1-1)") # FIX THIS
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12), libqtgui4 (>=4.4.0-1)")
+set(DEBIAN_PACKAGE_RECOMMENDS "")
 set(DEBIAN_PACKAGE_SUGGESTS "")
 set(DEBIAN_PACKAGE_BUILDS_DEPENDS "cmake (>=2.6), libqt4-dev")
 
@@ -181,7 +179,7 @@ set(DEBIAN_PACKAGE_BUILDS_DEPENDS "cmake (>=2.6), libqt4-dev")
 set(CPACK_RPM_PACKAGE_RELEASE "1")
 set(CPACK_RPM_PACKAGE_GROUP "${PROJECT_ORGANIZATION}")
 set(CPACK_RPM_PACKAGE_LICENSE "${PROJECT_LICENSE}")
-set(CPACK_RPM_PACKAGE_REQUIRES "qt >= 4.0, asio") # FIX THIS
+set(CPACK_RPM_PACKAGE_REQUIRES "qt >= 4.0")
 
 # Binary TGZ
 set(CPACK_PACKAGE_CONTACT "${PROJECT_URL}")

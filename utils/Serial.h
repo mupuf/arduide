@@ -8,17 +8,17 @@
 
 #include <QIODevice>
 
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/serial_port.hpp>
-#include <boost/asio/completion_condition.hpp>
-#include <boost/asio/read.hpp>
+#include <asio/io_service.hpp>
+#include <asio/serial_port.hpp>
+#include <asio/completion_condition.hpp>
+#include <asio/read.hpp>
 
 class Serial : public QIODevice
 {
 public:
     Serial(const QString &port);
 
-    boost::asio::serial_port::native_type serialDescriptor();
+    asio::serial_port::native_type serialDescriptor();
 
     bool setDTR(bool enabled);
     bool flushBuffer();
@@ -34,8 +34,8 @@ public:
 private:
 
     QString mPort;
-    boost::asio::io_service mIo;
-    boost::asio::serial_port mSerial;
+    asio::io_service mIo;
+    asio::serial_port mSerial;
 };
 
 #endif // SERIAL_H
