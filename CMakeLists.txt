@@ -77,7 +77,7 @@ if(USE_FHS_PATHS)
   add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_DIR}")
 else()
   # grantlee plugins reside in the application directory
-  add_definitions(-DGRANTLEE_PLUGIN_DIR="./grantlee")
+  add_definitions(-DGRANTLEE_PLUGIN_DIR="grantlee")
 endif()
 
 # QScintilla
