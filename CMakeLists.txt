@@ -8,7 +8,9 @@ add_definitions(-DPROJECT_URL="http://mupuf.org/")
 # OS-dependent
 if(CMAKE_HOST_WIN32)
   set(Boost_USE_STATIC_LIBS ON)
+  set(GUI_TYPE WIN32)
 elseif(CMAKE_HOST_APPLE)
+  set(GUI_TYPE MACOSX_BUNDLE)
 endif()
 
 # Qt
@@ -71,6 +73,7 @@ qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
 qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
 add_executable(arduino
+  ${GUI_TYPE}
   ${arduino_SOURCES}
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
