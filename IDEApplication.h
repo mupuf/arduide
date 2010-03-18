@@ -18,13 +18,16 @@ class IDEApplication : public QApplication
 {
 public:
     IDEApplication(int argc, char **argv);
-    void initializeTemplates();
-    void initializeGui();
-    void initializeSettings();
+    void initialize();
+
     const QString &dataPath() { return mDataPath; }
     Grantlee::Engine *engine() { return mEngine; }
 
 private:
+    void initializeTemplates();
+    void initializeGui();
+    void initializeSettings();
+
     QString mDataPath;
     MainWindow *mainWindow;
     Grantlee::Engine *mEngine;

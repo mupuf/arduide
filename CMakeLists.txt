@@ -46,6 +46,7 @@ endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(Win32_LIBRARIES wsock32)
   set(GUI_TYPE WIN32)
+  add_definitions(-D_WIN32_WINNT=0x501) # Windows XP target
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   find_library(CoreFoundation_LIBRARY CoreFoundation)
   find_library(IOKit_LIBRARY IOKit)
@@ -104,7 +105,7 @@ if(NOT Grantlee_HOME_DIR)
   if(Grantlee_HOME_DIR)
     message(STATUS "Grantlee found in ${Grantlee_HOME_DIR}/grantlee")
   else()
-    message(SEND_ERROR "Grantlee not found. Please specify the path to GrantleeConfig.cmake as Grantlee_HOME_DIR.")
+    message(SEND_ERROR "Grantlee not found. Please specify the path to grantlee/GrantleeConfig.cmake as Grantlee_HOME_DIR.")
   endif()
 endif()
 include("${Grantlee_HOME_DIR}/grantlee/GrantleeConfig.cmake")
@@ -122,8 +123,15 @@ find_library(QScintilla_LIBRARY qscintilla2
 if(QScintilla_LIBRARY STREQUAL QScintilla_LIBRARY-NOTFOUND)
   message(SEND_ERROR "QScintilla library not found.")
 endif()
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  add_definitions(-DQSCINTILLA_DLL)
+endif()
 
 # Asio
+include(FindBoost)
+add_definitions(-DBOOST_ALL_NO_LIB)
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 check_include_file_cxx("asio/version.hpp" ASIO_FOUND)
 if(NOT ASIO_FOUND)
   message(SEND_ERROR "Asio not found.")
@@ -158,7 +166,8 @@ add_executable(arduino-ide
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
-target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
+message("${Grantlee_CORE_LIBRARIES}")
+target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} "C:/Qt/4.6.2/lib/grantlee_core.lib" ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
 
 # Install
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -171,7 +180,7 @@ else()
     install(TARGETS arduino-ide DESTINATION "${arduino_DATA_PATH}")
 
     # in non-fhs mode we must also install the plugins in the application directory
-    install(DIRECTORY "${Grantlee_DIR}/"
+    install(DIRECTORY "${Grantlee_PLUGIN_PATH}/"
       DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
       PATTERN "*.so"
       PATTERN "*.dylib"

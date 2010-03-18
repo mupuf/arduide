@@ -18,7 +18,10 @@ IDEApplication::IDEApplication(int argc, char **argv)
 
     // fix the data path
     mDataPath = QDir(DATA_PATH).absolutePath();
+}
 
+void IDEApplication::initialize()
+{
     // initialize Grantlee
     initializeTemplates();
 

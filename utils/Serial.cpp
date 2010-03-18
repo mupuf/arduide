@@ -99,5 +99,7 @@ bool Serial::flushBuffer()
     if (! Compat::setDTR(mSerial.native(), false))
         return false;
     Compat::sleep_ms(100);
-    Compat::setDTR(mSerial.native(), true);
+    if (! Compat::setDTR(mSerial.native(), true))
+      return false;
+    return true;
 }

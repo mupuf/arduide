@@ -20,7 +20,7 @@ ProjectHistory& ProjectHistory::instance()
     return pHistory;
 }
 
-QStringList ProjectHistory::history(unsigned int maxSize)
+QStringList ProjectHistory::history(int maxSize)
 {
     bool readOK=true;
     int i=0;

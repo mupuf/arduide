@@ -18,11 +18,11 @@ public:
 
     static ProjectHistory& instance();
 
-    QStringList history(unsigned int maxSize=0);
+    QStringList history(int maxSize=0);
 
 private:
     QSettings settings;
-    const unsigned int historyLength;
+    const int historyLength;
 
 signals:
     void historyUpdated(const QString &newProject);
