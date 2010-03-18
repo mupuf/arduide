@@ -8,6 +8,7 @@
 #define IDEAPPLICATION_H
 
 #include <QApplication>
+#include <grantlee_core.h>
 
 #include "gui/MainWindow.h"
 #include "gui/FirstTimeWizard.h"
@@ -21,10 +22,12 @@ public:
     void initializeGui();
     void initializeSettings();
     const QString &dataPath() { return mDataPath; }
+    Grantlee::Engine *engine() { return mEngine; }
 
 private:
     QString mDataPath;
     MainWindow *mainWindow;
+    Grantlee::Engine *mEngine;
 };
 
 #define ideApp (static_cast<IDEApplication *>(qApp))

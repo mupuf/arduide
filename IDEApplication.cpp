@@ -8,7 +8,6 @@
 
 #include <QDir>
 #include <QDebug>
-#include <grantlee.h>
 
 IDEApplication::IDEApplication(int argc, char **argv)
     : QApplication(argc, argv)
@@ -35,11 +34,11 @@ IDEApplication::IDEApplication(int argc, char **argv)
 
 void IDEApplication::initializeTemplates()
 {
-    Grantlee::Engine *engine = Grantlee::Engine::instance();
-    engine->setPluginDirs(QStringList() << GRANTLEE_PLUGIN_DIR "/");
+    mEngine = new Grantlee::Engine(this);
+    mEngine->setPluginDirs(QStringList() << GRANTLEE_PLUGIN_DIR "/");
     Grantlee::FileSystemTemplateLoader::Ptr loader = Grantlee::FileSystemTemplateLoader::Ptr(new Grantlee::FileSystemTemplateLoader);
     loader->setTemplateDirs(QStringList() << QDir(mDataPath).filePath("templates"));
-    engine->addTemplateLoader(loader);
+    mEngine->addTemplateLoader(loader);
 }
 
 void IDEApplication::initializeGui()

@@ -85,11 +85,32 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 # Grantlee
-include(${CMAKE_SOURCE_DIR}/cmake/FindGrantlee.cmake)
-find_package(Grantlee REQUIRED)
+macro(grantlee_get_search_dirs VAR)
+  # make a list of library directories to search for Grantlee
+  foreach(SEARCH_DIR ${CMAKE_PREFIX_PATH})
+    list(APPEND ${VAR} "${SEARCH_DIR}/lib")
+  endforeach()
+  list(APPEND ${VAR} ${CMAKE_LIBRARY_PATH})
+  foreach(SEARCH_DIR ${CMAKE_SYSTEM_PREFIX_PATH})
+    list(APPEND ${VAR} "${SEARCH_DIR}/lib")
+  endforeach()
+  list(APPEND ${VAR} ${CMAKE_SYSTEM_LIBRARY_PATH})
+endmacro()
+
+if(NOT Grantlee_HOME_DIR)
+  # try to locate the grantlee path automatically, otherwise ask the user to specify it.
+  grantlee_get_search_dirs(Grantlee_SEARCH_DIRS)
+  find_path(Grantlee_HOME_DIR "grantlee/GrantleeConfig.cmake" PATHS ${Grantlee_SEARCH_DIRS})
+  if(Grantlee_HOME_DIR)
+    message(STATUS "Grantlee found in ${Grantlee_HOME_DIR}/grantlee")
+  else()
+    message(SEND_ERROR "Grantlee not found. Please specify the path to GrantleeConfig.cmake as Grantlee_HOME_DIR.")
+  endif()
+endif()
+include("${Grantlee_HOME_DIR}/grantlee/GrantleeConfig.cmake")
 include_directories(${Grantlee_INCLUDE_DIR})
 if(USE_FHS_PATHS)
-  add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_DIR}")
+  add_definitions(-DGRANTLEE_PLUGIN_DIR="${Grantlee_PLUGIN_PATH}")
 else()
   # grantlee plugins reside in the application directory
   add_definitions(-DGRANTLEE_PLUGIN_DIR="grantlee")
@@ -122,6 +143,7 @@ file(GLOB arduino_UIS
 file(GLOB arduino_MOCS
   "gui/*.h"
   "env/*.h"
+  "utils/*.h"
   "utils/qxt/*.h")
 
 file(GLOB arduino_QRCS
@@ -136,7 +158,7 @@ add_executable(arduino-ide
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES})
-target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_LIBRARY} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
+target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
 
 # Install
 if(CMAKE_BUILD_TYPE STREQUAL Debug)

@@ -14,8 +14,9 @@
 #include <QWebFrame>
 #include <QDebug>
 
-#include <grantlee.h>
+#include <grantlee_core.h>
 
+#include "IDEApplication.h"
 #include "PageRenderer.h"
 #include "../env/Toolkit.h"
 #include "../env/ProjectHistory.h"
@@ -159,7 +160,7 @@ void Browser::handleLink(const QUrl &url)
 void Browser::openDocumentation(const QString &fileName)
 {
     const QString content = "openDocumentation('{{ fileName|escapejs }}');";
-    Grantlee::Template t = Grantlee::Engine::instance()->newTemplate(content, "js");
+    Grantlee::Template t = ideApp->engine()->newTemplate(content, "js");
     QVariantHash mapping;
     mapping.insert("fileName", fileName);
     Grantlee::Context context(mapping);

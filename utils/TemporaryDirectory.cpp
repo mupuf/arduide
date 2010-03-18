@@ -17,7 +17,7 @@
 	
 	TemporaryDirectory::TemporaryDirectory(const QString &tmpl)
 	{
-		DWORD dwBufSize=101;
+		static const DWORD dwBufSize=101;
 		TCHAR szTempFileName[dwBufSize];  
 		TCHAR lpTempPathBuffer[dwBufSize];
 
