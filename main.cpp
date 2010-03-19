@@ -8,7 +8,6 @@
 int main(int argc, char** argv)
 {
     IDEApplication *app = new IDEApplication(argc, argv);
-    app->initialize();
     return app->exec();
 }
 

@@ -19,7 +19,6 @@ class IDEApplication : public QApplication
 {
 public:
     IDEApplication(int argc, char **argv);
-    void initialize();
 
     const QString &dataPath() { return mDataPath; }
     Grantlee::Engine *engine() { return mEngine; }
