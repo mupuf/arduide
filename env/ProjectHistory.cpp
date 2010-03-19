@@ -8,16 +8,10 @@
 #include <QFileInfo>
 #include <QDebug>
 
-ProjectHistory::ProjectHistory() : historyLength(20)
+ProjectHistory::ProjectHistory(QObject *parent)
+    : QObject(parent),
+      historyLength(20)
 {
-
-}
-
-ProjectHistory& ProjectHistory::instance()
-{
-    static ProjectHistory pHistory;
-
-    return pHistory;
 }
 
 QStringList ProjectHistory::history(int maxSize)

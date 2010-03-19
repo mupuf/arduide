@@ -13,16 +13,16 @@
 class ProjectHistory : public QObject
 {
     Q_OBJECT
+
 public:
-    ProjectHistory();
-
-    static ProjectHistory& instance();
-
     QStringList history(int maxSize=0);
 
 private:
+    ProjectHistory(QObject *parent = NULL);
     QSettings settings;
     const int historyLength;
+
+    friend class IDEApplication;
 
 signals:
     void historyUpdated(const QString &newProject);

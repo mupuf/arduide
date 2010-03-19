@@ -62,11 +62,11 @@ void Browser::quickstart()
     mapping.insert("librariesWithExamples", librariesWithExamples);
 
     QVariantList recentProjects;
-    ProjectHistory& pHistory=ProjectHistory::instance();
-    foreach (const QString &project, pHistory.history(10))
+    ProjectHistory *pHistory = ideApp->projectHistory();
+    foreach (const QString &project, pHistory->history(10))
     {
-        QString name=QFileInfo(project).fileName();
-        name=name.left(name.lastIndexOf('.'));
+        QString name = QFileInfo(project).fileName();
+        name = name.left(name.lastIndexOf('.'));
 
         QVariantHash projectInfo;
         projectInfo["name"] = name;

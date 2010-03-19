@@ -58,4 +58,6 @@ void IDEApplication::initializeSettings()
         if (w.exec() == QWizard::Rejected)
             exit(1);
     }
+
+    mProjectHistory = new ProjectHistory(this);
 }

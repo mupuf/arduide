@@ -29,7 +29,7 @@ protected:
 
 protected slots:
     void handleLink(const QUrl &url);
-    
+
 public slots:
     void refresh();
 };

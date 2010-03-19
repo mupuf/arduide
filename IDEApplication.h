@@ -12,6 +12,7 @@
 
 #include "gui/MainWindow.h"
 #include "gui/FirstTimeWizard.h"
+#include "env/ProjectHistory.h"
 #include "env/Settings.h"
 
 class IDEApplication : public QApplication
@@ -22,6 +23,7 @@ public:
 
     const QString &dataPath() { return mDataPath; }
     Grantlee::Engine *engine() { return mEngine; }
+    ProjectHistory *projectHistory() { return mProjectHistory; }
 
 private:
     void initializeTemplates();
@@ -31,6 +33,7 @@ private:
     QString mDataPath;
     MainWindow *mainWindow;
     Grantlee::Engine *mEngine;
+    ProjectHistory *mProjectHistory;
 };
 
 #define ideApp (static_cast<IDEApplication *>(qApp))

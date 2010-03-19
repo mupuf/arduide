@@ -20,12 +20,15 @@
 #include "../env/Board.h"
 #include "../env/Builder.h"
 #include "../env/Settings.h"
+#include "../env/ProjectHistory.h"
+#include "IDEApplication.h"
 
 #include <Qsci/qscilexer.h>
 
 #include "ui_AboutDialog.h"
 
-MainWindow::MainWindow() : pHistory(ProjectHistory::instance())
+MainWindow::MainWindow()
+    : QMainWindow()
 {
     setupUi(this);
     actionAbout->setText(actionAbout->text().arg(PROJECT_NAME));
@@ -75,7 +78,7 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
 
-    connect(&pHistory, SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
+    connect(ideApp->projectHistory(), SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 
     connect(&Settings::instance(), SIGNAL(fontChanged(const QFont &)), this, SLOT(setFont(const QFont &)));
 }
@@ -282,7 +285,7 @@ void MainWindow::open(const QString &_fileName)
     file.close();
 
     // update the history
-    pHistory.updateHistory(fileName);
+    ideApp->projectHistory()->updateHistory(fileName);
 }
 
 void MainWindow::save()
@@ -302,7 +305,7 @@ void MainWindow::save()
         }
 
         // update the history
-        pHistory.updateHistory(e->fileName());
+        ideApp->projectHistory()->updateHistory(e->fileName());
     }
 }
 
