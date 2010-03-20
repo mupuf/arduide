@@ -16,7 +16,8 @@
 class Serial : public QIODevice
 {
 public:
-    Serial(const QString &port);
+    Serial(const QString &port, int baudRate = 9600);
+    static const QList<int> &baudRates();
 
     asio::serial_port::native_type serialDescriptor();
 
@@ -31,8 +32,8 @@ public:
     qint64 writeData(const char *data, qint64 maxSize);
 
 private:
-
     QString mPort;
+    int mBaudRate;
     asio::io_service mIo;
     asio::serial_port mSerial;
 };

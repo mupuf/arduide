@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QWebSecurityOrigin>
 #include <QDebug>
 
 #include "EditorFactory.h"
@@ -24,8 +25,6 @@
 #include "../env/Settings.h"
 #include "../env/ProjectHistory.h"
 #include "IDEApplication.h"
-
-#include <Qsci/qscilexer.h>
 
 #include "ui_AboutDialog.h"
 
@@ -89,6 +88,7 @@ void MainWindow::createBrowserAndTabs()
     tabWidget->addAction(ui.actionGo_to_the_next_tab);
     tabWidget->addAction(ui.actionGo_to_the_previous_tab);
 
+    QWebSecurityOrigin::addLocalScheme("ide");
     browser = new Browser;
     tabWidget->addTab(browser, tr("Browser"));
     setCentralWidget(tabWidget);

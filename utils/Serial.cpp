@@ -5,12 +5,21 @@
 
 #include "Serial.h"
 
+#include <QDebug>
+
 #include "Compat.h"
 
-Serial::Serial(const QString &port)
+Serial::Serial(const QString &port, int baudRate)
     : mPort(port),
+      mBaudRate(baudRate),
       mSerial(mIo)
 {
+}
+
+const QList<int> &Serial::baudRates()
+{
+    static const QList<int> rates = QList<int>() << 300 << 1200 << 2400 << 4800 << 9600 << 14400 << 19200 << 28800 << 38400 << 57600 << 115200;
+    return rates;
 }
 
 asio::serial_port::native_type Serial::serialDescriptor()
@@ -31,15 +40,17 @@ bool Serial::open(OpenMode mode)
     asio::error_code error;
     mSerial.open(mPort.toStdString(), error);
     if (error)
-    {
-        setErrorString(QString::fromStdString(error.message()));
-        return false;
-    }
-    else
-    {
-        setOpenMode(ReadWrite);
-        return true;
-    }
+        goto error;
+    mSerial.set_option(asio::serial_port_base::baud_rate(mBaudRate), error);
+    if (error)
+        goto error;
+
+    setOpenMode(ReadWrite);
+    return true;
+
+error:
+    setErrorString(QString::fromStdString(error.message()));
+    return false;
 }
 
 bool Serial::isOpen() const
@@ -50,7 +61,8 @@ bool Serial::isOpen() const
 void Serial::close()
 {
     emit aboutToClose();
-    mSerial.close();
+    if (mSerial.is_open())
+        mSerial.close();
     setOpenMode(NotOpen);
     setErrorString(QString());
 }

@@ -8,10 +8,15 @@
 
 #include "plugins/IDEPluginInterface.h"
 
+#include <QScopedPointer>
+
+#include "utils/Serial.h"
+
 class SerialWidget;
 
 class SerialPlugin : public QObject, public IDEPluginInterface
 {
+    Q_OBJECT
     Q_INTERFACES(IDEPluginInterface)
 
 public:
@@ -19,9 +24,17 @@ public:
 
     const QString &name() { return mName; };
 
+private slots:
+    void open();
+    void close();
+
 private:
+    IDEApplication *mApp;
+
     QString mName;
     SerialWidget *widget;
+
+    QScopedPointer<Serial> mSerial;
 };
 
 #endif // SERIALPLUGIN_H
