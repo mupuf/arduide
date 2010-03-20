@@ -20,6 +20,7 @@ bool SerialPlugin::setup(IDEApplication *app)
 
     connect(widget, SIGNAL(openRequested()), this, SLOT(open()));
     connect(widget, SIGNAL(closeRequested()), this, SLOT(close()));
+    connect(widget, SIGNAL(readRequested()), this, SLOT(read()));
 
     return true;
 }
@@ -54,6 +55,27 @@ void SerialPlugin::close()
         mSerial->close();
 
     widget->setStatus(tr("Serial port closed."));
+}
+
+void SerialPlugin::read()
+{
+    if (mSerial.data() != NULL && mSerial->isOpen())
+    {
+        qint64 readCount = widget->readCount();
+        QSharedPointer<QByteArray> pData(new QByteArray);
+        pData->resize(readCount);
+        readCount = mSerial->readData(pData->data(), readCount);
+        if (readCount == 0)
+            widget->setStatus(tr("No data available for reading."));
+        else
+        {
+            widget->setStatus(tr("Read %0 bytes of data.").arg(readCount));
+            pData->resize(readCount);
+            widget->setData(pData);
+        }
+    }
+    else
+        widget->setStatus(tr("Unable to read, the port is not opened."));
 }
 
 Q_EXPORT_PLUGIN2(serial, SerialPlugin)

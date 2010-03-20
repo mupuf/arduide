@@ -27,6 +27,7 @@ public:
 private slots:
     void open();
     void close();
+    void read();
 
 private:
     IDEApplication *mApp;

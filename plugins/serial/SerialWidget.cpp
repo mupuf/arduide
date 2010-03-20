@@ -24,12 +24,13 @@ SerialWidget::SerialWidget(QWidget *parent)
     }
 
     QSharedPointer<QByteArray> sp(new QByteArray("No data."));
-    hexView->setData(sp);
+    setData(sp);
 
     setStatus(tr("Open a new connection to start."));
 
     connect(openButton, SIGNAL(clicked()), this, SIGNAL(openRequested()));
     connect(closeButton, SIGNAL(clicked()), this, SIGNAL(closeRequested()));
+    connect(readButton, SIGNAL(clicked()), this, SIGNAL(readRequested()));
 }
 
 void SerialWidget::setStatus(const QString &text)
@@ -40,4 +41,14 @@ void SerialWidget::setStatus(const QString &text)
 int SerialWidget::baudRate()
 {
     return baudRateBox->itemData(baudRateBox->currentIndex()).toInt();
+}
+
+int SerialWidget::readCount()
+{
+    return readCountBox->value();
+}
+
+void SerialWidget::setData(const QSharedPointer<QByteArray> &data)
+{
+    hexView->setData(data);
 }
