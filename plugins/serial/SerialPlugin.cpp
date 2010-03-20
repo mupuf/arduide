@@ -67,6 +67,8 @@ void SerialPlugin::read()
         readCount = mSerial->readData(pData->data(), readCount);
         if (readCount == 0)
             widget->setStatus(tr("No data available for reading."));
+        else if (readCount < 0)
+            widget->setStatus(tr("Read error: %0").arg(mSerial->errorString()));
         else
         {
             widget->setStatus(tr("Read %0 bytes of data.").arg(readCount));
