@@ -138,7 +138,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTabWidget" name="tabWidget_2">
+      <widget class="QTabWidget" name="utilityTabWidget">
        <property name="tabPosition">
         <enum>QTabWidget::East</enum>
        </property>

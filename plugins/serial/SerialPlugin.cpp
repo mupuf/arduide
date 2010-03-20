@@ -7,16 +7,17 @@
 
 #include <QDebug>
 
-static const QString PLUGIN_NAME("Serial");
+#include "SerialWidget.h"
+#include "IDEApplication.h"
 
 bool SerialPlugin::setup(IDEApplication *app)
 {
-    return true;
-}
+    mName = tr("Serial");
 
-const QString &SerialPlugin::name()
-{
-    return PLUGIN_NAME;
+    widget = new SerialWidget;
+    app->mainWindow()->utilityTabWidget()->addTab(widget, name());
+
+    return true;
 }
 
 Q_EXPORT_PLUGIN2(serial, SerialPlugin)

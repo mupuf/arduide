@@ -18,6 +18,6 @@ public:
     virtual const QString &name() = 0;
 };
 
-Q_DECLARE_INTERFACE(IDEPluginInterface, "org.mupuf." PROJECT_SHORT_NAME ".IDEPluginInterface/1.0")
+Q_DECLARE_INTERFACE(IDEPluginInterface, "org.mupuf.ArduIDE.IDEPluginInterface/1.0")
 
 #endif // IDEPLUGININTERFACE_H

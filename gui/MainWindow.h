@@ -6,7 +6,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <ui_MainWindow.h>
+#include "ui_MainWindow.h"
 
 #include <QComboBox>
 #include <QToolButton>
@@ -19,13 +19,16 @@ class QCloseEvent;
 class DeviceChooser;
 class BoardChooser;
 
-class MainWindow : public QMainWindow, Ui::MainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
     MainWindow();
     void initialize();
+
+    // widget getters
+    QTabWidget *utilityTabWidget() { return ui.utilityTabWidget; }
 
 public slots:
     void setFont(const QFont &font);
@@ -50,6 +53,8 @@ private:
 
     Editor *currentEditor();
     QList<Editor *> editors();
+
+    Ui::MainWindow ui;
 
 private slots:
     void closeTab(int index = -1);

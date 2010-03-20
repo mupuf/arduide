@@ -23,6 +23,7 @@ public:
     IDEApplication(int argc, char **argv);
 
     const QString &dataPath() { return mDataPath; }
+    MainWindow *mainWindow() { return mMainWindow; }
     Grantlee::Engine *engine() { return mEngine; }
     ProjectHistory *projectHistory() { return mProjectHistory; }
     Settings *settings() { return mSettings; }
@@ -34,7 +35,7 @@ private:
     void initializePlugins();
 
     QString mDataPath;
-    MainWindow *mainWindow;
+    MainWindow *mMainWindow;
     Grantlee::Engine *mEngine;
     QPluginLoader *mPluginLoader;
     ProjectHistory *mProjectHistory;

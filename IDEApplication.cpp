@@ -32,7 +32,7 @@ IDEApplication::IDEApplication(int argc, char **argv)
     initializeSettings();
 
     // further gui initialization
-    mainWindow->initialize();
+    mMainWindow->initialize();
 
     // initialize the plugins
     initializePlugins();
@@ -49,8 +49,8 @@ void IDEApplication::initializeTemplates()
 
 void IDEApplication::initializeGui()
 {
-    mainWindow = new MainWindow;
-    mainWindow->show();
+    mMainWindow = new MainWindow;
+    mMainWindow->show();
 }
 
 void IDEApplication::initializeSettings()

@@ -32,10 +32,10 @@
 MainWindow::MainWindow()
     : QMainWindow()
 {
-    setupUi(this);
-    actionAbout->setText(actionAbout->text().arg(PROJECT_NAME));
+    ui.setupUi(this);
+    ui.actionAbout->setText(ui.actionAbout->text().arg(PROJECT_NAME));
 
-    dockWidget->hide();
+    ui.dockWidget->hide();
 }
 
 void MainWindow::initialize()
@@ -51,25 +51,25 @@ void MainWindow::initialize()
 void MainWindow::setupActions()
 {
     buildActions = new QActionGroup(this);
-    buildActions->addAction(action_Build);
-    buildActions->addAction(action_Upload);
+    buildActions->addAction(ui.action_Build);
+    buildActions->addAction(ui.action_Upload);
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-    connect(action_New, SIGNAL(triggered()), this, SLOT(newProject()));
-    connect(action_Open, SIGNAL(triggered()), this, SLOT(open()));
-    connect(action_Save, SIGNAL(triggered()), this, SLOT(save()));
-    connect(action_Close, SIGNAL(triggered()), this, SLOT(closeTab()));
-    connect(action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
-    connect(action_Cut, SIGNAL(triggered()), this, SLOT(cut()));
-    connect(action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
-    connect(action_Build, SIGNAL(triggered()), this, SLOT(build()));
-    connect(action_Upload, SIGNAL(triggered()), this, SLOT(upload()));
-    connect(actionToggle_dock, SIGNAL(triggered()), this, SLOT(toggleDock()));
-    connect(actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
-    connect(actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
-    connect(action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
-    connect(actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-    connect(actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+    connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newProject()));
+    connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
+    connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
+    connect(ui.action_Close, SIGNAL(triggered()), this, SLOT(closeTab()));
+    connect(ui.action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
+    connect(ui.action_Cut, SIGNAL(triggered()), this, SLOT(cut()));
+    connect(ui.action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
+    connect(ui.action_Build, SIGNAL(triggered()), this, SLOT(build()));
+    connect(ui.action_Upload, SIGNAL(triggered()), this, SLOT(upload()));
+    connect(ui.actionToggle_dock, SIGNAL(triggered()), this, SLOT(toggleDock()));
+    connect(ui.actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
+    connect(ui.actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
+    connect(ui.action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
+    connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
@@ -86,8 +86,8 @@ void MainWindow::createBrowserAndTabs()
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
     tabWidget->setMovable(true);
-    tabWidget->addAction(actionGo_to_the_next_tab);
-    tabWidget->addAction(actionGo_to_the_previous_tab);
+    tabWidget->addAction(ui.actionGo_to_the_next_tab);
+    tabWidget->addAction(ui.actionGo_to_the_previous_tab);
 
     browser = new Browser;
     tabWidget->addTab(browser, tr("Browser"));
@@ -119,7 +119,7 @@ void MainWindow::previousTab()
 
 void MainWindow::createDeviceChooser()
 {
-    deviceAction = deviceToolBar->addAction(QIcon(":/images/atmega168_icon.svg"), tr("Device"));
+    deviceAction = ui.deviceToolBar->addAction(QIcon(":/images/atmega168_icon.svg"), tr("Device"));
     deviceChooser = new DeviceChooser(this);
     connect(deviceAction, SIGNAL(triggered()), this, SLOT(chooseDevice()));
     connect(deviceChooser, SIGNAL(deviceChosen(const QString &)), SLOT(setDevice(const QString &)));
@@ -127,8 +127,8 @@ void MainWindow::createDeviceChooser()
 
 void MainWindow::chooseDevice()
 {
-    QWidget *w = deviceToolBar->widgetForAction(deviceAction);
-    int x = deviceToolBar->mapToGlobal(QPoint(deviceToolBar->width(), 0)).x();
+    QWidget *w = ui.deviceToolBar->widgetForAction(deviceAction);
+    int x = ui.deviceToolBar->mapToGlobal(QPoint(ui.deviceToolBar->width(), 0)).x();
     int y = w->mapToGlobal(QPoint(0, 0)).y();
     deviceChooser->refresh();
     deviceChooser->exec(QPoint(x, y));
@@ -136,7 +136,7 @@ void MainWindow::chooseDevice()
 
 void MainWindow::createBoardChooser()
 {
-    boardAction = deviceToolBar->addAction(QIcon(":/images/arduino_diecimila.svg"), tr("Board"));
+    boardAction = ui.deviceToolBar->addAction(QIcon(":/images/arduino_diecimila.svg"), tr("Board"));
     boardChooser = new BoardChooser(this);
     connect(boardAction, SIGNAL(triggered()), this, SLOT(chooseBoard()));
     connect(boardChooser, SIGNAL(boardChosen(const QString &)), SLOT(setBoard(const QString &)));
@@ -144,8 +144,8 @@ void MainWindow::createBoardChooser()
 
 void MainWindow::chooseBoard()
 {
-    QWidget *w = deviceToolBar->widgetForAction(boardAction);
-    int x = deviceToolBar->mapToGlobal(QPoint(deviceToolBar->width(), 0)).x();
+    QWidget *w = ui.deviceToolBar->widgetForAction(boardAction);
+    int x = ui.deviceToolBar->mapToGlobal(QPoint(ui.deviceToolBar->width(), 0)).x();
     int y = w->mapToGlobal(QPoint(0, 0)).y();
     boardChooser->refresh();
     boardChooser->exec(QPoint(x, y));
@@ -341,10 +341,10 @@ void MainWindow::build()
         buildActions->setEnabled(false);
 
         const Board *board = Board::boardInfo(ideApp->settings()->board());
-        dockWidget->show();
-        outputView->clear();
+        ui.dockWidget->show();
+        ui.outputView->clear();
 
-        Builder builder(*outputView);
+        Builder builder(*ui.outputView);
         builder.setBoard(board);
         builder.build(editor->text());
 
@@ -361,10 +361,10 @@ void MainWindow::upload()
 
         const Board *board = Board::boardInfo(ideApp->settings()->board());
         QString device = ideApp->settings()->devicePort();
-        dockWidget->show();
-        outputView->clear();
+        ui.dockWidget->show();
+        ui.outputView->clear();
 
-        Builder builder(*outputView);
+        Builder builder(*ui.outputView);
         builder.setBoard(board);
         builder.setDevice(device);
         builder.build(editor->text(), true);
@@ -375,7 +375,7 @@ void MainWindow::upload()
 
 void MainWindow::toggleDock()
 {
-    dockWidget->setVisible(! dockWidget->isVisible());
+    ui.dockWidget->setVisible(! ui.dockWidget->isVisible());
 }
 
 void MainWindow::configure()

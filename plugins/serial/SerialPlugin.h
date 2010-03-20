@@ -8,6 +8,8 @@
 
 #include "plugins/IDEPluginInterface.h"
 
+class SerialWidget;
+
 class SerialPlugin : public QObject, public IDEPluginInterface
 {
     Q_INTERFACES(IDEPluginInterface)
@@ -15,7 +17,11 @@ class SerialPlugin : public QObject, public IDEPluginInterface
 public:
     bool setup(IDEApplication *app);
 
-    const QString &name();
+    const QString &name() { return mName; };
+
+private:
+    QString mName;
+    SerialWidget *widget;
 };
 
 #endif // SERIALPLUGIN_H
