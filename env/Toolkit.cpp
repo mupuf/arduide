@@ -11,6 +11,7 @@
 #include <QDebug>
 
 #include "../env/Board.h"
+#include "IDEApplication.h"
 
 QStringList Toolkit::findSketchesInDirectory(const QString &directory)
 {
@@ -27,30 +28,30 @@ QStringList Toolkit::findSketchesInDirectory(const QString &directory)
 
 QStringList Toolkit::findExampleCategories()
 {
-    QDir exampleDir(Settings::instance().arduinoPath() + "/examples");
+    QDir exampleDir(ideApp->settings()->arduinoPath() + "/examples");
     return exampleDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 }
 
 QStringList Toolkit::findExamples(const QString &category)
 {
-    QString categoryDir(Settings::instance().arduinoPath() + "/examples/" + category);
+    QString categoryDir(ideApp->settings()->arduinoPath() + "/examples/" + category);
     return findSketchesInDirectory(categoryDir);
 }
 
 QString Toolkit::exampleFileName(const QString &category, const QString &example)
 {
     static const QString format = "%0/examples/%1/%2/%2.pde";
-    return format.arg(Settings::instance().arduinoPath()).arg(category).arg(example);
+    return format.arg(ideApp->settings()->arduinoPath()).arg(category).arg(example);
 }
 
 QString Toolkit::referencePath()
 {
-    return QDir(Settings::instance().arduinoPath()).filePath("reference");
+    return QDir(ideApp->settings()->arduinoPath()).filePath("reference");
 }
 
 QString Toolkit::hardwarePath()
 {
-    return QDir(Settings::instance().arduinoPath()).filePath("hardware");
+    return QDir(ideApp->settings()->arduinoPath()).filePath("hardware");
 }
 
 QString Toolkit::boardsFileName()
@@ -60,7 +61,7 @@ QString Toolkit::boardsFileName()
 
 QString Toolkit::keywordsFileName()
 {
-    return QDir(Settings::instance().arduinoPath()).filePath("lib/keywords.txt");
+    return QDir(ideApp->settings()->arduinoPath()).filePath("lib/keywords.txt");
 }
 
 bool Toolkit::isValidArduinoPath(const QString &path)
@@ -162,8 +163,8 @@ QStringList Toolkit::libraries()
 QString Toolkit::libraryPath(const QString &libraryName)
 {
     return (libraryName.isNull()) ?
-        QDir(Settings::instance().arduinoPath()).filePath("libraries") :
-        QDir(Settings::instance().arduinoPath()).filePath(QString("libraries/%0").arg(libraryName));
+        QDir(ideApp->settings()->arduinoPath()).filePath("libraries") :
+        QDir(ideApp->settings()->arduinoPath()).filePath(QString("libraries/%0").arg(libraryName));
 }
 
 QString Toolkit::libraryKeywordsFileName(const QString &libraryName)
@@ -206,7 +207,7 @@ QString Toolkit::avrdudePath()
 QStringList Toolkit::avrdudeFlags(const Board *board)
 {
     QStringList flags;
-    if (Settings::instance().verboseUpload())
+    if (ideApp->settings()->verboseUpload())
         flags << "-v" << "-v" << "-v" << "-v";
     else
         flags << "-q" << "-q";

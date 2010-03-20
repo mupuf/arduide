@@ -76,7 +76,7 @@ void Browser::quickstart()
     mapping.insert("recentProjects", recentProjects);
 
     QVariantList sketches;
-    foreach (const QString &sketch, Toolkit::findSketchesInDirectory(Settings::instance().sketchPath()))
+    foreach (const QString &sketch, Toolkit::findSketchesInDirectory(ideApp->settings()->sketchPath()))
         sketches.append(sketch);
     mapping.insert("sketches", sketches);
 
@@ -137,7 +137,7 @@ void Browser::handleLink(const QUrl &url)
         else if (url.host() == "open-sketch")
         {
             QString sketchName = url.path().section("/", 1);
-            QString fileName = QDir(Settings::instance().sketchPath()).filePath(QString("%0/%0.pde").arg(sketchName));
+            QString fileName = QDir(ideApp->settings()->sketchPath()).filePath(QString("%0/%0.pde").arg(sketchName));
             emit openProjectRequested(fileName);
         }
     }

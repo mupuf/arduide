@@ -8,6 +8,7 @@
 #include <QFontDialog>
 
 #include "env/Settings.h"
+#include "IDEApplication.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent)
     : QxtConfigDialog(parent)
@@ -41,7 +42,7 @@ void ConfigDialog::setupFontChooser()
 {
     static QString format("%0 %1");
 
-    QFont f = Settings::instance().editorFont();
+    QFont f = ideApp->settings()->editorFont();
     uiEditor.fontLabel->setFont(f);
     uiEditor.fontLabel->setText(format.arg(f.family()).arg(f.pointSize()));
 }
@@ -49,11 +50,11 @@ void ConfigDialog::setupFontChooser()
 void ConfigDialog::chooseFont()
 {
     bool ok;
-    QFont initialFont = Settings::instance().editorFont();
+    QFont initialFont = ideApp->settings()->editorFont();
     QFont f = QFontDialog::getFont(&ok, initialFont, this);
     if (ok)
     {
-        Settings::instance().setEditorFont(f);
+        ideApp->settings()->setEditorFont(f);
         setupFontChooser();
     }
 }

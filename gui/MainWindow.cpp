@@ -16,6 +16,8 @@
 #include "EditorFactory.h"
 #include "Browser.h"
 #include "ConfigDialog.h"
+#include "DeviceChooser.h"
+#include "BoardChooser.h"
 #include "../env/Device.h"
 #include "../env/Board.h"
 #include "../env/Builder.h"
@@ -41,8 +43,7 @@ void MainWindow::initialize()
     createBrowserAndTabs();
 
     createDeviceChooser();
-    fillDeviceBox();
-    fillBoardsBox();
+    createBoardChooser();
 
     setupActions();
 }
@@ -54,7 +55,6 @@ void MainWindow::setupActions()
     buildActions->addAction(action_Upload);
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-    connect(refreshDevicesAct, SIGNAL(triggered()), this, SLOT(fillDeviceBox()));
     connect(action_New, SIGNAL(triggered()), this, SLOT(newProject()));
     connect(action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(action_Save, SIGNAL(triggered()), this, SLOT(save()));
@@ -65,8 +65,6 @@ void MainWindow::setupActions()
     connect(action_Build, SIGNAL(triggered()), this, SLOT(build()));
     connect(action_Upload, SIGNAL(triggered()), this, SLOT(upload()));
     connect(actionToggle_dock, SIGNAL(triggered()), this, SLOT(toggleDock()));
-    connect(deviceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setDeviceAtIndex(int)));
-    connect(boardBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setBoardAtIndex(int)));
     connect(actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
     connect(actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
     connect(action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
@@ -80,7 +78,7 @@ void MainWindow::setupActions()
 
     connect(ideApp->projectHistory(), SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 
-    connect(&Settings::instance(), SIGNAL(fontChanged(const QFont &)), this, SLOT(setFont(const QFont &)));
+    connect(ideApp->settings(), SIGNAL(fontChanged(const QFont &)), this, SLOT(setFont(const QFont &)));
 }
 
 void MainWindow::createBrowserAndTabs()
@@ -121,15 +119,36 @@ void MainWindow::previousTab()
 
 void MainWindow::createDeviceChooser()
 {
-    deviceBox = new QComboBox;
-    boardBox = new QComboBox;
+    deviceAction = deviceToolBar->addAction(QIcon(":/images/atmega168_icon.svg"), tr("Device"));
+    deviceChooser = new DeviceChooser(this);
+    connect(deviceAction, SIGNAL(triggered()), this, SLOT(chooseDevice()));
+    connect(deviceChooser, SIGNAL(deviceChosen(const QString &)), SLOT(setDevice(const QString &)));
+}
 
-    deviceToolBar->addWidget(new QLabel(tr("Device:")));
-    deviceToolBar->addWidget(deviceBox);
-    refreshDevicesAct = deviceToolBar->addAction(tr("Refresh"));
-    refreshDevicesAct->setIcon(QIcon(":/images/16x16/view-refresh.png"));
-    deviceToolBar->addSeparator();
-    deviceToolBar->addWidget(boardBox);
+void MainWindow::chooseDevice()
+{
+    QWidget *w = deviceToolBar->widgetForAction(deviceAction);
+    int x = deviceToolBar->mapToGlobal(QPoint(deviceToolBar->width(), 0)).x();
+    int y = w->mapToGlobal(QPoint(0, 0)).y();
+    deviceChooser->refresh();
+    deviceChooser->exec(QPoint(x, y));
+}
+
+void MainWindow::createBoardChooser()
+{
+    boardAction = deviceToolBar->addAction(QIcon(":/images/arduino_diecimila.svg"), tr("Board"));
+    boardChooser = new BoardChooser(this);
+    connect(boardAction, SIGNAL(triggered()), this, SLOT(chooseBoard()));
+    connect(boardChooser, SIGNAL(boardChosen(const QString &)), SLOT(setBoard(const QString &)));
+}
+
+void MainWindow::chooseBoard()
+{
+    QWidget *w = deviceToolBar->widgetForAction(boardAction);
+    int x = deviceToolBar->mapToGlobal(QPoint(deviceToolBar->width(), 0)).x();
+    int y = w->mapToGlobal(QPoint(0, 0)).y();
+    boardChooser->refresh();
+    boardChooser->exec(QPoint(x, y));
 }
 
 void MainWindow::newProject(const QString &code, const QString &name, Editor **pEditor)
@@ -186,58 +205,12 @@ void MainWindow::closeTab(int index)
                     tr("Close project"),
                     tr("This project has unsaved changes.<br />Are you sure you want to close it?"),
                     QMessageBox::Yes | QMessageBox::No,
-                    QMessageBox::No) == QMessageBox::Yes);
+                    QMessageBox::Yes) == QMessageBox::Yes);
             if (close)
             {
                 names.removeOne(tabWidget->tabText(index));
                 tabWidget->removeTab(index);
             }
-        }
-    }
-}
-
-void MainWindow::fillDeviceBox()
-{
-    QString defaultPort = Settings::instance().devicePort();
-
-    deviceBox->clear();
-
-    deviceBox->addItem(tr("Select one:"));
-    deviceBox->insertSeparator(1);
-
-    DeviceList l = Device::listDevices();
-    foreach(const Device &dev, l)
-    {
-        QString name = QString("%0: %1").arg(dev.port()).arg(dev.description());
-        const QString &port = dev.port();
-        deviceBox->addItem(name, port);
-
-        if (port == defaultPort)
-        {
-            int index = deviceBox->count() - 1;
-            deviceBox->setCurrentIndex(index);
-        }
-    }
-}
-
-void MainWindow::fillBoardsBox()
-{
-    QString defaultBoard = Settings::instance().board();
-
-    boardBox->clear();
-
-    boardBox->addItem(tr("Select one:"));
-    boardBox->insertSeparator(1);
-
-    foreach(const QString &boardId, Board::boardIds())
-    {
-        const Board *board = Board::boardInfo(boardId);
-        boardBox->addItem(board->name(), boardId);
-
-        if (defaultBoard == boardId)
-        {
-            int index = boardBox->count() - 1;
-            boardBox->setCurrentIndex(index);
         }
     }
 }
@@ -266,7 +239,7 @@ void MainWindow::open(const QString &_fileName)
 
     if (fileName.isEmpty())
     {
-        fileName = QFileDialog::getOpenFileName(this, tr("Open project"), Settings::instance().sketchPath(), tr("Arduino sketches (*.pde)"));
+        fileName = QFileDialog::getOpenFileName(this, tr("Open project"), ideApp->settings()->sketchPath(), tr("Arduino sketches (*.pde)"));
         if (fileName.isEmpty())
             return;
     }
@@ -327,22 +300,16 @@ void MainWindow::paste()
     if (e) e->paste();
 }
 
-void MainWindow::setDeviceAtIndex(int index)
+void MainWindow::setDevice(const QString &device)
 {
-    QVariant userData;
-    if (index >= 0)
-        userData = deviceBox->itemData(index);
-
-    Settings::instance().setDevicePort(userData.toString());
+    qDebug() << "setDevice:" << device;
+    ideApp->settings()->setDevicePort(device);
 }
 
-void MainWindow::setBoardAtIndex(int index)
+void MainWindow::setBoard(const QString &board)
 {
-    QVariant userData;
-    if (index >= 0)
-        userData = boardBox->itemData(index);
-
-    Settings::instance().setBoard(userData.toString());
+    qDebug() << "setBoard:" << board;
+    ideApp->settings()->setBoard(board);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -373,7 +340,7 @@ void MainWindow::build()
     {
         buildActions->setEnabled(false);
 
-        const Board *board = Board::boardInfo(Settings::instance().board());
+        const Board *board = Board::boardInfo(ideApp->settings()->board());
         dockWidget->show();
         outputView->clear();
 
@@ -392,8 +359,8 @@ void MainWindow::upload()
     {
         buildActions->setEnabled(false);
 
-        const Board *board = Board::boardInfo(Settings::instance().board());
-        QString device = Settings::instance().devicePort();
+        const Board *board = Board::boardInfo(ideApp->settings()->board());
+        QString device = ideApp->settings()->devicePort();
         dockWidget->show();
         outputView->clear();
 

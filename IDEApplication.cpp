@@ -49,7 +49,9 @@ void IDEApplication::initializeGui()
 
 void IDEApplication::initializeSettings()
 {
-    if (! Settings::instance().isCorrect())
+    mSettings = new Settings;
+
+    if (! mSettings->isCorrect())
     {
         FirstTimeWizard w;
         if (w.exec() == QWizard::Rejected)

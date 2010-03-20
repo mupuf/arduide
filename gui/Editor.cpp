@@ -13,6 +13,7 @@
 #include <Qsci/qscilexer.h>
 
 #include "../env/Settings.h"
+#include "IDEApplication.h"
 
 Editor::Editor(QWidget *parent)
     : QsciScintilla(parent)
@@ -26,7 +27,7 @@ void Editor::save()
 {
     if (mFileName.isEmpty())
     {
-        QString dirName = QFileDialog::getSaveFileName(this, tr("Save project"), Settings::instance().sketchPath(), tr("Directories (*)"), NULL, QFileDialog::DontConfirmOverwrite);
+        QString dirName = QFileDialog::getSaveFileName(this, tr("Save project"), ideApp->settings()->sketchPath(), tr("Directories (*)"), NULL, QFileDialog::DontConfirmOverwrite);
         if (dirName.isEmpty())
             return;
         bool ok = QDir().mkdir(dirName);

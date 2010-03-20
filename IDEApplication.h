@@ -23,6 +23,7 @@ public:
     const QString &dataPath() { return mDataPath; }
     Grantlee::Engine *engine() { return mEngine; }
     ProjectHistory *projectHistory() { return mProjectHistory; }
+    Settings *settings() { return mSettings; }
 
 private:
     void initializeTemplates();
@@ -33,6 +34,7 @@ private:
     MainWindow *mainWindow;
     Grantlee::Engine *mEngine;
     ProjectHistory *mProjectHistory;
+    Settings *mSettings;
 };
 
 #define ideApp (static_cast<IDEApplication *>(qApp))

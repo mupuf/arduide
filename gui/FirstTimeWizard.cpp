@@ -18,6 +18,7 @@
 
 #include "../env/Settings.h"
 #include "../env/Toolkit.h"
+#include "IDEApplication.h"
 
 FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     : QWizard(parent)
@@ -94,7 +95,7 @@ bool FirstTimeWizard::validateCurrentPage()
             return false;
         }
         else
-            Settings::instance().setArduinoPath(path);
+            ideApp->settings()->setArduinoPath(path);
 
         path = sketchbookPathEdit->text();
         ok = QFileInfo(path).isDir() || QDir().mkdir(path);
@@ -104,7 +105,7 @@ bool FirstTimeWizard::validateCurrentPage()
             return false;
         }
         else
-            Settings::instance().setSketchPath(path);
+            ideApp->settings()->setSketchPath(path);
     }
     return true;
 }

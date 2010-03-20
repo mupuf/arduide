@@ -15,7 +15,6 @@ class Settings : public QObject
     Q_OBJECT
 
 public:
-    static Settings &instance();
     QString arduinoPath();
     void setArduinoPath(const QString &path);
     QString sketchPath();
@@ -35,9 +34,10 @@ signals:
     void fontChanged(const QFont &f);
 
 private:
-    static Settings *mInstance;
     Settings();
     QSettings mSettings;
+
+    friend class IDEApplication;
 };
 
 #endif // SETTINGS_H

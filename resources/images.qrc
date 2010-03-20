@@ -2,6 +2,9 @@
 <RCC version="1.0">
   <qresource>
     <file>images/arduino.png</file>
+    <file>images/arduino_diecimila.svg</file>
+    <file>images/atmega168_icon.svg</file>
+    <file>images/controller_arduino_diecimila.svg</file>
     <file>images/16x16/document-new.png</file>
     <file>images/16x16/document-open.png</file>
     <file>images/16x16/document-save.png</file>

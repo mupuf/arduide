@@ -10,17 +10,8 @@
 
 #include "Toolkit.h"
 
-Settings *Settings::mInstance = NULL;
-
 Settings::Settings()
 {
-}
-
-Settings &Settings::instance()
-{
-    if (mInstance == NULL)
-        mInstance = new Settings;
-    return *mInstance;
 }
 
 QString Settings::arduinoPath()

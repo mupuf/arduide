@@ -9,12 +9,13 @@
 
 #include "LexerArduino.h"
 #include "../env/Settings.h"
+#include "IDEApplication.h"
 
 Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
 {
     Editor *editor = new Editor(parent);
     LexerArduino *lexer = new LexerArduino;
-    lexer->setFont(Settings::instance().editorFont());
+    lexer->setFont(ideApp->settings()->editorFont());
     editor->setLexer(lexer);
     editor->setMarginLineNumbers(1, true);
     editor->setMarginWidth(1, 40);
