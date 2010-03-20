@@ -24,6 +24,7 @@ foreach(PLUGIN ${PLUGINS})
   qt4_add_resources(plugin_QRC_SOURCES ${plugin_QRCS})
 
   add_library(${PLUGIN} MODULE
+    ${plugins_SOURCES}
     ${plugin_SOURCES}
     ${plugin_UI_SOURCES}
     ${plugin_MOC_SOURCES}

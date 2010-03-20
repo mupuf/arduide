@@ -23,6 +23,10 @@ add_definitions(-DPROJECT_ORGANIZATION="${PROJECT_ORGANIZATION}")
 add_definitions(-DPROJECT_LICENSE="${PROJECT_LICENSE}")
 add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
+# Compatible version of the Arduino SDK
+set(ARDUINO_SDK_VERSION "0018")
+add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
+
 # Compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -Wall)

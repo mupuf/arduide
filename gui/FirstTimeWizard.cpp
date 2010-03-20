@@ -34,7 +34,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     // QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
     TCHAR applicationPath[MAX_PATH];
     if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES, NULL, 0, applicationPath)))
-        defaultArduinoPath = QDir(applicationPath).filePath("Arduino");
+        defaultArduinoPath = QDir(applicationPath).filePath("arduino-" ARDUINO_SDK_VERSION);
 #else
     defaultArduinoPath = "/usr/share/arduino";
 #endif
