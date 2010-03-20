@@ -135,6 +135,7 @@ file(GLOB arduino_SOURCES
   "gui/*.h" "gui/*.cpp"
   "env/*.cpp" "env/*.h"
   "utils/*.cpp" "utils/*.h"
+  "utils/hexview/*.cpp" "utils/hexview/*.h"
   "utils/qxt/*.cpp" "utils/qxt/*.h")
 
 file(GLOB arduino_UIS
@@ -144,6 +145,7 @@ file(GLOB arduino_MOCS
   "gui/*.h"
   "env/*.h"
   "utils/*.h"
+  "utils/hexview/*.h"
   "utils/qxt/*.h")
 
 file(GLOB arduino_QRCS
