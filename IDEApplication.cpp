@@ -7,7 +7,10 @@
 #include "IDEApplication.h"
 
 #include <QDir>
+#include <QPluginLoader>
 #include <QDebug>
+
+#include "plugins/IDEPluginInterface.h"
 
 IDEApplication::IDEApplication(int argc, char **argv)
     : QApplication(argc, argv)
@@ -30,6 +33,9 @@ IDEApplication::IDEApplication(int argc, char **argv)
 
     // further gui initialization
     mainWindow->initialize();
+
+    // initialize the plugins
+    initializePlugins();
 }
 
 void IDEApplication::initializeTemplates()
@@ -59,4 +65,27 @@ void IDEApplication::initializeSettings()
     }
 
     mProjectHistory = new ProjectHistory(this);
+}
+
+void IDEApplication::initializePlugins()
+{
+    qDebug() << "initializePlugins: loading the plugins in " PLUGIN_PATH;
+    mPluginLoader = new QPluginLoader(this);
+    QDir pluginDir(PLUGIN_PATH);
+    QString fileName;
+    bool ok;
+    foreach(const QString &entry, pluginDir.entryList(QDir::Files, QDir::Name))
+    {
+        fileName = pluginDir.filePath(entry);
+        mPluginLoader->setFileName(fileName);
+        ok = mPluginLoader->load();
+        qDebug() << "Loading" << entry << "result:" << ok;
+
+        if (ok)
+        {
+            IDEPluginInterface *plugin = dynamic_cast<IDEPluginInterface *>(mPluginLoader->instance());
+            ok = plugin != NULL && plugin->setup(this);
+            qDebug() << "Initializing" << entry << "result:" << ok;
+        }
+    }
 }

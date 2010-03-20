@@ -16,6 +16,7 @@ set(PROJECT_VERSION_MAJOR "0")
 set(PROJECT_VERSION_MINOR "1")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 add_definitions(-DPROJECT_NAME="${PROJECT_NAME}")
+add_definitions(-DPROJECT_SHORT_NAME="${PROJECT_SHORT_NAME}")
 add_definitions(-DPROJECT_URL="${PROJECT_URL}")
 add_definitions(-DPROJECT_AUTHORS="${PROJECT_AUTHORS}")
 add_definitions(-DPROJECT_ORGANIZATION="${PROJECT_ORGANIZATION}")
@@ -138,6 +139,21 @@ file(GLOB arduino_MOCS
 
 file(GLOB arduino_QRCS
   "resources/*.qrc")
+
+# Plugins
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  set(arduino_PLUGIN_PATH "${CMAKE_BINARY_DIR}/plugins")
+  add_definitions(-DPLUGIN_PATH="${arduino_PLUGIN_PATH}")
+else()
+  if(USE_FHS_PATHS)
+    set(arduino_PLUGIN_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide/plugins")
+    add_definitions(-DPLUGIN_PATH="${arduino_PLUGIN_PATH}")
+  else()
+    set(arduino_PLUGIN_PATH "/plugins")
+    add_definitions(-DPLUGIN_PATH="plugins")
+  endif()
+endif()
+add_subdirectory(plugins)
 
 qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})

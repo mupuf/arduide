@@ -15,6 +15,8 @@
 #include "env/ProjectHistory.h"
 #include "env/Settings.h"
 
+class QPluginLoader;
+
 class IDEApplication : public QApplication
 {
 public:
@@ -29,10 +31,12 @@ private:
     void initializeTemplates();
     void initializeGui();
     void initializeSettings();
+    void initializePlugins();
 
     QString mDataPath;
     MainWindow *mainWindow;
     Grantlee::Engine *mEngine;
+    QPluginLoader *mPluginLoader;
     ProjectHistory *mProjectHistory;
     Settings *mSettings;
 };
