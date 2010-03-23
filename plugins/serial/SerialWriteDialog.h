@@ -10,8 +10,21 @@
 
 class SerialWriteDialog : public QDialog, Ui::SerialWriteDialog
 {
+    Q_OBJECT
+
 public:
     SerialWriteDialog(QWidget *parent = NULL);
+    void setStatus(const QString &text);
+
+private slots:
+    void writeInt();
+    void writeBytes();
+    void writeString();
+    void writeFile();
+    void chooseFile();
+
+signals:
+    void writeRequested(const QByteArray &data);
 };
 
 #endif // SERIALWRITEDIALOG_H

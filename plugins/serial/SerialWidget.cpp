@@ -35,6 +35,7 @@ SerialWidget::SerialWidget(QWidget *parent)
     connect(closeButton, SIGNAL(clicked()), this, SIGNAL(closeRequested()));
     connect(readButton, SIGNAL(clicked()), this, SIGNAL(readRequested()));
     connect(writeButton, SIGNAL(clicked(bool)), this, SLOT(setWriteDialogVisible(bool)));
+    connect(mDialog, SIGNAL(writeRequested(const QByteArray &)), this, SIGNAL(writeRequested(const QByteArray &)));
 }
 
 void SerialWidget::setStatus(const QString &text)

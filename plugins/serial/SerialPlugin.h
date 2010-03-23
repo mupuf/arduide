@@ -21,13 +21,13 @@ class SerialPlugin : public QObject, public IDEPluginInterface
 
 public:
     bool setup(IDEApplication *app);
-
     const QString &name() { return mName; };
 
 private slots:
     void open();
     void close();
     void read();
+    void write(const QByteArray &data);
 
 private:
     IDEApplication *mApp;

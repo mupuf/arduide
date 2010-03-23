@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>491</width>
-    <height>287</height>
+    <width>490</width>
+    <height>356</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
          <widget class="QxtLineEdit" name="intValueEdit"/>
         </item>
         <item>
-         <widget class="QCheckBox" name="checkBox">
+         <widget class="QCheckBox" name="msbFirstBox">
           <property name="text">
            <string>MSB first</string>
           </property>
@@ -48,7 +48,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="writeIntButton">
         <property name="text">
          <string>Write &amp;integer(s)</string>
         </property>
@@ -78,7 +78,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="writeBytesButton">
         <property name="text">
          <string>Write &amp;bytes</string>
         </property>
@@ -104,11 +104,48 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="writeStringButton">
         <property name="text">
          <string>Write &amp;string</string>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>File</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>File:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="fileEdit"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="fileButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="writeFileButton">
+          <property name="text">
+           <string>Write &amp;file</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -129,7 +166,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="statusLabel">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
@@ -170,12 +207,12 @@
  </customwidgets>
  <tabstops>
   <tabstop>intValueEdit</tabstop>
-  <tabstop>checkBox</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>msbFirstBox</tabstop>
+  <tabstop>writeIntButton</tabstop>
   <tabstop>hexValueEdit</tabstop>
-  <tabstop>pushButton_2</tabstop>
+  <tabstop>writeBytesButton</tabstop>
   <tabstop>stringValueEdit</tabstop>
-  <tabstop>pushButton_3</tabstop>
+  <tabstop>writeStringButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

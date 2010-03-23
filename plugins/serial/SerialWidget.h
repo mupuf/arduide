@@ -22,6 +22,7 @@ public:
     int baudRate();
     int readCount();
     void setData(const QSharedPointer<QByteArray> &data);
+    SerialWriteDialog *writeDialog() { return mDialog; }
 
 public slots:
     void setWriteDialogVisible(bool visible);
@@ -30,6 +31,7 @@ signals:
     void openRequested();
     void closeRequested();
     void readRequested();
+    void writeRequested(const QByteArray &data);
 
 private:
     bool eventFilter(QObject *obj, QEvent *event);
