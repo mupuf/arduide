@@ -7,6 +7,7 @@
 
 #include <QFile>
 #include <QFileDialog>
+#include <QDebug>
 #include <vector>
 #include <algorithm>
 
@@ -42,7 +43,7 @@ void SerialWriteDialog::writeInt()
     int intSize = intTypeBox->itemData(intTypeBox->currentIndex()).toInt();
 
     // get a list of integers from the line edit
-    // qulonglong is assumed big enough to hold all values
+    // qlonglong is assumed big enough to hold all values
     QStringList values = intValueEdit->text().split(' ', QString::SkipEmptyParts);
     if (values.size() == 0)
         return;
@@ -55,10 +56,12 @@ void SerialWriteDialog::writeInt()
     int index = 0;
     data.resize(values.size() * intSize);
 
-    std::vector<unsigned char> intData(intSize);
-    const char *pInt;
+    std::vector<unsigned char> intData;
+    intData.reserve(intSize);
+    qulonglong uinteger;
     foreach(const QString &value, values)
     {
+        intData.clear();
         integer = value.toLongLong(&ok);
         if (! ok)
         {
@@ -67,24 +70,25 @@ void SerialWriteDialog::writeInt()
         }
 
         // convert the integer to an array of bytes
-#if Q_BYTE_ORDER == Q_BIG_ENDIAN
-        pInt = (const char *) &integer;
-        std::copy(pInt, pInt + intSize, intData.begin());
+        uinteger = reinterpret_cast<qulonglong &>(integer);
+        for (int i = 0; i < intSize; i++)
+        {
+            if (uinteger > 0)
+            {
+                intData.push_back(uinteger % 256);
+                uinteger >>= 8;
+            }
+            else
+                intData.push_back(0);
+        }
+
         if (msbFirst)
             std::reverse(intData.begin(), intData.end());
-#elif Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-        pInt = (const char *) &integer + sizeof(qulonglong) - intSize;
-        std::copy(pInt, pInt + intSize, intData.begin());
-        if (! msbFirst)
-            std::reverse(intData.begin(), intData.end());
-#else
-#error Unknown endianness type
-#endif
 
         // append it to data
         for (int i = 0; i < intSize; i++)
         {
-            data[i] = intData[i];
+            data[index] = intData[i];
             index++;
         }
     }

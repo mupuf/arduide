@@ -92,7 +92,7 @@ void SerialPlugin::write(const QByteArray &data)
             widget->writeDialog()->setStatus(tr("Written %0 bytes of data.").arg(writeCount));
     }
     else
-        widget->writeDialog()->setStatus(tr("Unable to read, the port is not opened."));
+        widget->writeDialog()->setStatus(tr("Unable to write, the port is not opened."));
 }
 
 Q_EXPORT_PLUGIN2(serial, SerialPlugin)
