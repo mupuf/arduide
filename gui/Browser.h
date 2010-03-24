@@ -18,6 +18,9 @@ public:
     void quickstart();
     void openDocumentation(const QString &fileName);
 
+    static QUrl toFileUrl(const QString &path);
+    static QString toFileName(const QUrl &url);
+
 signals:
     void newProjectRequested();
     void newProjectRequested(const QString &initialCode, const QString &name);

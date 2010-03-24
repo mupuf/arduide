@@ -84,7 +84,7 @@
       <!--
          function openDocumentation(file)
          {
-           $('#docs-frame').attr('src', 'file://' + '{{ referencePath|escapejs }}/' + file);
+           $('#docs-frame').attr('src', '{{ referencePath|escapejs }}/' + file);
          }
 
          $(document).ready(function ()

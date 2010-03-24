@@ -92,7 +92,7 @@ void Browser::initializeContext(QVariantHash &mapping)
 {
     mapping.insert("applicationName", qApp->applicationName());
     mapping.insert("applicationUrl", PROJECT_URL);
-    mapping.insert("referencePath", Toolkit::referencePath());
+    mapping.insert("referencePath", toFileUrl(Toolkit::referencePath()));
 }
 
 void Browser::handleLink(const QUrl &url)
@@ -126,7 +126,7 @@ void Browser::handleLink(const QUrl &url)
             if (f.open(QFile::ReadOnly))
             {
                 QString code = QString::fromLocal8Bit(f.readAll());
-			 emit newProjectRequested(code, fi.fileName());
+                emit newProjectRequested(code, fi.fileName());
             } else
                 QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
         }
@@ -148,7 +148,8 @@ void Browser::handleLink(const QUrl &url)
     else if (url.scheme() == "file")
     {
         QDir docDir(Toolkit::referencePath());
-        QFileInfo fi(url.path());
+        QString path = toFileName(url);
+        QFileInfo fi(path);
         if (fi.dir() == docDir)
         {
             // documentation
@@ -176,4 +177,28 @@ void Browser::refresh()
 {
     // we should handle this in better way (reload and show the right page)
     quickstart();
+}
+
+QUrl Browser::toFileUrl(const QString &path)
+{
+    QUrl url;
+    url.setScheme("file");
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+    // on windows it's file:/// so an extra slash is required
+    url.setPath(QString("/") + path);
+#else
+    url.setPath(path);
+#endif
+    return url;
+}
+
+QString Browser::toFileName(const QUrl &url)
+{
+    QString path = url.path();
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+    // remove the initial '/' introduced by file:///
+    if (! path.isEmpty() && path[0] == '/')
+        return path.mid(1);
+#endif
+    return url.path();
 }
