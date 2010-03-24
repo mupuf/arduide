@@ -24,6 +24,10 @@ signals:
     void openProjectRequested();
     void openProjectRequested(const QString &fileName);
 
+private:
+    QString mPage;
+    QUrl mUrl;
+
 protected:
     void initializeContext(QVariantHash &mapping);
 

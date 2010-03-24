@@ -13,7 +13,8 @@
 class PageRenderer
 {
 public:
-    PageRenderer(const QString &pageName, const QVariantHash &mapping);
+    PageRenderer();
+    void render(const QString &pageName, const QVariantHash &mapping);
     const QString &page() { return mPage; }
     const QUrl &url() { return mUrl; }
 

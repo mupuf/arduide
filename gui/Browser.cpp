@@ -80,8 +80,12 @@ void Browser::quickstart()
         sketches.append(sketch);
     mapping.insert("sketches", sketches);
 
-    PageRenderer r("quickstart.html", mapping);
-    setHtml(r.page(), r.url());
+    PageRenderer *renderer = new PageRenderer;
+    renderer->render("quickstart.html", mapping);
+    mPage = renderer->page();
+    mUrl = renderer->url();
+    setHtml(mPage, mUrl);
+    delete renderer;
 }
 
 void Browser::initializeContext(QVariantHash &mapping)
