@@ -13,7 +13,7 @@ class IDEApplication;
 class IDEPluginInterface
 {
 public:
-    virtual ~IDEPluginInterface() = 0;
+    virtual ~IDEPluginInterface();
     virtual bool setup(IDEApplication *app) = 0;
     virtual const QString &name() = 0;
 };

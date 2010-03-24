@@ -10,7 +10,9 @@
 #include <QStringList>
 #include <QFont>
 
-class Settings : public QObject
+#include "IDEGlobal.h"
+
+class IDE_EXPORT Settings : public QObject
 {
     Q_OBJECT
 

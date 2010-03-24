@@ -129,27 +129,55 @@ if(NOT ASIO_FOUND)
   message(SEND_ERROR "Asio not found.")
 endif()
 
+# Utils
+file(GLOB utils_SOURCES
+  "utils/*.cpp" "utils/*.h"
+  "utils/qxt/*.cpp" "utils/qxt/*.h"
+  "utils/hexview/*.cpp" "utils/hexview/*.h")
+
+file(GLOB utils_MOCS
+  "utils/*.h"
+  "utils/qxt/*.h"
+  "utils/hexview/*.h")
+
+qt4_wrap_cpp(utils_MOC_SOURCES ${utils_MOCS})
+add_library(arduino_utils STATIC
+  ${utils_SOURCES}
+  ${utils_MOC_SOURCES})
+
 # Build
 file(GLOB arduino_SOURCES
   "*.cpp" "*.h"
   "gui/*.h" "gui/*.cpp"
-  "env/*.cpp" "env/*.h"
-  "utils/*.cpp" "utils/*.h"
-  "utils/hexview/*.cpp" "utils/hexview/*.h"
-  "utils/qxt/*.cpp" "utils/qxt/*.h")
+  "env/*.cpp" "env/*.h")
 
 file(GLOB arduino_UIS
   "gui/*.ui")
 
 file(GLOB arduino_MOCS
   "gui/*.h"
-  "env/*.h"
-  "utils/*.h"
-  "utils/hexview/*.h"
-  "utils/qxt/*.h")
+  "env/*.h")
 
 file(GLOB arduino_QRCS
   "resources/*.qrc")
+
+qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
+qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
+qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
+
+set(arduino_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} arduino_utils ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
+
+add_executable(arduino-ide
+  ${GUI_TYPE}
+  ${arduino_SOURCES}
+  ${arduino_UI_SOURCES}
+  ${arduino_QRC_SOURCES}
+  ${arduino_MOC_SOURCES})
+if(MSVC)
+  set_target_properties(arduino-ide PROPERTIES
+    ENABLE_EXPORTS ON)
+endif()
+target_link_libraries(arduino-ide ${arduino_LINK_LIBRARIES})
 
 # Plugins
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -165,17 +193,6 @@ else()
   endif()
 endif()
 add_subdirectory(plugins)
-
-qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
-qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
-qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
-add_executable(arduino-ide
-  ${GUI_TYPE}
-  ${arduino_SOURCES}
-  ${arduino_UI_SOURCES}
-  ${arduino_QRC_SOURCES}
-  ${arduino_MOC_SOURCES})
-target_link_libraries(arduino-ide ${Qt4_LINK_LIBRARIES} ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
 
 # Install
 if(CMAKE_BUILD_TYPE STREQUAL Debug)

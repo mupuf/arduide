@@ -41,7 +41,7 @@ IDEApplication::IDEApplication(int argc, char **argv)
 void IDEApplication::initializeTemplates()
 {
     mEngine = new Grantlee::Engine(this);
-    mEngine->setPluginDirs(QStringList() << GRANTLEE_PLUGIN_DIR "/");
+    mEngine->setPluginPaths(QStringList() << GRANTLEE_PLUGIN_DIR "/");
     Grantlee::FileSystemTemplateLoader::Ptr loader = Grantlee::FileSystemTemplateLoader::Ptr(new Grantlee::FileSystemTemplateLoader);
     loader->setTemplateDirs(QStringList() << QDir(mDataPath).filePath("templates"));
     mEngine->addTemplateLoader(loader);

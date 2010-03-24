@@ -14,10 +14,11 @@
 #include "gui/FirstTimeWizard.h"
 #include "env/ProjectHistory.h"
 #include "env/Settings.h"
+#include "IDEGlobal.h"
 
 class QPluginLoader;
 
-class IDEApplication : public QApplication
+class IDE_EXPORT IDEApplication : public QApplication
 {
 public:
     IDEApplication(int argc, char **argv);

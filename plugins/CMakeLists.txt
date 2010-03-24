@@ -5,6 +5,8 @@ file(GLOB plugins_SOURCES
 list(APPEND arduino_SOURCES ${plugins_SOURCES})
 set(arduino_SOURCES ${arduino_SOURCES} PARENT_SCOPE)
 
+add_definitions(-DIDE_PLUGIN)
+
 foreach(PLUGIN ${PLUGINS})
   file(GLOB plugin_SOURCES
     "${PLUGIN}/*.h"
@@ -29,6 +31,13 @@ foreach(PLUGIN ${PLUGINS})
     ${plugin_UI_SOURCES}
     ${plugin_MOC_SOURCES}
     ${plugin_QRC_SOURCES})
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    if (PLUGIN STREQUAL serial)
+      target_link_libraries(${PLUGIN} arduino-ide ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} arduino_utils)
+	else()
+      target_link_libraries(${PLUGIN} arduino-ide)
+    endif()
+  endif()
   set_target_properties(${PLUGIN} PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins")
 endforeach()
