@@ -1,3 +1,4 @@
+
 /**
  * \file ConfigDialog.h
  * \author Denis Martinez
@@ -7,6 +8,8 @@
 #define CONFIGDIALOG_H
 
 #include <qxtconfigdialog.h>
+
+#include <QSet>
 
 #include "ui_ConfigEditor.h"
 #include "ui_ConfigPaths.h"
@@ -18,10 +21,16 @@ class ConfigDialog : public QxtConfigDialog
 public:
     ConfigDialog(QWidget *parent = NULL);
 
+public slots:
+    void accept();
+
 private slots:
     void chooseFont();
     void chooseArduinoPath();
     void chooseSketchbookPath();
+
+    bool apply();
+    void fieldChange();
 
 private:
     // page indexes
@@ -35,6 +44,8 @@ private:
 
     Ui::ConfigEditor uiEditor;
     Ui::ConfigPaths uiPaths;
+
+    QSet<QWidget *> mChangedFields;
 };
 
 #endif // CONFIGDIALOG_H

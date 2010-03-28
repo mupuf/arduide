@@ -1,19 +1,12 @@
 General:
  * have a configuration dialog (Qxt provides a nice one)
-   - possibility to change arduino, sketchbook paths
    - output verbosity
  * network stuff
    - check for updates (when we have a first release)
    - download and install the SDK automatically, in a personal place like QDesktopServices::DataLocation
- * functionality as plugins [DONE]
-   - can add tabs in the Utility dock, or add new toolbars, menus
  * use native system icons when available
- * port to Mac and Windows [DONE]
-   - device enumeration: Device.cpp
-   - Serial.cpp
  * help menu:
    - community links: arduino forum, maybe other resources
-   - about dialog [DONE]
 
 Browser:
  * ability to search documentation
@@ -34,16 +27,13 @@ Editor:
    - fonts, indentation, style, ... (QScintilla)
  * improve the editor (denis)
    - automatic indentation
-   - ctrl+shift selection [DONE]
-   - tab switching (Ctrl-PageUp, Ctrl-PageDown) [DONE]
- * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...) [DONE]
  * auto-completion
    - need to find out how to lex implicit includes (WProgram.h)
  * code snippets
 
 Plugin ideas:
  * serial debugger
- * serial communication
+ * serial communication [WIP]
    - connect the IDE to the Arduino and make simple reads/writes
  * simulation
  * pastebin
@@ -59,3 +49,18 @@ Packaging:
  * we need to ship grantlee plugins on Mac and Windows:
    - they should reside somewhere in the application directory (like grantlee_plugins/)
    -> adapt CMakeLists.txt
+
+DONE:
+ * have a configuration dialog (Qxt provides a nice one)
+   - possibility to change arduino, sketchbook paths [DONE]
+ * functionality as plugins [DONE]
+   - can add tabs in the Utility dock, or add new toolbars, menus
+ * port to Mac and Windows [DONE]
+   - device enumeration: Device.cpp
+   - Serial.cpp
+ * help menu:
+   - about dialog [DONE]
+ * improve the editor (denis)
+   - ctrl+shift selection [DONE]
+   - tab switching (Ctrl-PageUp, Ctrl-PageDown) [DONE]
+ * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...) [DONE]

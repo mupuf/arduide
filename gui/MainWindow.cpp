@@ -380,8 +380,9 @@ void MainWindow::toggleDock()
 
 void MainWindow::configure()
 {
-    ConfigDialog dialog(this);
-    dialog.exec();
+    ConfigDialog *dialog = new ConfigDialog(this);
+    dialog->exec();
+    delete dialog;
 }
 
 void MainWindow::setFont(const QFont &font)
