@@ -13,6 +13,7 @@
 
 #include "ui_ConfigEditor.h"
 #include "ui_ConfigPaths.h"
+#include "ui_ConfigBuild.h"
 
 class ConfigDialog : public QxtConfigDialog
 {
@@ -44,6 +45,7 @@ private:
 
     Ui::ConfigEditor uiEditor;
     Ui::ConfigPaths uiPaths;
+    Ui::ConfigBuild uiBuild;
 
     QSet<QWidget *> mChangedFields;
 };

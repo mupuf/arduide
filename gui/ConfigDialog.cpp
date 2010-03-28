@@ -24,6 +24,9 @@ ConfigDialog::ConfigDialog(QWidget *parent)
 
 void ConfigDialog::setupUi()
 {
+    setMinimumWidth(400);
+    setMinimumHeight(300);
+
     dialogButtonBox()->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel);
 
     QWidget *page;
@@ -36,9 +39,14 @@ void ConfigDialog::setupUi()
     uiPaths.setupUi(page);
     addPage(page, QIcon(":/images/32x32/folder.png"), tr("Paths"));
 
+    page = new QWidget;
+    uiBuild.setupUi(page);
+    addPage(page, QIcon(":/images/32x32/applications-development.png"), tr("Build"));
+
     connect(dialogButtonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
     connect(uiPaths.arduinoPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
     connect(uiPaths.sketchbookPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
+    connect(uiBuild.verboseBox, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
     connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
@@ -71,6 +79,8 @@ bool ConfigDialog::apply()
             settings->setSketchPath(uiPaths.sketchbookPathEdit->text());
             #pragma message("TODO: update the sketchbook browser")
         }
+        else if (field == uiBuild.verboseBox)
+            settings->setVerboseUpload(uiBuild.verboseBox->isChecked());
     }
     mChangedFields.clear();
     return true;
