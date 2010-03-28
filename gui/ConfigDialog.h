@@ -9,6 +9,7 @@
 #include <qxtconfigdialog.h>
 
 #include "ui_ConfigEditor.h"
+#include "ui_ConfigPaths.h"
 
 class ConfigDialog : public QxtConfigDialog
 {
@@ -19,10 +20,13 @@ public:
 
 private slots:
     void chooseFont();
+    void chooseArduinoPath();
+    void chooseSketchbookPath();
 
 private:
     // page indexes
     static const int editorIndex = 0;
+    static const int pathsIndex = editorIndex + 1;
 
     void setupUi();
     void initializePage(int index);
@@ -30,6 +34,7 @@ private:
     void setupFontChooser();
 
     Ui::ConfigEditor uiEditor;
+    Ui::ConfigPaths uiPaths;
 };
 
 #endif // CONFIGDIALOG_H

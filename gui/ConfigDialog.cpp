@@ -6,8 +6,11 @@
 #include "ConfigDialog.h"
 
 #include <QFontDialog>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #include "env/Settings.h"
+#include "env/Toolkit.h"
 #include "IDEApplication.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent)
@@ -25,7 +28,13 @@ void ConfigDialog::setupUi()
     uiEditor.setupUi(page);
     addPage(page, QIcon(":/images/32x32/accessories-text-editor.png"), tr("Editor"));
 
+    page = new QWidget;
+    uiPaths.setupUi(page);
+    addPage(page, QIcon(":/images/32x32/folder.png"), tr("Paths"));
+
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
+    connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
+    connect(uiPaths.sketchbookPathButton, SIGNAL(clicked()), this, SLOT(chooseSketchbookPath()));
 }
 
 void ConfigDialog::initializePage(int index)
@@ -34,6 +43,10 @@ void ConfigDialog::initializePage(int index)
     {
     case editorIndex:
         setupFontChooser();
+        break;
+    case pathsIndex:
+        uiPaths.arduinoPathEdit->setText(ideApp->settings()->arduinoPath());
+        uiPaths.sketchbookPathEdit->setText(ideApp->settings()->sketchPath());
         break;
     }
 }
@@ -56,5 +69,29 @@ void ConfigDialog::chooseFont()
     {
         ideApp->settings()->setEditorFont(f);
         setupFontChooser();
+    }
+}
+
+void ConfigDialog::chooseArduinoPath()
+{
+    QString path = QFileDialog::getExistingDirectory(this, tr("Choose Arduino path"));
+    bool valid;
+    if (! path.isEmpty())
+    {
+        valid = Toolkit::isValidArduinoPath(path);
+        if (valid)
+            uiPaths.arduinoPathEdit->setText(path);
+        else
+            QMessageBox::warning(this, tr("Invalid arduino path"), tr("This path does not contain a valid Arduino installation, please choose another."));
+    }
+}
+
+void ConfigDialog::chooseSketchbookPath()
+{
+    QString path = QFileDialog::getExistingDirectory(this, tr("Choose Sketchbook path"));
+    if (! path.isEmpty())
+    {
+        uiPaths.sketchbookPathEdit->setText(path);
+#pragma message("TODO: update the sketchbook browser")
     }
 }

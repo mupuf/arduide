@@ -5,15 +5,15 @@ General:
  * network stuff
    - check for updates (when we have a first release)
    - download and install the SDK automatically, in a personal place like QDesktopServices::DataLocation
- * functionality as plugins
+ * functionality as plugins [DONE]
    - can add tabs in the Utility dock, or add new toolbars, menus
  * use native system icons when available
- * port to Mac and Windows
+ * port to Mac and Windows [DONE]
    - device enumeration: Device.cpp
    - Serial.cpp
  * help menu:
    - community links: arduino forum, maybe other resources
-   - about dialog
+   - about dialog [DONE]
 
 Browser:
  * ability to search documentation

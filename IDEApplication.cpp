@@ -73,6 +73,7 @@ void IDEApplication::initializePlugins()
 {
     qDebug() << "initializePlugins: loading the plugins in " PLUGIN_PATH;
     mPluginLoader = new QPluginLoader(this);
+    mPluginLoader->setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
     QDir pluginDir(PLUGIN_PATH);
     QString fileName;
     bool ok;
@@ -89,5 +90,7 @@ void IDEApplication::initializePlugins()
             ok = plugin != NULL && plugin->setup(this);
             qDebug() << "Initializing" << entry << "result:" << ok;
         }
+        else
+            qDebug() << mPluginLoader->errorString();
     }
 }

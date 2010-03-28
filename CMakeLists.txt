@@ -141,15 +141,13 @@ file(GLOB utils_MOCS
   "utils/hexview/*.h")
 
 qt4_wrap_cpp(utils_MOC_SOURCES ${utils_MOCS})
-add_library(arduino_utils STATIC
-  ${utils_SOURCES}
-  ${utils_MOC_SOURCES})
 
 # Build
 file(GLOB arduino_SOURCES
   "*.cpp" "*.h"
   "gui/*.h" "gui/*.cpp"
-  "env/*.cpp" "env/*.h")
+  "env/*.cpp" "env/*.h"
+  "plugins/*.cpp" "plugins/*.h")
 
 file(GLOB arduino_UIS
   "gui/*.ui")
@@ -165,18 +163,18 @@ qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
 qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
 
-set(arduino_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} arduino_utils ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
+set(arduino_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
 
 add_executable(arduino-ide
   ${GUI_TYPE}
   ${arduino_SOURCES}
   ${arduino_UI_SOURCES}
   ${arduino_QRC_SOURCES}
-  ${arduino_MOC_SOURCES})
-if(MSVC)
-  set_target_properties(arduino-ide PROPERTIES
-    ENABLE_EXPORTS ON)
-endif()
+  ${arduino_MOC_SOURCES}
+  ${utils_SOURCES}
+  ${utils_MOC_SOURCES})
+set_target_properties(arduino-ide PROPERTIES
+  ENABLE_EXPORTS ON)
 target_link_libraries(arduino-ide ${arduino_LINK_LIBRARIES})
 
 # Plugins
