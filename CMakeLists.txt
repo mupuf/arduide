@@ -268,5 +268,3 @@ message(" Debug: makes the application directly runnable from the build tree, fo
 message("  - Note that you can't install in Debug mode.")
 message(" Release/Other: you must install the application before you can run it")
 message("")
-message("Configuration finished. Have fun!")
-message("")
