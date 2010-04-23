@@ -119,17 +119,15 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_definitions(-DQSCINTILLA_DLL)
 endif()
 
-# Asio
-include(FindBoost)
-add_definitions(-DBOOST_ALL_NO_LIB)
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
-check_include_file_cxx("asio/version.hpp" ASIO_FOUND)
-if(NOT ASIO_FOUND)
-  message(SEND_ERROR "Asio not found.")
+# Utils
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  file(GLOB utils_OS_SOURCES
+    "utils/win32/*.cpp" "utils/win32/*.h")
+else()
+  file(GLOB utils_OS_SOURCES
+    "utils/unix/*.cpp" "utils/unix/*.h")
 endif()
 
-# Utils
 file(GLOB utils_SOURCES
   "utils/*.cpp" "utils/*.h"
   "utils/qxt/*.cpp" "utils/qxt/*.h"
@@ -172,6 +170,7 @@ add_executable(arduino-ide
   ${arduino_QRC_SOURCES}
   ${arduino_MOC_SOURCES}
   ${utils_SOURCES}
+  ${utils_OS_SOURCES}
   ${utils_MOC_SOURCES})
 set_target_properties(arduino-ide PROPERTIES
   ENABLE_EXPORTS ON)
@@ -193,9 +192,7 @@ endif()
 add_subdirectory(plugins)
 
 # Install
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  message("Cannot install a Debug build, run CMake again if you would like to install.")
-else()
+if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${arduino_DATA_PATH}")
   if(USE_FHS_PATHS)
     install(TARGETS arduino-ide DESTINATION bin)
@@ -261,37 +258,15 @@ include(CPack)
 
 #Messages
 message("")
+message("-- Summary:")
+message("* Arduino SDK compatible version: ${ARDUINO_SDK_VERSION}")
+message("* Use the Filesystem Hierarchy Standard: USE_FHS_PATHS=${USE_FHS_PATHS}")
+message(" OFF: the software is installed in a single directory, good for binary distributions")
+message(" ON: the software is installed in a Unix prefix, good for packagers")
+message("* Compilation type: CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+message(" Debug: makes the application directly runnable from the build tree, for developers")
+message("  - Note that you can't install in Debug mode.")
+message(" Release/Other: you must install the application before you can run it")
 message("")
-message("**************************************")
-message("***********    Summary    ************")
-message("**************************************")
-message("")
-message("Arduino SDK compatible version: ${ARDUINO_SDK_VERSION}")
-message("")
-message("Use the Filesystem Hierarchy Standard (for UNIX): ${USE_FHS_PATHS} (use -DUSE_FHS_PATHS=ON/OFF to set/unset this option)")
-message("Compilation type:                                 ${CMAKE_BUILD_TYPE} (use -DCMAKE_BUILD_TYPE=Release|Debug to change this option)")
-message("")
-message("")
-message("**************************************")
-message("***********    Examples    ***********")
-message("**************************************")
-message("")
-message("-- Unix systems (eg. not a windows system) --")
-message("	You want to try the Arduide without installing it: ")
-message("		cmake -DUSE_FHS_PATHS=ON -DCMAKE_BUILD_TYPE=Debug .. && ./arduino-ide")
-message("")
-message("	You want to install the Arduide:")
-message("		$ cmake -DUSE_FHS_PATHS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..")
-message("		# make install")
-message("")
-message("-- Windows --")
-message("	You want to try the Arduide without installing it: ")
-message("		cmake -DUSE_FHS_PATHS=OFF -DCMAKE_BUILD_TYPE=Debug .. && ./arduino-ide")
-message("")
-message("	You want to install the Arduide:")
-message("		$ cmake -DUSE_FHS_PATHS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..")
-message("		# make install")
-message("")
-message("Have fun!")
-message("")
+message("Configuration finished. Have fun!")
 message("")

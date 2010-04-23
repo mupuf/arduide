@@ -8,19 +8,25 @@
 
 #include <QIODevice>
 
-#include <asio/io_service.hpp>
-#include <asio/serial_port.hpp>
-#include <asio/completion_condition.hpp>
-#include <asio/read.hpp>
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+#include <windows.h>
+#endif
 
 class Serial : public QIODevice
 {
 public:
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+    typedef ::HANDLE descriptor;
+    static const descriptor INVALID_SERIAL_DESCRIPTOR = INVALID_HANDLE_VALUE;
+#else
+    typedef int descriptor;
+    static const descriptor INVALID_SERIAL_DESCRIPTOR = -1;
+#endif
+
     Serial(const QString &port, int baudRate = 9600);
     static const QList<int> &baudRates();
 
-    asio::serial_port::native_type serialDescriptor();
-
+    descriptor serialDescriptor();
     bool flushBuffer();
 
     // QIODevice implementation
@@ -32,10 +38,11 @@ public:
     qint64 writeData(const char *data, qint64 maxSize);
 
 private:
+    bool setDTR(bool enable);
+
     QString mPort;
     int mBaudRate;
-    asio::io_service mIo;
-    asio::serial_port mSerial;
+    descriptor mSerial;
 };
 
 #endif // SERIAL_H

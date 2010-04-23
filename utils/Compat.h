@@ -20,29 +20,10 @@ void sleep_ms(int ms)
 {
 	Sleep(ms);
 }
-
-bool setDTR(HANDLE h, bool enable)
-{
-    return EscapeCommFunction(h, enable ? SETDTR : CLRDTR);
-}
 #else
 void sleep_ms(int ms)
 {
 	usleep(ms * 1000);
-}
-
-bool setDTR(int fd, bool enable)
-{
-    unsigned int result = 0;
-    if (ioctl(fd, TIOCMGET, &result) == -1)
-        return false;
-    if (enable)
-        result |= TIOCM_DTR;
-    else
-        result &= ~ TIOCM_DTR;
-    if (ioctl(fd, TIOCMSET, &result) == -1)
-        return false;
-    return true;
 }
 #endif
 
