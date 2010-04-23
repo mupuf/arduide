@@ -106,7 +106,7 @@ DeviceList Device::listDevices()
     udev_list_entry *list_entry = udev_enumerate_get_list_entry(enumerate);
     udev_list_entry *list_entry_current;
     udev_device *device, *parent_device;
-    const char *devnode, *subsystem;
+    const char *devnode, *devname;
     serial_struct serial;
     bool is_serial;
     int fd;
@@ -117,21 +117,33 @@ DeviceList Device::listDevices()
         is_serial = false;
         fd = open(devnode, O_RDONLY | O_NONBLOCK);
         if (fd >= 0)
-            if (ioctl(fd, TIOCGSERIAL, &serial) != -1)
-                if (serial.type == 0)
+        {
+            // get serial properties from descriptor
+            if (ioctl(fd, TIOCGSERIAL, &serial) != -1 && serial.type == 0)
+            {
+                // dummy read check (detect non-existing RS232 ports)
+                if (read(fd, NULL, 0) == 0)
                     is_serial = true;
+            }
+            close(fd);
+        }
+
         if (is_serial)
         {
-            subsystem = NULL;
-            // get the parent subsystem, use it as the device description
-            parent_device = udev_device_get_parent(device);
-            if (parent_device)
-                subsystem = udev_device_get_subsystem(parent_device);
-            if (subsystem == NULL)
-                subsystem = "unknown";
-            l << Device(subsystem, devnode);
+            devname = NULL;
+            // get the name of the parent device, use it as the device description
+            for (parent_device = device; parent_device != NULL && devname == NULL; parent_device = udev_device_get_parent(parent_device))
+            {
+                devname = udev_device_get_sysattr_value(parent_device, "name");
+                if (! devname)
+                    devname = udev_device_get_sysattr_value(parent_device, "interface");
+            }
+            if (devname == NULL)
+                devname = "unknown";
+            l << Device(devname, devnode);
         }
     }
+    udev_device_unref(device);
     udev_enumerate_unref(enumerate);
     udev_unref(udev);
 #elif defined(UDE_DBUS)
