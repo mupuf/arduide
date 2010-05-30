@@ -46,7 +46,7 @@ void ConfigDialog::setupUi()
     connect(dialogButtonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
     connect(uiPaths.arduinoPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
     connect(uiPaths.sketchbookPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
-    connect(uiBuild.verboseBox, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
+    connect(uiBuild.verboseBox, SIGNAL(stateChanged(int)), this, SLOT(fieldChange()));
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
     connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
