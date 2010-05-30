@@ -40,6 +40,7 @@ option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everythi
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   # when debugging, the data files are always searched inside the source directory
   add_definitions(-DDATA_PATH="${CMAKE_SOURCE_DIR}/data")
+  set(USE_FHS_PATHS ON)
 else()
   if(USE_FHS_PATHS)
     # search data files in a static directory (e.g. Unix)
