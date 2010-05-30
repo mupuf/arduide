@@ -79,6 +79,9 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(USE_DBUS ON)
     add_definitions(-DUSE_DBUS)
   endif()
+  
+  # add grantlee's default directory on Linux systems
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee")
 endif()
 
 # Qt
