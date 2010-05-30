@@ -69,7 +69,7 @@ bool Serial::open(OpenMode mode)
     return true;
 
 error:
-    setErrorString(strerror(errno));
+    setErrorString(QString::fromLocal8Bit(strerror(errno)));
     if (mSerial >= 0)
     {
         ::close(mSerial);
@@ -97,7 +97,7 @@ qint64 Serial::readData(char *data, qint64 maxSize)
         return n;
 
 error:
-   setErrorString(strerror(errno));
+   setErrorString(QString::fromLocal8Bit(strerror(errno)));
    return -1;
 }
 
@@ -110,7 +110,7 @@ qint64 Serial::writeData(const char *data, qint64 maxSize)
         return n;
 
 error:
-   setErrorString(strerror(errno));
+   setErrorString(QString::fromLocal8Bit(strerror(errno)));
    return -1;
 }
 
