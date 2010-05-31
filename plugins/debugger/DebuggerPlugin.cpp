@@ -20,3 +20,5 @@ bool DebuggerPlugin::setup(IDEApplication *app)
 
     return true;
 }
+
+Q_EXPORT_PLUGIN2(debugger, DebuggerPlugin)

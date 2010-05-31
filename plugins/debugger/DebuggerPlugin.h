@@ -3,8 +3,8 @@
  * \author Martin Peres
  */
 
-#ifndef DEBUGGER_PLUGIN_H
-#define DEBUGGER_PLUGIN_H
+#ifndef DEBUGGERPLUGIN_H
+#define DEBUGGERPLUGIN_H
 
 #include "plugins/IDEPluginInterface.h"
 
@@ -26,4 +26,4 @@ private:
     DebuggerWidget *widget;
 };
 
-#endif // SERIALPLUGIN_H
+#endif // DEBUGGERPLUGIN_H

@@ -17,4 +17,4 @@ public:
     void setStatus(const QString &text);
 };
 
-#endif // SERIALWRITEDIALOG_H
+#endif // DEBUGGERWIDGET_H
