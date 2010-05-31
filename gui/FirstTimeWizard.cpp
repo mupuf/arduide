@@ -12,6 +12,10 @@
 #include <QDesktopServices>
 #include <QNetworkReply>
 #include <QNetworkDiskCache>
+#include <QTemporaryFile>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
+#include <QProcess>
 #include <qxtsignalwaiter.h>
 #include <QDebug>
 
@@ -141,19 +145,26 @@ bool FirstTimeWizard::validateCurrentPage()
     if (currentId() == 0)
     {
         QString path;
-#ifndef Q_OS_DARWIN
-	path = arduinoPathEdit->text();
-#else
-	path = QDir(arduinoPathEdit->text()).filePath("Contents/Resources/Java");
-#endif
-        bool ok = Toolkit::isValidArduinoPath(path);
-        if (! ok)
-        {
-            QMessageBox::warning(this, tr("Invalid path"), tr("Please enter a valid path to your Arduino installation."));
-            return false;
-        }
-        else
+        bool ok;
+        if (automaticInstallButton->isChecked())
+            // reset the path
             ideApp->settings()->setArduinoPath(path);
+        else
+        {
+#ifndef Q_OS_DARWIN
+            path = arduinoPathEdit->text();
+#else
+            path = QDir(arduinoPathEdit->text()).filePath("Contents/Resources/Java");
+#endif
+            ok = Toolkit::isValidArduinoPath(path);
+            if (! ok)
+            {
+                QMessageBox::warning(this, tr("Invalid path"), tr("Please enter a valid path to your Arduino installation."));
+                return false;
+            }
+            else
+                ideApp->settings()->setArduinoPath(path);
+        }
 
         path = sketchbookPathEdit->text();
         ok = QFileInfo(path).isDir() || QDir().mkdir(path);
@@ -181,8 +192,6 @@ bool FirstTimeWizard::validateCurrentPage()
         foreach (QAbstractButton *button, buttons)
             button->setEnabled(false);
         downloadWaiter.wait();
-        foreach (QAbstractButton *button, buttons)
-            button->setEnabled(true);
 
         if (reply->error() != QNetworkReply::NoError)
         {
@@ -190,12 +199,82 @@ bool FirstTimeWizard::validateCurrentPage()
                 this,
                 tr("Download error"),
                 tr("An error occured during the download:") + " " + reply->errorString());
+            foreach (QAbstractButton *button, buttons)
+                button->setEnabled(true);
             return false;
         }
-        else
-            downloadStatusLabel->setPixmap(QPixmap(":/images/16x16/task-complete.png"));
+
+        downloadStatusLabel->setPixmap(QPixmap(":/images/16x16/task-complete.png"));
 
         // extract the archive
+        QTemporaryFile archive("arduino");
+        bool extractSuccess = archive.open();
+        QString destinationPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+        QDir destinationDir(destinationPath);
+        if (! destinationDir.exists())
+            extractSuccess = extractSuccess && destinationDir.mkpath(".");
+
+        if (extractSuccess)
+        {
+            // write the reply to the temporary file
+            QByteArray buffer;
+            static const int bufferSize = 8192;
+            buffer.resize(bufferSize);
+            qint64 readBytes = reply->read(buffer.data(), bufferSize);
+            while (readBytes > 0)
+            {
+                archive.write(buffer.data(), readBytes);
+                readBytes = reply->read(buffer.data(), bufferSize);
+            }
+            archive.seek(0);
+
+            // call tar to extract
+            QString tarCommand = "tar";
+            QStringList tarArgs = QStringList()
+                << "-x" << "-z" << "-f" << archive.fileName()
+                << "-C" << destinationPath;
+
+            QFutureWatcher<int> tarWatcher;
+            QxtSignalWaiter tarWaiter(&tarWatcher, SIGNAL(finished()));
+            QFuture<int> tarFuture = QtConcurrent::run(&QProcess::execute, tarCommand, tarArgs);
+            tarWatcher.setFuture(tarFuture);
+            tarWaiter.wait();
+            extractSuccess = tarFuture.result() == 0;
+        }
+
+        if (! extractSuccess)
+        {
+            QMessageBox::warning(
+                this,
+                tr("Installation error"),
+                tr("An error occured during the extraction."));
+            foreach (QAbstractButton *button, buttons)
+                button->setEnabled(true);
+            return false;
+        }
+
+        installStatusLabel->setPixmap(QPixmap(":/images/16x16/task-complete.png"));
+
+        QString arduinoPath = QDir(destinationPath).filePath("arduino-" ARDUINO_SDK_VERSION);
+        if (! Toolkit::isValidArduinoPath(arduinoPath))
+        {
+            QMessageBox::warning(
+                this,
+                tr("Installation error"),
+                tr("The extracted Arduino package is not valid."));
+            foreach (QAbstractButton *button, buttons)
+                button->setEnabled(true);
+            return false;
+        }
+        ideApp->settings()->setArduinoPath(arduinoPath);
+
+        QMessageBox::information(
+            this,
+            tr("Installation"),
+            tr("Arduino was successfully installed to:") + "\n" + arduinoPath);
+
+        foreach (QAbstractButton *button, buttons)
+            button->setEnabled(true);
     }
     return true;
 }
