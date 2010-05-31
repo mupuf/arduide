@@ -1,4 +1,4 @@
-set(PLUGINS serial)
+set(PLUGINS "serial" "debugger")
 
 file(GLOB plugins_SOURCES
   "*.h" "*.cpp")
