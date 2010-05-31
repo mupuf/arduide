@@ -10,6 +10,9 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QNetworkReply>
+#include <QNetworkDiskCache>
+#include <qxtsignalwaiter.h>
 #include <QDebug>
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
@@ -25,24 +28,70 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 {
     setupUi(this);
 
-    // default path to display in the box
-    QString defaultArduinoPath;
+    // paths to search for an existing installation
+    QStringList defaultArduinoPaths;
+
 #ifdef Q_OS_DARWIN
     QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
-    defaultArduinoPath = QDir(applicationPath).filePath("Arduino.app");
+    defaultArduinoPaths << QDir(applicationPath).filePath("Arduino.app");
 #elif defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
-    // QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation);
     TCHAR applicationPath[MAX_PATH];
     if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROGRAM_FILES, NULL, 0, applicationPath)))
-        defaultArduinoPath = QDir(applicationPath).filePath("arduino-" ARDUINO_SDK_VERSION);
+        defaultArduinoPaths
+            << QDir(applicationPath).filePath("arduino-" ARDUINO_SDK_VERSION)
+            << QDir(applicationPath).filePath("arduino");
 #else
-    defaultArduinoPath = "/usr/share/arduino";
+    QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+
+    defaultArduinoPaths
+        << QDir(applicationPath).filePath("arduino-" ARDUINO_SDK_VERSION)
+        << QDir(applicationPath).filePath("arduino")
+        << "/usr/local/share/arduino-" ARDUINO_SDK_VERSION
+        << "/usr/local/share/arduino"
+        << "/usr/share/arduino-" ARDUINO_SDK_VERSION
+        << "/usr/share/arduino";
 #endif
-    arduinoPathEdit->setText(defaultArduinoPath);
+
+    automaticInstallButton->setChecked(true);
+    foreach(const QString &path, defaultArduinoPaths)
+    {
+        if (Toolkit::isValidArduinoPath(path))
+        {
+            arduinoPathEdit->setText(path);
+            existingInstallButton->setChecked(true);
+            break;
+        }
+    }
 
     sketchbookPathEdit->setText(QDir(QDir::homePath()).filePath("sketchbook"));
     projectLabel->setText(projectLabel->text().arg(PROJECT_NAME).arg(PROJECT_AUTHORS));
     urlLabel->setText(urlLabel->text().arg(PROJECT_URL));
+
+    // set up the download page
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
+#warn TODO: platform not supported yet
+    mDownloadOs = "Windows";
+#elif defined(Q_OS_DARWIN) // MacOSX
+#warn TODO: platform not supported yet
+    mDownloadOs = "MacOSX";
+#else // Linux, other Unix
+#if defined(__x86_64__) // 64-bit Unix
+    mDownloadOs = "64-bit Linux";
+    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64-2.tgz" ;
+#elif defined(__x86_32__) // 32-bit Unix
+    mDownloadOs = "32-bit Linux";
+    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
+#else // other
+#error unsupported architecture
+#endif
+#endif
+
+    downloadLabel->setText(downloadLabel->text().arg(ARDUINO_SDK_VERSION).arg(mDownloadOs));
+
+    mDownloadManager = new QNetworkAccessManager(this);
+    QNetworkDiskCache *downloadCache = new QNetworkDiskCache(mDownloadManager);
+    downloadCache->setCacheDirectory(QDesktopServices::storageLocation(QDesktopServices::CacheLocation));
+    mDownloadManager->setCache(downloadCache);
 
     setupActions();
 }
@@ -78,6 +127,15 @@ void FirstTimeWizard::chooseSketchbookPath()
         sketchbookPathEdit->setText(path);
 }
 
+void FirstTimeWizard::initializePage(int id)
+{
+    if (id == 1)
+    {
+        downloadStatusLabel->setText(QString());
+        installStatusLabel->setText(QString());
+    }
+}
+
 bool FirstTimeWizard::validateCurrentPage()
 {
     if (currentId() == 0)
@@ -107,5 +165,51 @@ bool FirstTimeWizard::validateCurrentPage()
         else
             ideApp->settings()->setSketchPath(path);
     }
+    else if (currentId() == 1)
+    {
+        // do the download
+        downloadProgressBar->setValue(0);
+        QNetworkRequest request(mDownloadUrl);
+        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        QNetworkReply *reply = mDownloadManager->get(request);
+        QxtSignalWaiter downloadWaiter(reply, SIGNAL(finished()));
+        connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(onDownloadProgress(qint64, qint64)));
+        QList<QAbstractButton *> buttons = QList<QAbstractButton *>()
+            << button(BackButton)
+            << button(NextButton)
+            << button(CancelButton);
+        foreach (QAbstractButton *button, buttons)
+            button->setEnabled(false);
+        downloadWaiter.wait();
+        foreach (QAbstractButton *button, buttons)
+            button->setEnabled(true);
+
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            QMessageBox::warning(
+                this,
+                tr("Download error"),
+                tr("An error occured during the download:") + " " + reply->errorString());
+            return false;
+        }
+        else
+            downloadStatusLabel->setPixmap(QPixmap(":/images/16x16/task-complete.png"));
+
+        // extract the archive
+    }
     return true;
+}
+
+int FirstTimeWizard::nextId() const
+{
+    if (currentId() == 0 && existingInstallButton->isChecked())
+        // skip the automatic install page
+        return 2;
+    return QWizard::nextId();
+}
+
+void FirstTimeWizard::onDownloadProgress(qint64 received, qint64 total)
+{
+    int percent = 100 * received / total;
+    downloadProgressBar->setValue(percent);
 }

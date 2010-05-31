@@ -30,44 +30,101 @@
     <item>
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>I need the location of your Arduino installation.</string>
+       <string>I need to locate your Arduino installation to continue.</string>
       </property>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <widget class="QRadioButton" name="existingInstallButton">
+      <property name="text">
+       <string>Existing installation</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Arduino path:</string>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-       </widget>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLineEdit" name="arduinoPathEdit"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="arduinoPathButton">
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>...</string>
+           <string>Arduino path:</string>
+          </property>
+          <property name="buddy">
+           <cstring>arduinoPathEdit</cstring>
           </property>
          </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLineEdit" name="arduinoPathEdit"/>
+          </item>
+          <item>
+           <widget class="QToolButton" name="arduinoPathButton">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="label_3">
+     <widget class="QRadioButton" name="automaticInstallButton">
       <property name="text">
-       <string>&lt;img src=&quot;:/images/16x16/help-hint.png&quot; /&gt;If you don't have one, you can download the software for free on &lt;a href=&quot;http://arduino.cc/&quot;&gt;the Arduino website&lt;/a&gt;.</string>
-      </property>
-      <property name="openExternalLinks">
-       <bool>true</bool>
+       <string>Automatic installation</string>
       </property>
      </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>&lt;img src=&quot;:/images/16x16/help-hint.png&quot; /&gt;This will download and install the software automatically from &lt;a href=&quot;http://arduino.cc/&quot;&gt;the Arduino website&lt;/a&gt;.</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="QLabel" name="label_6">
@@ -89,6 +146,9 @@
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Sketchbook path:</string>
+        </property>
+        <property name="buddy">
+         <cstring>sketchbookPathEdit</cstring>
         </property>
        </widget>
       </item>
@@ -112,13 +172,146 @@
   </widget>
   <widget class="QWizardPage" name="wizardPage2">
    <property name="title">
+    <string>Automatic Installation</string>
+   </property>
+   <property name="subTitle">
+    <string>The Arduino IDE will now download and install the required software.</string>
+   </property>
+   <attribute name="pageId">
+    <string notr="true">1</string>
+   </attribute>
+   <layout class="QVBoxLayout" name="verticalLayout_5">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_8">
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Step 1: Download</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="downloadStatusLabel">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLabel" name="downloadLabel">
+          <property name="text">
+           <string>Arduino %0 for %1</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="downloadProgressBar">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>&lt;hr /&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Step 2: Installation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="installStatusLabel">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>133</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage3">
+   <property name="title">
     <string>Configuration successful</string>
    </property>
    <property name="subTitle">
     <string>The Arduino IDE is now ready.</string>
    </property>
    <attribute name="pageId">
-    <string notr="true">1</string>
+    <string notr="true">2</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>

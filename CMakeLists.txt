@@ -86,7 +86,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 # Qt
-set(Qt4_COMPONENTS QtCore QtGui QtWebkit)
+set(Qt4_COMPONENTS QtCore QtGui QtNetwork QtWebkit)
 if(USE_DBUS)
   set(Qt4_COMPONENTS ${Qt4_COMPONENTS} QtDbus)
 endif()
