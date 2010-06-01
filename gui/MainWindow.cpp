@@ -333,7 +333,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-void MainWindow::build()
+bool MainWindow::build()
 {
     Editor *editor = currentEditor();
     if (editor)
@@ -346,13 +346,17 @@ void MainWindow::build()
 
         Builder builder(*ui.outputView);
         builder.setBoard(board);
-        builder.build(editor->text());
+	   bool ret=builder.build(editor->text());
 
         buildActions->setEnabled(true);
+
+	   return ret;
     }
+    else
+	    return false;
 }
 
-void MainWindow::upload()
+bool MainWindow::upload()
 {
     Editor *editor = currentEditor();
     if (editor)
@@ -367,10 +371,14 @@ void MainWindow::upload()
         Builder builder(*ui.outputView);
         builder.setBoard(board);
         builder.setDevice(device);
-        builder.build(editor->text(), true);
+	   bool ret=builder.build(editor->text(), true);
 
         buildActions->setEnabled(true);
+
+	   return ret;
     }
+    else
+	    return false;
 }
 
 void MainWindow::toggleDock()

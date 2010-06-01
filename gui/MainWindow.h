@@ -32,6 +32,24 @@ public:
 
 public slots:
     void setFont(const QFont &font);
+    void closeTab(int index = -1);
+    void nextTab();
+    void previousTab();
+    void newProject(const QString &code = QString(), const QString &name = QString(), Editor **pEditor = NULL);
+    void open(const QString &fileName = QString());
+    void save();
+    void chooseDevice();
+    void chooseBoard();
+    void copy();
+    void cut();
+    void paste();
+    bool build();
+    bool upload();
+    void toggleDock();
+    void setDevice(const QString &device);
+    void setBoard(const QString &board);
+    void configure();
+    void about();
 
 private:
     void setupActions();
@@ -55,26 +73,6 @@ private:
     QList<Editor *> editors();
 
     Ui::MainWindow ui;
-
-private slots:
-    void closeTab(int index = -1);
-    void nextTab();
-    void previousTab();
-    void newProject(const QString &code = QString(), const QString &name = QString(), Editor **pEditor = NULL);
-    void open(const QString &fileName = QString());
-    void save();
-    void chooseDevice();
-    void chooseBoard();
-    void copy();
-    void cut();
-    void paste();
-    void build();
-    void upload();
-    void toggleDock();
-    void setDevice(const QString &device);
-    void setBoard(const QString &board);
-    void configure();
-    void about();
 
 protected:
     void closeEvent(QCloseEvent *event);
