@@ -17,18 +17,35 @@ class DebuggerWidget : public QWidget, Ui::DebuggerWidget
 
 public:
     DebuggerWidget(QWidget *parent = NULL);
+
+    bool isStarted();
+    bool shouldBreakASAP();
+
+    int baudRate();
+
+public slots:
+    void startDebugging();
+    void stopDebugging();
+
+    void logResult(const QString& result);
+    void logError(const QString& error);
+
     void setStatus(const QString &text);
 
 private slots:
-	void onStartStopPressed();
-	void onBreakToggled(int);
-	void onSendCommand();
+    void onDebugStatusChanged();
+
+    void onStartStopPressed();
+    void onBreakToggled(int);
+    void onSendCommand();
+
+    void updateBaudList();
 
 signals:
-	void debuggerStarted();
-	void debuggerStopped();
-	void shouldBreakOnTrace(bool);
-	void sendCommand(QString);
+    void debuggerStarted();
+    void debuggerStopped();
+    void shouldBreakOnTrace(bool);
+    void sendCommand(QString);
 };
 
 #endif // DEBUGGERWIDGET_H

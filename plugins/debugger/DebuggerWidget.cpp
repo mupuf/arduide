@@ -4,6 +4,7 @@
  */
 
 #include "DebuggerWidget.h"
+#include "../../utils/Serial.h"
 
 #include <QLineEdit>
 
@@ -14,6 +15,8 @@ DebuggerWidget::DebuggerWidget(QWidget *parent)
 {
     setupUi(this);
 
+    updateBaudList();
+
     connect(pushStartStop, SIGNAL(pressed()), this, SLOT(onStartStopPressed()));
     connect(checkBreak, SIGNAL(stateChanged(int)), this, SLOT(onBreakToggled(int)));
 
@@ -22,17 +25,52 @@ DebuggerWidget::DebuggerWidget(QWidget *parent)
 	   connect(commandBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
 }
 
+bool DebuggerWidget::isStarted()
+{
+    return _started;
+}
+
+bool DebuggerWidget::shouldBreakASAP()
+{
+	return _break;
+}
+
+int DebuggerWidget::baudRate()
+{
+    return baudRateBox->itemData(baudRateBox->currentIndex()).toInt();
+}
+
+// Public slots
+void DebuggerWidget::startDebugging()
+{
+    _started=true;
+    onDebugStatusChanged();
+}
+
+void DebuggerWidget::stopDebugging()
+{
+    _started=false;
+    onDebugStatusChanged();
+}
+
+void DebuggerWidget::logResult(const QString& result)
+{
+    debugLogs->log(result);
+}
+
+void DebuggerWidget::logError(const QString& error)
+{
+    debugLogs->logError(error);
+}
+
 void DebuggerWidget::setStatus(const QString &text)
 {
     statusLabel->setText(text);
 }
 
 // Private slots
-void DebuggerWidget::onStartStopPressed()
+void DebuggerWidget::onDebugStatusChanged()
 {
-    // Flip the state
-    _started=!_started;
-
     // Update the GUI
     pushStartStop->setText(_started?tr("Stop"):tr("Start"));
 
@@ -42,14 +80,22 @@ void DebuggerWidget::onStartStopPressed()
 
     // Emit the signal
     if(_started)
-	   emit debuggerStarted();
+        emit debuggerStarted();
     else
-	   emit debuggerStopped();
+        emit debuggerStopped();
+}
+
+void DebuggerWidget::onStartStopPressed()
+{
+    // Flip the state
+    _started=!_started;
+
+    onDebugStatusChanged();
 }
 
 void DebuggerWidget::onBreakToggled(int state)
 {
-	// Emit the signal
+    // Emit the signal
     emit shouldBreakOnTrace(state==Qt::Checked);
 
     // Add some info in the logs
@@ -69,5 +115,17 @@ void DebuggerWidget::onSendCommand()
 
     // Clear the line
     if(commandBox->lineEdit())
-	   commandBox->lineEdit()->clear();
+        commandBox->lineEdit()->clear();
+}
+
+void DebuggerWidget::updateBaudList()
+{
+    int index = 0;
+    foreach(int rate, Serial::baudRates())
+    {
+        baudRateBox->addItem(QString::number(rate), rate);
+        if (rate == 9600)
+            baudRateBox->setCurrentIndex(index);
+        index++;
+    }
 }

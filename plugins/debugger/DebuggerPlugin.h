@@ -8,7 +8,10 @@
 
 #include "plugins/IDEPluginInterface.h"
 
-class DebuggerWidget;
+#include "DebuggerWidget.h"
+#include "../../utils/Serial.h"
+
+#include <QScopedPointer>
 
 class DebuggerPlugin : public QObject, public IDEPluginInterface
 {
@@ -19,11 +22,23 @@ public:
     bool setup(IDEApplication *app);
     const QString &name() { return mName; };
 
+public slots:
+    bool startDebugging();
+    void stopDebugging();
+
+private slots:
+    bool openSerial();
+    void closeSerial();
+
 private:
     IDEApplication *mApp;
-
     QString mName;
-    DebuggerWidget *widget;
+    QScopedPointer<DebuggerWidget> widget;
+    QScopedPointer<Serial> serial;
+
+    QByteArray readSerial(qint64 readCount);
+    bool writeSerial(const QByteArray &data);
+
 };
 
 #endif // DEBUGGERPLUGIN_H
