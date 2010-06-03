@@ -1,0 +1,4 @@
+[Project]
+Name=TestEmbedded
+Manager=KDevCMakeManager
+VersionControl=
