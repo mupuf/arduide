@@ -11,6 +11,7 @@
 class ILogger
 {
 public:
+    virtual ~ILogger() {}
     virtual void log(const QString &text) = 0;
     virtual void logImportant(const QString &text) = 0;
     virtual void logError(const QString &text) = 0;
