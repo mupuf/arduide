@@ -51,6 +51,11 @@
 		}
 		return i;
 	}
+	
+	linked_list* linked_list_first_element(linked_list* list)
+	{
+		return list;
+	}
 
 	linked_list* linked_list_last_element(linked_list* list)
 	{
@@ -69,16 +74,21 @@
 	{
 		if(!linked_list_is_empty(list) && !linked_list_is_empty(list2))
 		{
+			printf("linked_list_push_front: list & list2 are not empty\n");
 			linked_list_last_element(list2)->next=list;
 			return list2;
 		}
 		else if(!linked_list_is_empty(list))
 		{
 			//List2 is empty, let's return list
+			printf("linked_list_push_front: list2 is empty\n");
 			return list;
 		}
 		else
 		{
+			if(linked_list_is_empty(list2))
+				printf("linked_list_push_front: both list1 and list2 are empty.\n");
+			
 			//List1 is empty
 			if(list)
 				linked_list_free(list, NULL);
@@ -136,9 +146,9 @@
 		while(list)
 		{
 			if(show)
-				printf("%s %s", show(list->data), list->next?"--> ":"\n");
+				printf("(%s) %s", show(list->data), list->next?"--> ":"\n");
 			else
-				printf("%p %s", list->data, list->next?"--> ":"\n");
+				printf("(%p) %s", list->data, list->next?"--> ":"\n");
 			list=list->next;
 		}
 	}
@@ -206,22 +216,15 @@
 	
 	char* show_variable(void* data)
 	{
-		variable* var=(variable*)var;
+		variable* var=(variable*)data;
 		
-		char* ret=(char*)malloc(1+strlen(var->name)+3+2*var->size+1+1);
+		if(var==NULL)
+			return NULL;
 		
-		ret[0]='\'';
-		strcpy(var->name, ret+1);
-		ret[1+strlen(var->name)]='\'';
-		ret[1+strlen(var->name)+1]='=';
-		ret[1+strlen(var->name)+2]='\'';
+		int size=1+strlen(var->name)+3+sizeof(void*)+1;
+		char* ret=(char*)malloc(size);
 		
-		int i;
-		for(i=0; i<var->size; i++)
-			sprintf(ret+(1+strlen(var->name)+2 + 2*i), "%X", (int)(((char*)var->data)[i]));
-		
-		ret[1+strlen(var->name)+2+2*var->size]='\'';
-		ret[1+strlen(var->name)+2+2*var->size+1]='\0';
+		int pos=snprintf(ret, size, "'%s'='%X'", var->name, var->data);
 
 		return ret;
 	}
@@ -230,14 +233,15 @@
 	{
 		variable* var=variable_create(name, size, data);
 		
-		linked_list_element_push_front((linked_list*)frames->data, var);
+		linked_list_first_element(frames)->data=linked_list_element_push_front((linked_list*)(linked_list_first_element(frames)->data), var);
 		
-		linked_list_print((linked_list*)frames->data, show_variable);
+		linked_list_print((linked_list*)(linked_list_first_element(frames)->data), NULL);
 	}
 
 	
 	void printCurrentFrameVariables()
 	{
+		//
 		linked_list_print((linked_list*)frames->data, show_variable);
 	}
 
@@ -249,7 +253,7 @@ char* show_string(void* data)
 
 int main(int argc, char** argv)
 {
-	int a=0, b=23, c=42;
+	char a=-53, b=127, c=200;
 	
 	DbgInit();
 	
