@@ -74,14 +74,12 @@
 	{
 		if(!linked_list_is_empty(list) && !linked_list_is_empty(list2))
 		{
-			printf("linked_list_push_front: list & list2 are not empty\n");
 			linked_list_last_element(list2)->next=list;
 			return list2;
 		}
 		else if(!linked_list_is_empty(list))
 		{
 			//List2 is empty, let's return list
-			printf("linked_list_push_front: list2 is empty\n");
 			return list;
 		}
 		else
@@ -146,7 +144,11 @@
 		while(list)
 		{
 			if(show)
-				printf("(%s) %s", show(list->data), list->next?"--> ":"\n");
+			{
+				char* data=show(list->data);
+				printf("(%s) %s", data, list->next?"--> ":"\n");
+				free(data);
+			}
 			else
 				printf("(%p) %s", list->data, list->next?"--> ":"\n");
 			list=list->next;
@@ -221,10 +223,10 @@
 		if(var==NULL)
 			return NULL;
 		
-		int size=1+strlen(var->name)+3+sizeof(void*)+1;
+		int size=(1+strlen(var->name)+1)+1+(1+2+sizeof(void*)*2)+1+1;
 		char* ret=(char*)malloc(size);
 		
-		int pos=snprintf(ret, size, "'%s'='%X'", var->name, var->data);
+		int pos=snprintf(ret, size, "'%s'='%p'", var->name, var->data);
 
 		return ret;
 	}
@@ -234,15 +236,103 @@
 		variable* var=variable_create(name, size, data);
 		
 		linked_list_first_element(frames)->data=linked_list_element_push_front((linked_list*)(linked_list_first_element(frames)->data), var);
-		
-		linked_list_print((linked_list*)(linked_list_first_element(frames)->data), NULL);
 	}
-
 	
 	void printCurrentFrameVariables()
 	{
-		//
+		// Just print the list
 		linked_list_print((linked_list*)frames->data, show_variable);
+	}
+	
+	char* generateFrameTrace(linked_list* frame)
+	{
+		int varCount=linked_list_length(frame);
+		char** variables=(char**)malloc(varCount*sizeof(char*));
+		
+		int sizeRet=0;
+		char* ret;
+		
+		// Get all the text for the variables
+		int i;
+		for(i=0; i<varCount; ++i)
+		{
+			variables[i]=show_variable(frame->data);
+			sizeRet+=strlen(variables[i]);
+			
+			frame=frame->next;
+		}
+		
+		// Add the needed space for the ; separator
+		sizeRet+=varCount-1;
+		
+		// Add the final \0 char
+		++sizeRet;
+		
+		// Allocate the final string
+		ret=(char*)malloc(sizeRet*sizeof(char));
+		
+		// Create a single string that will contain all this
+		int pos=0;
+		for(i=0; i<varCount; ++i)
+		{
+			pos+=snprintf(ret+pos, sizeRet-pos, "%s%s", variables[i], (i<varCount-1)?";":"");
+			free(variables[i]);
+		}
+		
+		// Free the each variable string
+		free(variables);
+		
+		return ret;
+	}
+	
+	char* generateDebuggingTraces()
+	{
+		int frameCount=linked_list_length(frames);
+		char** traces=(char**)malloc(frameCount*sizeof(char*));
+		
+		// Result string
+		int sizeRet=strlen("<frames>\n");
+		char* ret;
+		
+		// Get a string from each frame
+		linked_list* tmpFrame=frames;
+		int i;
+		for(i=0; i<frameCount; ++i)
+		{
+			traces[i]=generateFrameTrace(tmpFrame->data);
+			sizeRet+=strlen(traces[i]);
+			tmpFrame=tmpFrame->next;
+		}
+		
+		// Add the needed space for the \n separator
+		sizeRet+=frameCount;
+		
+		// Add the final </frames>
+		sizeRet+=strlen("</frames>\n");
+		
+		// Add the final \0 char
+		++sizeRet;
+		
+		// Allocate the final string
+		ret=(char*)malloc(sizeRet*sizeof(char));
+		
+		// Copy the frame tag
+		int pos=snprintf(ret, sizeRet, "<frames>\n");
+		
+		// Create a single string that will contain all this
+		for(i=0; i<frameCount; ++i)
+		{
+			pos+=snprintf(ret+pos, sizeRet-pos, "%s\n", traces[i]);
+			free(traces[i]);
+		}
+		
+		// Copy the closing frames tag
+		pos+=snprintf(ret+pos, sizeRet-pos, "<\\frames>\n");
+		
+		// Free the each variable string
+		free(traces);
+		
+		return ret;
 	}
 
 // Us
@@ -263,6 +353,8 @@ int main(int argc, char** argv)
 	
 	printCurrentFrameVariables();
 	
+	char* data=generateDebuggingTraces();
+	printf("data=\"%s\"\n", data);
 	
 	
 	/*linked_list* test=linked_list_create();
