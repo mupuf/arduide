@@ -17,11 +17,11 @@ int main(int argc, char** argv)
 	
 	_DbgWatchVariable("c", sizeof(c), &c);
 	
-	printCurrentFrameVariables();
+	IDEdbg_printCurrentFrameVariables();
 	
 	DbgCloseFrame();
 	
-	char* data=generateDebuggingTraces();
+	char* data=IDEdbg_generateDebuggingTraces();
 	printf("data=\"%s\"\n", data);
 	free(data);
 	
