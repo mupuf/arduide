@@ -63,9 +63,8 @@
 		return var;
 	}
 	
-	void variable_free(void* var)
+	void variable_free(variable* var)
 	{
-		
 		if(var)
 		{
 			free(((variable*)var)->name);
@@ -73,6 +72,10 @@
 		}
 	}
 	
+	void variable_free(void* var)
+	{
+		variable_free((variable*) var);
+	}
 	char* show_variable(void* data)
 	{
 		variable* var=(variable*)data;

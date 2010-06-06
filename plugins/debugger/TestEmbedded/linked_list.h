@@ -137,6 +137,16 @@
 		else
 			return NULL;
 	}
+	
+	linked_list* linked_list_remove_front(linked_list* list, linked_list_data_freer destructor)
+	{
+		linked_list* tmp=list;
+		list=list->next;
+		
+		if(destructor)
+			destructor(tmp->data);
+		free(tmp);
+	}
 
 	void linked_list_print(const linked_list* list, linked_list_data_show show)
 	{

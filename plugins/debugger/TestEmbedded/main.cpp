@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	
 	DbgInit();
 	
-	DbgNewFrame();
+	DbgNewFrame("poulpe");
 	
 	DbgWatchVariable(a);
 	DbgWatchVariable(b);

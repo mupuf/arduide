@@ -6,25 +6,57 @@
 	#include "variable.h"
 	#include "linked_list.h"
 	
-	linked_list* frame_create()
+	typedef struct
 	{
-		linked_list* f=linked_list_create();
+		char* name;
+		linked_list* vars;
+	} frame;
+	
+	frame* frame_create(const char* name)
+	{
+		frame* f=(frame*)malloc(sizeof(frame));
+		f->name=strdup(name);
+		f->vars=NULL;
 		return f;
 	}
 	
-	void frame_free(linked_list* frame)
+	void frame_free(frame* frame)
 	{
-		linked_list* tmp=frame;
-		while(tmp)
-		{
-			variable_free((variable*)tmp->data);
-			tmp=linked_list_next_element(tmp);
-		}
+		// Free the variables
+		linked_list_free(frame->vars, variable_free);
+		
+		// Free the name
+		free(frame->name);
+		
+		// Free the struct
+		free(frame);
 	}
 	
-	char* generateFrameTrace(linked_list* frame)
+	void frame_free(void* f)
 	{
-		int varCount=linked_list_length(frame);
+		frame_free((frame*)f);
+	}
+	
+	linked_list* frame_get_variables(frame* frame)
+	{
+		if(frame!=NULL)
+			return frame->vars;
+		else
+			return NULL;
+	}
+	
+	void frame_add_variable(frame* frame, variable* var)
+	{
+		frame->vars=linked_list_element_push_front(frame->vars, var);
+	}
+	
+	char* generateFrameTrace(frame* frame)
+	{
+		if(frame==NULL)
+			return NULL;
+		
+		linked_list* f_vars=frame_get_variables(frame);
+		int varCount=linked_list_length(f_vars);
 		char** variables=(char**)malloc(varCount*sizeof(char*));
 		
 		int sizeRet=0;
@@ -34,10 +66,10 @@
 		int i;
 		for(i=0; i<varCount; ++i)
 		{
-			variables[i]=show_variable(frame->data);
+			variables[i]=show_variable(f_vars->data);
 			sizeRet+=strlen(variables[i]);
 			
-			frame=frame->next;
+			f_vars=f_vars->next;
 		}
 		
 		// Add the final \0 char

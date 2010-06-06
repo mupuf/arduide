@@ -19,11 +19,11 @@
 		char* ret;
 		
 		// Get a string from each frame
-		linked_list* tmpFrame=frames;
+		linked_list* tmpFrame=linked_list_first_element(frames);
 		int i;
-		for(i=0; i<frameCount; ++i)
+		for(i=0; tmpFrame!=NULL && i<frameCount; ++i)
 		{
-			traces[i]=generateFrameTrace((linked_list*)tmpFrame->data);
+			traces[i]=generateFrameTrace((frame*)tmpFrame->data);
 			sizeRet+=strlen(traces[i]);
 			tmpFrame=tmpFrame->next;
 		}
@@ -65,39 +65,22 @@
 		frames=NULL;
 	}
 	
-	void DbgNewFrame()
+	void DbgNewFrame(const char* name)
 	{
 		// Create a new frame and add it as an element on the frames' list
-		frames=linked_list_element_push_front(frames, frame_create());
+		frames=linked_list_element_push_front(frames, frame_create(name));
 	}
 	
 	void DbgCloseFrame()
 	{
-		// Get the current frame
-		linked_list* top=linked_list_first_element(frames);
-		
-		// Do not free an empty frame :)
-		if(linked_list_is_empty(top))
-		{
-			printf("No more frame to close\n");
-			return;
-		}
-		
-		// The new top frame is the next frame
-		frames=top->next;
-		
-		// Get the variable list
-		linked_list* vars=(linked_list*)top->data;
-		
-		// Free the frame
-		frame_free(vars);
+		linked_list_remove_front(frames, frame_free);
 	}
 	
 	void _DbgWatchVariable(const char* name, variable_type type, int size, void* data)
 	{
 		variable* var=variable_create(name, type, size, data);
 		
-		linked_list_first_element(frames)->data=linked_list_element_push_front((linked_list*)(linked_list_first_element(frames)->data), var);
+		frame_add_variable((frame*)linked_list_first_element(frames)->data, var);
 	}
 	
 	void _DbgWatchVariable(const char* name, int* data)
