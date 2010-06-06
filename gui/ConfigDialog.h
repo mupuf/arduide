@@ -30,6 +30,7 @@ private slots:
     void chooseFont();
     void chooseArduinoPath();
     void chooseSketchbookPath();
+    void setColorAtIndex(int index);
     void fieldChange();
 
 private:

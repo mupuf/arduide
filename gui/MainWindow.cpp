@@ -359,14 +359,14 @@ bool MainWindow::build()
 
         Builder builder(*ui.outputView);
         builder.setBoard(board);
-	   bool ret=builder.build(editor->text());
+        bool ret = builder.build(editor->text());
 
         buildActions->setEnabled(true);
 
-	   return ret;
+        return ret;
     }
     else
-	    return false;
+        return false;
 }
 
 bool MainWindow::upload()

@@ -94,6 +94,27 @@ void ConfigWidget::setupUi()
     uiEditor.setupUi(page);
     mEditor = EditorFactory::createEditor(QString());
     uiEditor.editorFrame->layout()->addWidget(mEditor);
+    uiEditor.colorBox->addItem(tr("Default"), LexerArduino::Default);
+    uiEditor.colorBox->addItem(tr("Comment"), LexerArduino::Comment);
+    uiEditor.colorBox->addItem(tr("CommentLine"), LexerArduino::CommentLine);
+    uiEditor.colorBox->addItem(tr("CommentDoc"), LexerArduino::CommentDoc);
+    uiEditor.colorBox->addItem(tr("Number"), LexerArduino::Number);
+    uiEditor.colorBox->addItem(tr("Keyword"), LexerArduino::Keyword);
+    uiEditor.colorBox->addItem(tr("DoubleQuotedString"), LexerArduino::DoubleQuotedString);
+    uiEditor.colorBox->addItem(tr("SingleQuotedString"), LexerArduino::SingleQuotedString);
+    uiEditor.colorBox->addItem(tr("UUID"), LexerArduino::UUID);
+    uiEditor.colorBox->addItem(tr("PreProcessor"), LexerArduino::PreProcessor);
+    uiEditor.colorBox->addItem(tr("Operator"), LexerArduino::Operator);
+    uiEditor.colorBox->addItem(tr("Identifier"), LexerArduino::Identifier);
+    uiEditor.colorBox->addItem(tr("UnclosedString"), LexerArduino::UnclosedString);
+    uiEditor.colorBox->addItem(tr("VerbatimString"), LexerArduino::VerbatimString);
+    uiEditor.colorBox->addItem(tr("Regex"), LexerArduino::Regex);
+    uiEditor.colorBox->addItem(tr("CommentLineDoc"), LexerArduino::CommentLineDoc);
+    uiEditor.colorBox->addItem(tr("KeywordSet2"), LexerArduino::KeywordSet2);
+    uiEditor.colorBox->addItem(tr("CommentDocKeyword"), LexerArduino::CommentDocKeyword);
+    uiEditor.colorBox->addItem(tr("CommentDocKeywordError"), LexerArduino::CommentDocKeywordError);
+    uiEditor.colorBox->addItem(tr("GlobalClass"), LexerArduino::GlobalClass);
+    setColorAtIndex(uiEditor.colorBox->currentIndex());
     addPage(page, QIcon(":/images/32x32/accessories-text-editor.png"), tr("Editor"));
 
     page = new QWidget;
@@ -109,8 +130,20 @@ void ConfigWidget::setupUi()
     connect(uiBuild.verboseBox, SIGNAL(stateChanged(int)), this, SLOT(fieldChange()));
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
+    connect(uiEditor.colorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setColorAtIndex(int)));
     connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
     connect(uiPaths.sketchbookPathButton, SIGNAL(clicked()), this, SLOT(chooseSketchbookPath()));
+}
+
+void ConfigWidget::setColorAtIndex(int index)
+{
+    if (index < 0)
+        return;
+    int color = uiEditor.colorBox->itemData(index).toInt();
+    LexerArduino *lexer = dynamic_cast<LexerArduino *>(mEditor->lexer());
+    Q_ASSERT(lexer != NULL);
+    uiEditor.fgColorButton->setColor(lexer->color(color));
+    uiEditor.bgColorButton->setColor(lexer->paper(color));
 }
 
 void ConfigWidget::updateFontLabel(const QFont &f)
