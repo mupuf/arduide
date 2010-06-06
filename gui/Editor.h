@@ -20,6 +20,8 @@ public:
 
     void setCaretForegroundColor(const QColor &col);
     const QColor &caretForegroundColor() { return mCaretForegroundColor; }
+    void setSelectionBackgroundColor(const QColor &col);
+    const QColor &selectionBackgroundColor() { return mSelectionBackgroundColor; }
 
 public slots:
     void save();
@@ -34,7 +36,7 @@ private:
         int index;
     } selectionOrigin;
 
-    QColor mCaretForegroundColor;
+    QColor mCaretForegroundColor, mSelectionBackgroundColor;
 
 private slots:
     void findPreviousParagraph(int *line, int *index);

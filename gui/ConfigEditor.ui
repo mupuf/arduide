@@ -93,6 +93,20 @@
             </spacer>
            </item>
            <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Selection</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="ColorButton" name="selectionColorButton">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLabel" name="label_5">
              <property name="text">
               <string>Cursor</string>

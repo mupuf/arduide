@@ -62,6 +62,7 @@ void ConfigWidget::resetPage(int index)
         uiEditor.colorBox->setCurrentIndex(0);
         setColorAtIndex(0);
         uiEditor.caretColorButton->setColor(mEditor->caretForegroundColor());
+        uiEditor.selectionColorButton->setColor(mEditor->selectionBackgroundColor());
         static const QString sampleText =
             "/* Example code */\n"
             "#include <EEPROM/EEPROM.h>\n\n"
@@ -136,6 +137,7 @@ void ConfigWidget::setupUi()
     connect(uiEditor.fgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setFgColor(const QColor &)));
     connect(uiEditor.bgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setBgColor(const QColor &)));
     connect(uiEditor.caretColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setCaretColor(const QColor &)));
+    connect(uiEditor.selectionColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setSelectionColor(const QColor &)));
     connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
     connect(uiPaths.sketchbookPathButton, SIGNAL(clicked()), this, SLOT(chooseSketchbookPath()));
 }
@@ -174,6 +176,11 @@ void ConfigWidget::setBgColor(const QColor &color)
 void ConfigWidget::setCaretColor(const QColor &color)
 {
     mEditor->setCaretForegroundColor(color);
+}
+
+void ConfigWidget::setSelectionColor(const QColor &color)
+{
+    mEditor->setSelectionBackgroundColor(color);
 }
 
 void ConfigWidget::updateFontLabel(const QFont &f)

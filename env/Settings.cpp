@@ -129,20 +129,24 @@ void Settings::saveLexerProperties(LexerArduino *lexer)
 
 void Settings::loadEditorSettings(Editor *editor)
 {
-    static const QColor defaultCaretForegroundColor = Qt::white;
+    static const QColor defaultCaretForegroundColor(Qt::white);
     static const int defaultTabWidth = 4;
+    static const QColor defaultEditorSelectionBackgroundColor(0x4d4d4d);
 
     QVariant v;
     v = mSettings.value("editorCaretForegroundColor");
     editor->setCaretForegroundColor(v.isNull() ? defaultCaretForegroundColor : v.value<QColor>());
     v = mSettings.value("editorTabWidth");
     editor->setTabWidth(v.isNull() ? defaultTabWidth : v.toInt());
+    v = mSettings.value("editorSelectionBackgroundColor");
+    editor->setSelectionBackgroundColor(v.isNull() ? defaultEditorSelectionBackgroundColor : v.value<QColor>());
 }
 
 void Settings::saveEditorSettings(Editor *editor)
 {
     mSettings.setValue("editorCaretForegroundColor", editor->caretForegroundColor());
     mSettings.setValue("editorTabWidth", editor->tabWidth());
+    mSettings.setValue("editorSelectionBackgroundColor", editor->selectionBackgroundColor());
 }
 
 bool Settings::isCorrect()
