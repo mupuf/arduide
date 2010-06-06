@@ -31,7 +31,7 @@ void ConfigWidget::initializePage(int index)
     case EditorIndex:
         static const QString sampleText =
             "/* Example code */\n"
-            "#include <EEPROM/EEPROM.h>\n\n"
+            "#include <EEPROM.h>\n\n"
             "int a, b = 3;\n"
             "void loop()\n"
             "{\n"
@@ -63,15 +63,6 @@ void ConfigWidget::resetPage(int index)
         setColorAtIndex(0);
         uiEditor.caretColorButton->setColor(mEditor->caretForegroundColor());
         uiEditor.selectionColorButton->setColor(mEditor->selectionBackgroundColor());
-        static const QString sampleText =
-            "/* Example code */\n"
-            "#include <EEPROM.h>\n\n"
-            "int a, b = 3;\n"
-            "void loop()\n"
-            "{\n"
-            "    Serial.println(\"Hello, World!\");\n"
-            "}\n";
-        mEditor->setText(sampleText);
         break;
     case PathsIndex:
         uiPaths.arduinoPathEdit->setText(settings->arduinoPath());
