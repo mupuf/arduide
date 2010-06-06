@@ -67,7 +67,7 @@
 	{
 		if(var)
 		{
-			free(((variable*)var)->name);
+			free(var->name);
 			free(var);
 		}
 	}
