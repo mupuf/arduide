@@ -65,7 +65,7 @@ void ConfigWidget::resetPage(int index)
         uiEditor.selectionColorButton->setColor(mEditor->selectionBackgroundColor());
         static const QString sampleText =
             "/* Example code */\n"
-            "#include <EEPROM/EEPROM.h>\n\n"
+            "#include <EEPROM.h>\n\n"
             "int a, b = 3;\n"
             "void loop()\n"
             "{\n"
