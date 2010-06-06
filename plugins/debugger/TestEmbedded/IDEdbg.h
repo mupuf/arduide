@@ -5,9 +5,61 @@
 	#include "variable.h"
 	#include "frame.h"
 	
-	//Debug
+	// Contains the list of the frames
 	linked_list* frames;
 	
+	// Private
+	char* IDEdbg_getFrames()
+	{
+		int frameCount=linked_list_length(frames);
+		char** traces=(char**)malloc(frameCount*sizeof(char*));
+		
+		// Result string
+		int sizeRet=strlen("<frames>\n");
+		char* ret;
+		
+		// Get a string from each frame
+		linked_list* tmpFrame=frames;
+		int i;
+		for(i=0; i<frameCount; ++i)
+		{
+			traces[i]=generateFrameTrace((linked_list*)tmpFrame->data);
+			sizeRet+=strlen(traces[i]);
+			tmpFrame=tmpFrame->next;
+		}
+		
+		// Add the needed space for the \n separator
+		sizeRet+=frameCount;
+		
+		// Add the final </frames>
+		sizeRet+=strlen("</frames>\n");
+		
+		// Add the final \0 char
+		++sizeRet;
+		
+		// Allocate the final string
+		ret=(char*)malloc(sizeRet*sizeof(char));
+		
+		// Copy the frame tag
+		int pos=snprintf(ret, sizeRet, "<frames>\n");
+		
+		// Create a single string that will contain all this
+		for(i=0; i<frameCount; ++i)
+		{
+			pos+=snprintf(ret+pos, sizeRet-pos, "%s\n", traces[i]);
+			free(traces[i]);
+		}
+		
+		// Copy the closing frames tag
+		pos+=snprintf(ret+pos, sizeRet-pos, "<\\frames>\n");
+		
+		// Free the each variable string
+		free(traces);
+		
+		return ret;
+	}
+	
+	// Public
 	void DbgInit()
 	{
 		frames=NULL;
@@ -92,60 +144,22 @@
 	{
 		return _DbgWatchVariable(name, _void_pointer, sizeof(&data), (void*)data);
 	}
-	
 	#define DbgWatchVariable(X) (_DbgWatchVariable(#X, &X))
 	
-	// Private
-	char* IDEdbg_generateDebuggingTraces()
+	void DbgSendTrace(const char* pattern, ...)
 	{
-		int frameCount=linked_list_length(frames);
-		char** traces=(char**)malloc(frameCount*sizeof(char*));
-		
-		// Result string
-		int sizeRet=strlen("<frames>\n");
-		char* ret;
-		
-		// Get a string from each frame
-		linked_list* tmpFrame=frames;
-		int i;
-		for(i=0; i<frameCount; ++i)
-		{
-			traces[i]=generateFrameTrace((linked_list*)tmpFrame->data);
-			sizeRet+=strlen(traces[i]);
-			tmpFrame=tmpFrame->next;
-		}
-		
-		// Add the needed space for the \n separator
-		sizeRet+=frameCount;
-		
-		// Add the final </frames>
-		sizeRet+=strlen("</frames>\n");
-		
-		// Add the final \0 char
-		++sizeRet;
-		
-		// Allocate the final string
-		ret=(char*)malloc(sizeRet*sizeof(char));
-		
-		// Copy the frame tag
-		int pos=snprintf(ret, sizeRet, "<frames>\n");
-		
-		// Create a single string that will contain all this
-		for(i=0; i<frameCount; ++i)
-		{
-			pos+=snprintf(ret+pos, sizeRet-pos, "%s\n", traces[i]);
-			free(traces[i]);
-		}
-		
-		// Copy the closing frames tag
-		pos+=snprintf(ret+pos, sizeRet-pos, "<\\frames>\n");
-		
-		// Free the each variable string
-		free(traces);
-		
-		return ret;
+		// TODO: I want something just like printf
 	}
 	
+	void _DbgSendState(const char* filename, int line)
+	{
+		char* data=IDEdbg_getFrames();
+		printf("Send state at %s:%i\n%s", filename, line, data);
+		free(data);
+	}
+	#define DbgSendState() _DbgSendState(__FILE__, __LINE__);
+	
+	// Useless
 	void IDEdbg_printCurrentFrameVariables()
 	{
 		// Just print the list

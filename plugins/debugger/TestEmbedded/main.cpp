@@ -23,11 +23,7 @@ int main(int argc, char** argv)
 	DbgWatchVariable(f);
 	DbgWatchVariable(d);
 	
-	IDEdbg_printCurrentFrameVariables();
-	
-	char* data=IDEdbg_generateDebuggingTraces();
-	printf("data=\"%s\"\n", data);
-	free(data);
+	DbgSendState();
 	
 	DbgCloseFrame();
 	
