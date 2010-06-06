@@ -93,6 +93,8 @@
 		return _DbgWatchVariable(name, _void_pointer, sizeof(&data), (void*)data);
 	}
 	
+	#define DbgWatchVariable(X) (_DbgWatchVariable(#X, &X))
+	
 	// Private
 	char* IDEdbg_generateDebuggingTraces()
 	{
