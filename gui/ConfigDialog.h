@@ -31,6 +31,9 @@ private slots:
     void chooseArduinoPath();
     void chooseSketchbookPath();
     void setColorAtIndex(int index);
+    void setFgColor(const QColor &);
+    void setBgColor(const QColor &);
+    void setCaretColor(const QColor &);
     void fieldChange();
 
 private:

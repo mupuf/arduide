@@ -59,6 +59,9 @@ void ConfigWidget::resetPage(int index)
         settings->loadLexerProperties(lexer);
         settings->loadEditorSettings(mEditor);
         updateFontLabel(lexer->font(LexerArduino::Default));
+        uiEditor.colorBox->setCurrentIndex(0);
+        setColorAtIndex(0);
+        uiEditor.caretColorButton->setColor(mEditor->caretForegroundColor());
         static const QString sampleText =
             "/* Example code */\n"
             "#include <EEPROM/EEPROM.h>\n\n"
@@ -114,7 +117,6 @@ void ConfigWidget::setupUi()
     uiEditor.colorBox->addItem(tr("CommentDocKeyword"), LexerArduino::CommentDocKeyword);
     uiEditor.colorBox->addItem(tr("CommentDocKeywordError"), LexerArduino::CommentDocKeywordError);
     uiEditor.colorBox->addItem(tr("GlobalClass"), LexerArduino::GlobalClass);
-    setColorAtIndex(uiEditor.colorBox->currentIndex());
     addPage(page, QIcon(":/images/32x32/accessories-text-editor.png"), tr("Editor"));
 
     page = new QWidget;
@@ -131,6 +133,9 @@ void ConfigWidget::setupUi()
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
     connect(uiEditor.colorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setColorAtIndex(int)));
+    connect(uiEditor.fgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setFgColor(const QColor &)));
+    connect(uiEditor.bgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setBgColor(const QColor &)));
+    connect(uiEditor.caretColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setCaretColor(const QColor &)));
     connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
     connect(uiPaths.sketchbookPathButton, SIGNAL(clicked()), this, SLOT(chooseSketchbookPath()));
 }
@@ -139,11 +144,36 @@ void ConfigWidget::setColorAtIndex(int index)
 {
     if (index < 0)
         return;
-    int color = uiEditor.colorBox->itemData(index).toInt();
+    int style = uiEditor.colorBox->itemData(index).toInt();
     LexerArduino *lexer = dynamic_cast<LexerArduino *>(mEditor->lexer());
     Q_ASSERT(lexer != NULL);
-    uiEditor.fgColorButton->setColor(lexer->color(color));
-    uiEditor.bgColorButton->setColor(lexer->paper(color));
+    uiEditor.fgColorButton->setColor(lexer->color(style));
+    uiEditor.bgColorButton->setColor(lexer->paper(style));
+}
+
+void ConfigWidget::setFgColor(const QColor &color)
+{
+    QComboBox *colorBox = uiEditor.colorBox;
+    QsciLexer *lexer = mEditor->lexer();
+    int style = colorBox->itemData(colorBox->currentIndex()).toInt();
+    if (style == LexerArduino::Default)
+        lexer->setDefaultColor(color);
+    lexer->setColor(color, style);
+}
+
+void ConfigWidget::setBgColor(const QColor &color)
+{
+    QComboBox *colorBox = uiEditor.colorBox;
+    QsciLexer *lexer = mEditor->lexer();
+    int style = colorBox->itemData(colorBox->currentIndex()).toInt();
+    if (style == LexerArduino::Default)
+        lexer->setDefaultPaper(color);
+    lexer->setPaper(color, style);
+}
+
+void ConfigWidget::setCaretColor(const QColor &color)
+{
+    mEditor->setCaretForegroundColor(color);
 }
 
 void ConfigWidget::updateFontLabel(const QFont &f)
