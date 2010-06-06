@@ -22,6 +22,9 @@
 	
 	void frame_free(frame* frame)
 	{
+		if(frame==NULL)
+			return;
+		
 		// Free the variables
 		linked_list_free(frame->vars, variable_free);
 		
@@ -47,6 +50,11 @@
 	
 	void frame_add_variable(frame* frame, variable* var)
 	{
+		if(frame==NULL || var==NULL)
+			return;
+		
+		printf("Add variable=%p\n", var);
+		
 		frame->vars=linked_list_element_push_front(frame->vars, var);
 	}
 	
@@ -55,12 +63,16 @@
 		if(frame==NULL)
 			return NULL;
 		
+		// the string that will be returned
+		char* ret;
+		
+		// Frame header's size
+		int sizeRet=strlen("frame '")+strlen(frame->name)+3; // "frame 'name': "
+		
+		// Variables' size
 		linked_list* f_vars=frame_get_variables(frame);
 		int varCount=linked_list_length(f_vars);
 		char** variables=(char**)malloc(varCount*sizeof(char*));
-		
-		int sizeRet=0;
-		char* ret;
 		
 		// Get all the text for the variables
 		int i;
@@ -78,8 +90,10 @@
 		// Allocate the final string
 		ret=(char*)malloc(sizeRet*sizeof(char));
 		
+		// add the header
+		int pos=snprintf(ret, sizeRet, "frame '%s': ", frame->name);
+		
 		// Create a single string that will contain all this
-		int pos=0;
 		for(i=0; i<varCount; ++i)
 		{
 			pos+=snprintf(ret+pos, sizeRet-pos, "%s", variables[i]);
