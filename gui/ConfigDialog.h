@@ -23,6 +23,7 @@ class ConfigWidget : public QxtConfigWidget
 
 public:
     ConfigWidget(QWidget *parent = NULL);
+    void reset();
     bool saveConfig();
 
 private slots:
@@ -50,7 +51,7 @@ private:
 
     void setupUi();
     void initializePage(int index);
-    void setupFontChooser();
+    void resetPage(int index);
     void updateFontLabel(const QFont &f);
 };
 
@@ -60,6 +61,7 @@ class ConfigDialog : public QxtConfigDialog
 
 public:
     ConfigDialog(QWidget *parent = NULL);
+    void reset() { mConfigWidget->reset(); }
 
 public slots:
     void accept();

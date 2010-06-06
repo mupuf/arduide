@@ -21,16 +21,44 @@ ConfigWidget::ConfigWidget(QWidget *parent)
     : QxtConfigWidget(parent)
 {
     setupUi();
+    reset();
 }
 
 void ConfigWidget::initializePage(int index)
 {
+    switch (index)
+    {
+    case EditorIndex:
+        static const QString sampleText =
+            "/* Example code */\n"
+            "#include <EEPROM/EEPROM.h>\n\n"
+            "int a, b = 3;\n"
+            "void loop()\n"
+            "{\n"
+            "    Serial.println(\"Hello, World!\");\n"
+            "}\n";
+        mEditor->setText(sampleText);
+        break;
+    case PathsIndex:
+        break;
+    case BuildIndex:
+        break;
+    }
+}
+
+void ConfigWidget::resetPage(int index)
+{
     Settings *settings = ideApp->settings();
+    LexerArduino *lexer;
 
     switch (index)
     {
     case EditorIndex:
-        setupFontChooser();
+        lexer = dynamic_cast<LexerArduino *>(mEditor->lexer());
+        Q_ASSERT(lexer != NULL);
+        settings->loadLexerProperties(lexer);
+        settings->loadEditorSettings(mEditor);
+        updateFontLabel(lexer->font(LexerArduino::Default));
         static const QString sampleText =
             "/* Example code */\n"
             "#include <EEPROM/EEPROM.h>\n\n"
@@ -49,6 +77,15 @@ void ConfigWidget::initializePage(int index)
         uiBuild.verboseBox->setChecked(settings->verboseUpload());
         break;
     }
+}
+
+void ConfigWidget::reset()
+{
+    // resets all the fields and goes to the first page
+    resetPage(EditorIndex);
+    resetPage(PathsIndex);
+    resetPage(BuildIndex);
+    setCurrentIndex(EditorIndex);
 }
 
 void ConfigWidget::setupUi()
@@ -83,12 +120,6 @@ void ConfigWidget::updateFontLabel(const QFont &f)
     uiEditor.fontLabel->setProperty("selectedFont", f);
     uiEditor.fontLabel->setFont(f);
     uiEditor.fontLabel->setText(text);
-}
-
-void ConfigWidget::setupFontChooser()
-{
-    QFont f = mEditor->lexer()->font(LexerArduino::Default);
-    updateFontLabel(f);
 }
 
 void ConfigWidget::chooseFont()

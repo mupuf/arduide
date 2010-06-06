@@ -403,6 +403,7 @@ void MainWindow::configure()
 {
     if (configDialog == NULL)
         configDialog = new ConfigDialog(this);
+    configDialog->reset();
     configDialog->exec();
 }
 
