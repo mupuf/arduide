@@ -15,6 +15,7 @@
 #include <QDebug>
 
 #include "EditorFactory.h"
+#include "LexerArduino.h"
 #include "Browser.h"
 #include "ConfigDialog.h"
 #include "DeviceChooser.h"
@@ -29,7 +30,7 @@
 #include "ui_AboutDialog.h"
 
 MainWindow::MainWindow()
-    : QMainWindow()
+    : QMainWindow(), configDialog(NULL)
 {
     ui.setupUi(this);
     ui.actionAbout->setText(ui.actionAbout->text().arg(PROJECT_NAME));
@@ -233,6 +234,18 @@ QList<Editor *> MainWindow::editors()
     return editors;
 }
 
+void MainWindow::configureEditors()
+{
+    Settings *settings = ideApp->settings();
+    foreach (Editor *editor, editors())
+    {
+        settings->loadEditorSettings(editor);
+        LexerArduino *lexer = dynamic_cast<LexerArduino *>(editor->lexer());
+        Q_ASSERT(lexer != NULL);
+        settings->loadLexerProperties(lexer);
+    }
+}
+
 void MainWindow::open(const QString &_fileName)
 {
     QString fileName(_fileName);
@@ -388,9 +401,9 @@ void MainWindow::toggleDock()
 
 void MainWindow::configure()
 {
-    ConfigDialog *dialog = new ConfigDialog(this);
-    dialog->exec();
-    delete dialog;
+    if (configDialog == NULL)
+        configDialog = new ConfigDialog(this);
+    configDialog->exec();
 }
 
 void MainWindow::setFont(const QFont &font)

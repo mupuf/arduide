@@ -25,7 +25,7 @@ QStringList ProjectHistory::history(int maxSize)
 
     while(i<maxSize && readOK)
     {
-        QString key=QString("projectHistory/%1").arg(i);
+        QString key=QString("ProjectHistory/%1").arg(i);
 
         QVariant val=settings.value(key);
         if(val!=QVariant() && QFileInfo(val.toString()).isReadable())
@@ -83,7 +83,7 @@ void ProjectHistory::updateHistory(const QString &newProject)
     // save the new list
     for(int i=0; i<history.size(); i++)
     {
-        QString key=QString("projectHistory/%1").arg(i);
+        QString key=QString("ProjectHistory/%1").arg(i);
         settings.setValue(key, history.at(i));
     }
 

@@ -18,6 +18,9 @@ public:
     void setFileName(const QString &fileName) { mFileName = fileName; }
     void setLexerFont(const QFont &font);
 
+    void setCaretForegroundColor(const QColor &col);
+    const QColor &caretForegroundColor() { return mCaretForegroundColor; }
+
 public slots:
     void save();
 
@@ -30,6 +33,8 @@ private:
         int line;
         int index;
     } selectionOrigin;
+
+    QColor mCaretForegroundColor;
 
 private slots:
     void findPreviousParagraph(int *line, int *index);

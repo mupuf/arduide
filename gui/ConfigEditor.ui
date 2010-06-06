@@ -13,15 +13,15 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Font:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="fontLabel">
@@ -38,7 +38,7 @@
         <enum>QFrame::Sunken</enum>
        </property>
        <property name="text">
-        <string>TextLabel</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -50,6 +50,23 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QFrame" name="editorFrame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2"/>
+    </widget>
    </item>
   </layout>
  </widget>

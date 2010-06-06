@@ -18,6 +18,7 @@ class QTabWidget;
 class QCloseEvent;
 class DeviceChooser;
 class BoardChooser;
+class ConfigDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -50,6 +51,7 @@ public slots:
     void setBoard(const QString &board);
     void configure();
     void about();
+    void configureEditors();
 
 private:
     void setupActions();
@@ -68,6 +70,8 @@ private:
     BoardChooser *boardChooser;
 
     QActionGroup *buildActions;
+
+    ConfigDialog *configDialog;
 
     Editor *currentEditor();
     QList<Editor *> editors();

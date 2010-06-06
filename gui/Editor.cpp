@@ -151,3 +151,10 @@ void Editor::setLexerFont(const QFont &font)
 {
     lexer()->setFont(font);
 }
+
+void Editor::setCaretForegroundColor(const QColor &col)
+{
+    // workaround: impossible to get the caret color in QsciScintilla directly
+    mCaretForegroundColor = col;
+    QsciScintilla::setCaretForegroundColor(col);
+}

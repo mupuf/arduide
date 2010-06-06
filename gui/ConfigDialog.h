@@ -15,6 +15,45 @@
 #include "ui_ConfigPaths.h"
 #include "ui_ConfigBuild.h"
 
+class Editor;
+
+class ConfigWidget : public QxtConfigWidget
+{
+    Q_OBJECT
+
+public:
+    ConfigWidget(QWidget *parent = NULL);
+    bool saveConfig();
+
+private slots:
+    void chooseFont();
+    void chooseArduinoPath();
+    void chooseSketchbookPath();
+    void fieldChange();
+
+private:
+    // page indexes
+    enum ConfigPageIndex
+    {
+        EditorIndex = 0,
+        PathsIndex,
+        BuildIndex,
+    };
+
+    Ui::ConfigEditor uiEditor;
+    Ui::ConfigPaths uiPaths;
+    Ui::ConfigBuild uiBuild;
+    QSet<QWidget *> mChangedFields;
+
+    // contains the editor settings
+    Editor *mEditor;
+
+    void setupUi();
+    void initializePage(int index);
+    void setupFontChooser();
+    void updateFontLabel(const QFont &f);
+};
+
 class ConfigDialog : public QxtConfigDialog
 {
     Q_OBJECT
@@ -26,28 +65,12 @@ public slots:
     void accept();
 
 private slots:
-    void chooseFont();
-    void chooseArduinoPath();
-    void chooseSketchbookPath();
-
     bool apply();
-    void fieldChange();
 
 private:
-    // page indexes
-    static const int editorIndex = 0;
-    static const int pathsIndex = editorIndex + 1;
+    ConfigWidget *mConfigWidget;
 
     void setupUi();
-    void initializePage(int index);
-
-    void setupFontChooser();
-
-    Ui::ConfigEditor uiEditor;
-    Ui::ConfigPaths uiPaths;
-    Ui::ConfigBuild uiBuild;
-
-    QSet<QWidget *> mChangedFields;
 };
 
 #endif // CONFIGDIALOG_H
