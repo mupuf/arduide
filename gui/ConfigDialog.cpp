@@ -29,19 +29,21 @@ void ConfigDialog::setupUi()
 
     dialogButtonBox()->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel);
 
+    QxtConfigWidget *configWidget = this->configWidget();
     QWidget *page;
+    setConfigWidget(configWidget);
 
     page = new QWidget;
     uiEditor.setupUi(page);
-    addPage(page, QIcon(":/images/32x32/accessories-text-editor.png"), tr("Editor"));
+    configWidget->addPage(page, QIcon(":/images/32x32/accessories-text-editor.png"), tr("Editor"));
 
     page = new QWidget;
     uiPaths.setupUi(page);
-    addPage(page, QIcon(":/images/32x32/folder.png"), tr("Paths"));
+    configWidget->addPage(page, QIcon(":/images/32x32/folder.png"), tr("Paths"));
 
     page = new QWidget;
     uiBuild.setupUi(page);
-    addPage(page, QIcon(":/images/32x32/applications-development.png"), tr("Build"));
+    configWidget->addPage(page, QIcon(":/images/32x32/applications-development.png"), tr("Build"));
 
     connect(dialogButtonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
     connect(uiPaths.arduinoPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));

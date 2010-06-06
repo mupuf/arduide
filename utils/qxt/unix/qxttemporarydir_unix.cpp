@@ -2,7 +2,7 @@
  **
  ** Copyright (C) Qxt Foundation. Some rights reserved.
  **
- ** This file is part of the QxtGui module of the Qxt library.
+ ** This file is part of the QxtCore module of the Qxt library.
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the Common Public License, version 1.0, as published
@@ -22,27 +22,19 @@
  ** <http://libqxt.org>  <foundation@libqxt.org>
  **
  ****************************************************************************/
-#ifndef QXTCONFIGDIALOG_P_H
-#define QXTCONFIGDIALOG_P_H
+#include "qxttemporarydir_p.h"
+#include <stdlib.h>
 
-#include "qxtconfigwidget.h"
-#include "qxtconfigdialog.h"
-
-QT_FORWARD_DECLARE_CLASS(QDialogButtonBox)
-QT_FORWARD_DECLARE_CLASS(QWidget)
-QT_FORWARD_DECLARE_CLASS(QxtConfigWidget)
-QT_FORWARD_DECLARE_CLASS(QVBoxLayout)
-
-class QxtConfigDialogPrivate : public QObject, public QxtPrivate<QxtConfigDialog>
+QString QxtTemporaryDirPrivate::create()
 {
-    Q_OBJECT
-public:
-    QXT_DECLARE_PUBLIC(QxtConfigDialog)
-
-    void init( QxtConfigWidget::IconPosition pos );
-    QDialogButtonBox* buttons;
-    QxtConfigWidget* configWidget;
-    QVBoxLayout* layout;
-};
-
-#endif // QXTCONFIGDIALOG_P_H
+    QString res;
+    QString templateCopy = dirTemplate;
+    if (!templateCopy.endsWith(QLatin1String("XXXXXX")))
+        templateCopy.append(QLatin1String("XXXXXX"));
+    char* tmpl = qstrdup(templateCopy.toLocal8Bit());
+    char* path = mkdtemp(tmpl);
+    if (path)
+        res = QString::fromLocal8Bit(path);
+    delete[] tmpl;
+    return res;
+}

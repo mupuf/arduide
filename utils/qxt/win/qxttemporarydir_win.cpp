@@ -2,7 +2,7 @@
  **
  ** Copyright (C) Qxt Foundation. Some rights reserved.
  **
- ** This file is part of the QxtGui module of the Qxt library.
+ ** This file is part of the QxtCore module of the Qxt library.
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the Common Public License, version 1.0, as published
@@ -22,27 +22,20 @@
  ** <http://libqxt.org>  <foundation@libqxt.org>
  **
  ****************************************************************************/
-#ifndef QXTCONFIGDIALOG_P_H
-#define QXTCONFIGDIALOG_P_H
+#include "qxttemporarydir_p.h"
+#include <qt_windows.h>
 
-#include "qxtconfigwidget.h"
-#include "qxtconfigdialog.h"
-
-QT_FORWARD_DECLARE_CLASS(QDialogButtonBox)
-QT_FORWARD_DECLARE_CLASS(QWidget)
-QT_FORWARD_DECLARE_CLASS(QxtConfigWidget)
-QT_FORWARD_DECLARE_CLASS(QVBoxLayout)
-
-class QxtConfigDialogPrivate : public QObject, public QxtPrivate<QxtConfigDialog>
+QString QxtTemporaryDirPrivate::create()
 {
-    Q_OBJECT
-public:
-    QXT_DECLARE_PUBLIC(QxtConfigDialog)
-
-    void init( QxtConfigWidget::IconPosition pos );
-    QDialogButtonBox* buttons;
-    QxtConfigWidget* configWidget;
-    QVBoxLayout* layout;
-};
-
-#endif // QXTCONFIGDIALOG_P_H
+    QString res;
+    TCHAR buffer[MAX_PATH];
+    QFileInfo fileInfo(dirTemplate);
+    UINT uUnique = GetTempFileName((wchar_t*)fileInfo.path().utf16(), (wchar_t*)fileInfo.baseName().utf16(), 0, buffer);
+    if (uUnique != 0)
+    {
+        res = QString::fromUtf16((const ushort*)buffer);
+        QFile::remove(res);
+        QDir().mkpath(res);
+    }
+    return res;
+}

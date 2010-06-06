@@ -2,7 +2,7 @@
  **
  ** Copyright (C) Qxt Foundation. Some rights reserved.
  **
- ** This file is part of the QxtGui module of the Qxt library.
+ ** This file is part of the QxtCore module of the Qxt library.
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the Common Public License, version 1.0, as published
@@ -22,27 +22,37 @@
  ** <http://libqxt.org>  <foundation@libqxt.org>
  **
  ****************************************************************************/
-#ifndef QXTCONFIGDIALOG_P_H
-#define QXTCONFIGDIALOG_P_H
+#ifndef QXTTEMPORARYDIR_H
+#define QXTTEMPORARYDIR_H
 
-#include "qxtconfigwidget.h"
-#include "qxtconfigdialog.h"
+#include <qxtglobal.h>
+#include <QString>
+#include <QDir>
 
-QT_FORWARD_DECLARE_CLASS(QDialogButtonBox)
-QT_FORWARD_DECLARE_CLASS(QWidget)
-QT_FORWARD_DECLARE_CLASS(QxtConfigWidget)
-QT_FORWARD_DECLARE_CLASS(QVBoxLayout)
+class QxtTemporaryDirPrivate;
 
-class QxtConfigDialogPrivate : public QObject, public QxtPrivate<QxtConfigDialog>
+class QXT_CORE_EXPORT QxtTemporaryDir
 {
-    Q_OBJECT
 public:
-    QXT_DECLARE_PUBLIC(QxtConfigDialog)
+    QxtTemporaryDir();
+    QxtTemporaryDir(const QString& dirTemplate);
+    ~QxtTemporaryDir();
 
-    void init( QxtConfigWidget::IconPosition pos );
-    QDialogButtonBox* buttons;
-    QxtConfigWidget* configWidget;
-    QVBoxLayout* layout;
+    QString dirTemplate() const;
+    void setDirTemplate(const QString& dirTemplate);
+
+    bool autoRemove() const;
+    void setAutoRemove(bool autoRemove);
+
+    bool remove();
+
+    QDir dir() const;
+    QString path() const;
+    QString errorString() const;
+
+private:
+    Q_DISABLE_COPY(QxtTemporaryDir)
+    QXT_DECLARE_PRIVATE(QxtTemporaryDir)
 };
 
-#endif // QXTCONFIGDIALOG_P_H
+#endif // QXTTEMPORARYDIR_H

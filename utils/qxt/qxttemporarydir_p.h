@@ -2,7 +2,7 @@
  **
  ** Copyright (C) Qxt Foundation. Some rights reserved.
  **
- ** This file is part of the QxtGui module of the Qxt library.
+ ** This file is part of the QxtCore module of the Qxt library.
  **
  ** This library is free software; you can redistribute it and/or modify it
  ** under the terms of the Common Public License, version 1.0, as published
@@ -22,27 +22,25 @@
  ** <http://libqxt.org>  <foundation@libqxt.org>
  **
  ****************************************************************************/
-#ifndef QXTCONFIGDIALOG_P_H
-#define QXTCONFIGDIALOG_P_H
+#ifndef QXTTEMPORARYDIR_P_H
+#define QXTTEMPORARYDIR_P_H
 
-#include "qxtconfigwidget.h"
-#include "qxtconfigdialog.h"
+#include "qxtglobal.h"
+#include "qxttemporarydir.h"
 
-QT_FORWARD_DECLARE_CLASS(QDialogButtonBox)
-QT_FORWARD_DECLARE_CLASS(QWidget)
-QT_FORWARD_DECLARE_CLASS(QxtConfigWidget)
-QT_FORWARD_DECLARE_CLASS(QVBoxLayout)
-
-class QxtConfigDialogPrivate : public QObject, public QxtPrivate<QxtConfigDialog>
+class QxtTemporaryDirPrivate : public QxtPrivate<QxtTemporaryDir>
 {
-    Q_OBJECT
 public:
-    QXT_DECLARE_PUBLIC(QxtConfigDialog)
+    QxtTemporaryDirPrivate();
 
-    void init( QxtConfigWidget::IconPosition pos );
-    QDialogButtonBox* buttons;
-    QxtConfigWidget* configWidget;
-    QVBoxLayout* layout;
+    QString create();
+    void validate();
+
+    QString dirTemplate;
+    bool autoRemove;
+    QString error;
+    bool init;
+    QDir dir;
 };
 
-#endif // QXTCONFIGDIALOG_P_H
+#endif // QXTTEMPORARYDIR_P_H

@@ -6,10 +6,10 @@
 #ifndef BUILDER_H
 #define BUILDER_H
 
-#include <QObject>
+#include <QScopedPointer>
+#include <qxttemporarydir.h>
 
 #include "../env/ILogger.h"
-#include "../utils/TemporaryDirectory.h"
 
 class Board;
 
@@ -42,7 +42,7 @@ private:
     int runCommand(const QStringList &command);
 
     ILogger &mLogger;
-    TemporaryDirectory mBuildDir;
+    QScopedPointer<QxtTemporaryDir> mBuildDir;
     const Board *mBoard;
     QString mDevice;
 };

@@ -22,7 +22,9 @@
 #include "../utils/Serial.h"
 
 Builder::Builder(ILogger &logger, QObject *parent)
-    : QObject(parent), mLogger(logger), mBuildDir("arduino-build"), mBoard(NULL)
+    : QObject(parent),
+      mLogger(logger),
+      mBoard(NULL)
 {
 }
 
@@ -41,9 +43,8 @@ bool Builder::build(const QString &code, bool upload)
     }
 
     mLogger.logImportant(tr("Compiling for %0...").arg(mBoard->name()));
-    mBuildDir.clear();
-
-    const QString &buildPath = mBuildDir.path();
+    mBuildDir.reset(new QxtTemporaryDir(QDir(QDir::tempPath()).filePath("arduino-build")));
+    QString buildPath = mBuildDir->path();
 
     QStringList cflags = Toolkit::avrCFlags(mBoard);
     QStringList cxxflags = Toolkit::avrCxxFlags(mBoard);
@@ -218,7 +219,7 @@ QStringList Builder::compile(const QStringList &sources, const QStringList &incl
         QStringList cmdline;
         SourceType sourceType = identifySource(source);
         QString objectFileName = QFileInfo(source).fileName() + ".o";
-        objectFileName = QDir(outputDirectory.isNull() ? mBuildDir.path() : outputDirectory).filePath(objectFileName);
+        objectFileName = QDir(outputDirectory.isNull() ? mBuildDir->path() : outputDirectory).filePath(objectFileName);
         switch (sourceType)
         {
         case CSource:
@@ -280,7 +281,7 @@ bool Builder::link(const QString &fileName, const QStringList &objects, const QS
         << ldflags
         << "-o" << fileName
         << objects
-        << QString("-L%0").arg(mBuildDir.path())
+        << QString("-L%0").arg(mBuildDir->path())
         << "-lm";
     return runCommand(command) == 0;
 }
