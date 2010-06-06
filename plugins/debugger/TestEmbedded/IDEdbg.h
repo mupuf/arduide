@@ -41,11 +41,56 @@
 		frame_free(vars);
 	}
 	
-	void _DbgWatchVariable(const char* name, int size, void* data)
+	void _DbgWatchVariable(const char* name, variable_type type, int size, void* data)
 	{
-		variable* var=variable_create(name, size, data);
+		variable* var=variable_create(name, type, size, data);
 		
 		linked_list_first_element(frames)->data=linked_list_element_push_front((linked_list*)(linked_list_first_element(frames)->data), var);
+	}
+	
+	void _DbgWatchVariable(const char* name, int* data)
+	{
+		return _DbgWatchVariable(name, _int, sizeof(&data), (void*)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, unsigned int* data)
+	{
+		return _DbgWatchVariable(name, _unsigned_int, sizeof(&data), (void*)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, char* data)
+	{
+		return _DbgWatchVariable(name, _char, sizeof(&data), (void*)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, unsigned char* data)
+	{
+		return _DbgWatchVariable(name, _unsigned_char, sizeof(&data), (void*)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, float* data)
+	{
+		return _DbgWatchVariable(name, _float, sizeof(&data), (void*)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, double* data)
+	{
+		return _DbgWatchVariable(name, _double, sizeof(&data), (void*)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, const char** data)
+	{
+		return _DbgWatchVariable(name, _char_pointer, sizeof(&data), (void*)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, char** data)
+	{
+		return _DbgWatchVariable(name, (const char**)data);
+	}
+	
+	void _DbgWatchVariable(const char* name, void* data)
+	{
+		return _DbgWatchVariable(name, _void_pointer, sizeof(&data), (void*)data);
 	}
 	
 	// Private
@@ -63,7 +108,7 @@
 		int i;
 		for(i=0; i<frameCount; ++i)
 		{
-			traces[i]=generateFrameTrace(tmpFrame->data);
+			traces[i]=generateFrameTrace((linked_list*)tmpFrame->data);
 			sizeRet+=strlen(traces[i]);
 			tmpFrame=tmpFrame->next;
 		}

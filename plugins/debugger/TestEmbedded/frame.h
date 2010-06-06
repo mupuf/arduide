@@ -40,9 +40,6 @@
 			frame=frame->next;
 		}
 		
-		// Add the needed space for the ; separator
-		sizeRet+=varCount-1;
-		
 		// Add the final \0 char
 		++sizeRet;
 		
@@ -53,7 +50,7 @@
 		int pos=0;
 		for(i=0; i<varCount; ++i)
 		{
-			pos+=snprintf(ret+pos, sizeRet-pos, "%s%s", variables[i], (i<varCount-1)?";":"");
+			pos+=snprintf(ret+pos, sizeRet-pos, "%s", variables[i]);
 			free(variables[i]);
 		}
 		

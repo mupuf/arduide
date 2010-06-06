@@ -4,31 +4,31 @@
 
 int main(int argc, char** argv)
 {
-	char a=-53, b=127, c=200;
+	char a='a';
+	int b=127;
+	int c=-25;
+	
+	const char* str="Je suis mupuf";
+	
+	float f=123456789.123456789;
+	float d=123456789.123456789;
 	
 	DbgInit();
 	
 	DbgNewFrame();
 	
-	_DbgWatchVariable("a", sizeof(a), &a);
-	_DbgWatchVariable("b", sizeof(b), &b);
-	
-	DbgNewFrame();
-	
-	_DbgWatchVariable("c", sizeof(c), &c);
-	
+	_DbgWatchVariable("a", &a);
+	_DbgWatchVariable("b", &b);
+	_DbgWatchVariable("c", &c);
+	_DbgWatchVariable("f", &f);
+	_DbgWatchVariable("d", &d);
 	IDEdbg_printCurrentFrameVariables();
-	
-	DbgCloseFrame();
 	
 	char* data=IDEdbg_generateDebuggingTraces();
 	printf("data=\"%s\"\n", data);
 	free(data);
 	
 	DbgCloseFrame();
-	
-	DbgCloseFrame();
-	
 	
 	/*linked_list* test=linked_list_create();
 	
