@@ -26,11 +26,11 @@
 	{
 		while(list)
 		{
-			linked_list* tmp=list;
+			linked_list* next=list->next;
 			if(destructor)
 				destructor(list->data);
 			free(list);
-			list=list->next;
+			list=next;
 		}
 	}
 
@@ -140,6 +140,9 @@
 	
 	linked_list* linked_list_remove_front(linked_list* list, linked_list_data_freer destructor)
 	{
+		if(list==NULL)
+			return NULL;
+		
 		linked_list* tmp=list;
 		list=list->next;
 		
