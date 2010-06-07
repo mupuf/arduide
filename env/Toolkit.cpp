@@ -154,35 +154,54 @@ QString Toolkit::corePath(const Board *board)
     return QDir(hardwarePath()).filePath(QString("arduino/cores/%0").arg(board->attribute("build.core")));
 }
 
-QStringList Toolkit::librariesIDE()
+QStringList Toolkit::IDELibraries()
+{
+    return QDir(IDELibraryPath()).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+}
+
+QStringList Toolkit::arduinoLibraries()
 {
     return QDir(libraryPath()).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 }
 
-QStringList Toolkit::librariesUser()
+QStringList Toolkit::userLibraries()
 {
     return QDir(userLibraryPath()).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 }
 
 QStringList Toolkit::libraries()
 {
-    return librariesIDE()+librariesUser();
+    return userLibraries() + IDELibraries() + arduinoLibraries();
+}
+
+QString Toolkit::IDELibraryPath()
+{
+    return QDir(ideApp->dataPath()).filePath("libraries");
+}
+
+QString Toolkit::userLibraryPath()
+{
+    return QDir(ideApp->settings()->sketchPath()).filePath("libraries");
 }
 
 QString Toolkit::libraryPath(const QString &libraryName)
 {
-    Toolkit::userLibraryPath();
-
-    if(libraryName.isNull())
+    if (libraryName.isNull())
     {
         return QDir(ideApp->settings()->arduinoPath()).filePath(QString("libraries"));
     }
     else
     {
-        QString ideLib=QDir(ideApp->settings()->arduinoPath()).filePath(QString("libraries/%0").arg(libraryName));
-        QString userLib=QDir(userLibraryPath()).filePath(QString("%0").arg(libraryName));
-
-        return QDir(ideLib).exists()?ideLib:userLib;
+        QStringList searchPaths = QStringList() << userLibraryPath() << IDELibraryPath() << libraryPath();
+        static QString format("%0/%1");
+        QString path;
+        foreach (const QString &searchPath, searchPaths)
+        {
+            path = format.arg(searchPath, libraryName);
+            if (QDir(path).exists())
+                return path;
+        }
+        return QString();
     }
 }
 
@@ -239,10 +258,5 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
 #endif
         << QString("-p%0").arg(board->attribute("build.mcu"));
     return flags;
-}
-
-QString Toolkit::userLibraryPath()
-{
-    return ideApp->settings()->sketchPath()+"/libraries";
 }
 

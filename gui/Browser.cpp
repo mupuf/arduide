@@ -103,7 +103,6 @@ void Browser::initializeContext(QVariantHash &mapping)
 
 void Browser::handleLink(const QUrl &url)
 {
-    qDebug() << url;
     if (url.scheme() == "ide")
         handleIdeLink(url);
     else

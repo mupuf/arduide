@@ -37,9 +37,12 @@ public:
     static QStringList avrSFlags(const Board *board);
     static QStringList avrLdFlags(const Board *board);
     static QString corePath(const Board *board);
-    static QStringList librariesIDE();
-    static QStringList librariesUser();
+    static QStringList IDELibraries();
+    static QStringList userLibraries();
+    static QStringList arduinoLibraries();
     static QStringList libraries();
+    static QString IDELibraryPath();
+    static QString UserLibraryPath();
     static QString libraryPath(const QString &libraryName = QString());
     static QString libraryKeywordsFileName(const QString &libraryName);
     static QStringList librariesWithExamples();
