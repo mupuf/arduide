@@ -16,7 +16,7 @@ public:
     Browser(QWidget *parent = NULL);
 
     void quickstart();
-    void openDocumentation(const QString &fileName);
+    void openDocumentation(const QString &fileName = QString());
 
     static QUrl toFileUrl(const QString &path);
     static QString toFileName(const QUrl &url);
@@ -30,6 +30,9 @@ signals:
 private:
     QString mPage;
     QUrl mUrl;
+
+    void handleIdeLink(const QUrl &url);
+    QByteArray getDocumentationHtml(const QString &fileName);
 
 protected:
     void initializeContext(QVariantHash &mapping);

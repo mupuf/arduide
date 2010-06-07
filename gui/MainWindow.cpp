@@ -90,6 +90,7 @@ void MainWindow::createBrowserAndTabs()
     tabWidget->addAction(ui.actionGo_to_the_previous_tab);
 
     QWebSecurityOrigin::addLocalScheme("ide");
+    QWebSecurityOrigin::addLocalScheme("qrc");
     browser = new Browser;
     tabWidget->addTab(browser, tr("Browser"));
     setCentralWidget(tabWidget);
