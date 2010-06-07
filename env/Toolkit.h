@@ -37,6 +37,8 @@ public:
     static QStringList avrSFlags(const Board *board);
     static QStringList avrLdFlags(const Board *board);
     static QString corePath(const Board *board);
+    static QStringList librariesIDE();
+    static QStringList librariesUser();
     static QStringList libraries();
     static QString libraryPath(const QString &libraryName = QString());
     static QString libraryKeywordsFileName(const QString &libraryName);
@@ -45,6 +47,7 @@ public:
     static QString libraryExampleFileName(const QString &library, const QString &example);
     static QString avrdudePath();
     static QStringList avrdudeFlags(const Board *board);
+    static QString userLibraryPath();
 
 private:
     static const int ARDUINO_REVISION = 18;

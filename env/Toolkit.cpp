@@ -78,7 +78,6 @@ QString Toolkit::avrPath()
     return QString();
 #endif
 }
-
 QString Toolkit::avrTool(Toolkit::AVRTool tool)
 {
     QString path = avrPath();
@@ -155,16 +154,36 @@ QString Toolkit::corePath(const Board *board)
     return QDir(hardwarePath()).filePath(QString("arduino/cores/%0").arg(board->attribute("build.core")));
 }
 
-QStringList Toolkit::libraries()
+QStringList Toolkit::librariesIDE()
 {
     return QDir(libraryPath()).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 }
 
+QStringList Toolkit::librariesUser()
+{
+    return QDir(userLibraryPath()).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+}
+
+QStringList Toolkit::libraries()
+{
+    return librariesIDE()+librariesUser();
+}
+
 QString Toolkit::libraryPath(const QString &libraryName)
 {
-    return (libraryName.isNull()) ?
-        QDir(ideApp->settings()->arduinoPath()).filePath("libraries") :
-        QDir(ideApp->settings()->arduinoPath()).filePath(QString("libraries/%0").arg(libraryName));
+    Toolkit::userLibraryPath();
+
+    if(libraryName.isNull())
+    {
+        return QDir(ideApp->settings()->arduinoPath()).filePath(QString("libraries"));
+    }
+    else
+    {
+        QString ideLib=QDir(ideApp->settings()->arduinoPath()).filePath(QString("libraries/%0").arg(libraryName));
+        QString userLib=QDir(userLibraryPath()).filePath(QString("%0").arg(libraryName));
+
+        return QDir(ideLib).exists()?ideLib:userLib;
+    }
 }
 
 QString Toolkit::libraryKeywordsFileName(const QString &libraryName)
@@ -221,3 +240,9 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
         << QString("-p%0").arg(board->attribute("build.mcu"));
     return flags;
 }
+
+QString Toolkit::userLibraryPath()
+{
+    return ideApp->settings()->sketchPath()+"/libraries";
+}
+
