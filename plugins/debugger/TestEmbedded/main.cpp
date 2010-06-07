@@ -10,8 +10,8 @@ int main(int argc, char** argv)
 	
 	const char* str="Je suis mupuf";
 	
-	float f=123456789.123456789;
-	float d=123456789.123456789;
+	float f=1234.123456789;
+	double d=123456.123456789;
 	
 	DbgInit();
 	
