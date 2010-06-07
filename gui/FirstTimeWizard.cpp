@@ -82,7 +82,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 #if defined(__x86_64__) // 64-bit Unix
     mDownloadOs = "64-bit Linux";
     mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64-2.tgz" ;
-#elif defined(__x86_32__) // 32-bit Unix
+#elif defined(__i386__) // 32-bit Unix
     mDownloadOs = "32-bit Linux";
     mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
 #else // other
