@@ -24,6 +24,10 @@
 Browser::Browser(QWidget *parent)
     : QWebView(parent)
 {
+#ifndef QT_NO_DEBUG
+    settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+#endif
+
     page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     connect(this, SIGNAL(linkClicked(const QUrl &)), this, SLOT(handleLink(const QUrl &)));
 }
@@ -80,6 +84,8 @@ void Browser::quickstart()
         sketches.append(sketch);
     mapping.insert("sketches", sketches);
 
+    mapping.insert("documentationHtml", getDocumentationHtml("index.html"));
+
     PageRenderer *renderer = new PageRenderer;
     renderer->render("quickstart.html", mapping);
     mPage = renderer->page();
@@ -97,80 +103,91 @@ void Browser::initializeContext(QVariantHash &mapping)
 
 void Browser::handleLink(const QUrl &url)
 {
+    qDebug() << url;
     if (url.scheme() == "ide")
-    {
-        if (url.host() == "new-project")
-            // empty project
-            emit newProjectRequested();
-        else if (url.host() == "example")
-        {
-            // new project from example
-            QFileInfo fi(url.path());
-            QString filename = Toolkit::exampleFileName(fi.dir().dirName(), fi.fileName());
-
-            QFile f(filename);
-            if (f.open(QFile::ReadOnly))
-            {
-                QString code = QString::fromLocal8Bit(f.readAll());
-			 emit newProjectRequested(code, fi.fileName());
-            } else
-                QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
-        }
-        else if (url.host() == "library-example")
-        {
-            // new project from example
-            QFileInfo fi(url.path());
-            QString filename = Toolkit::libraryExampleFileName(fi.dir().dirName(), fi.fileName());
-
-            QFile f(filename);
-            if (f.open(QFile::ReadOnly))
-            {
-                QString code = QString::fromLocal8Bit(f.readAll());
-                emit newProjectRequested(code, fi.fileName());
-            } else
-                QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
-        }
-        else if (url.host() == "open-project")
-        {
-            QString path = QDir::cleanPath(url.path());
-            if (path.isEmpty())
-                emit openProjectRequested();
-            else
-                emit openProjectRequested(path);
-        }
-        else if (url.host() == "open-sketch")
-        {
-            QString sketchName = url.path().section("/", 1);
-            QString fileName = QDir(ideApp->settings()->sketchPath()).filePath(QString("%0/%0.pde").arg(sketchName));
-            emit openProjectRequested(fileName);
-        }
-    }
-    else if (url.scheme() == "file")
-    {
-        QDir docDir(Toolkit::referencePath());
-        QString path = toFileName(url);
-        QFileInfo fi(path);
-        if (fi.dir() == docDir)
-        {
-            // documentation
-            openDocumentation(fi.fileName());
-        }
-        else
-            QDesktopServices::openUrl(url);
-    }
+        handleIdeLink(url);
     else
         QDesktopServices::openUrl(url);
 }
 
+void Browser::handleIdeLink(const QUrl &url)
+{
+    if (url.host() == "new-project")
+        // empty project
+        emit newProjectRequested();
+    else if (url.host() == "example")
+    {
+        // new project from example
+        QFileInfo fi(url.path());
+        QString filename = Toolkit::exampleFileName(fi.dir().dirName(), fi.fileName());
+
+        QFile f(filename);
+        if (f.open(QFile::ReadOnly))
+        {
+            QString code = QString::fromLocal8Bit(f.readAll());
+            emit newProjectRequested(code, fi.fileName());
+        } else
+            QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
+    }
+    else if (url.host() == "library-example")
+    {
+        // new project from example
+        QFileInfo fi(url.path());
+        QString filename = Toolkit::libraryExampleFileName(fi.dir().dirName(), fi.fileName());
+
+        QFile f(filename);
+        if (f.open(QFile::ReadOnly))
+        {
+            QString code = QString::fromLocal8Bit(f.readAll());
+            emit newProjectRequested(code, fi.fileName());
+        } else
+            QMessageBox::warning(this, tr("Load error"), tr("The selected example could not be opened."));
+    }
+    else if (url.host() == "open-project")
+    {
+        QString path = QDir::cleanPath(url.path());
+        if (path.isEmpty())
+            emit openProjectRequested();
+        else
+            emit openProjectRequested(path);
+    }
+    else if (url.host() == "open-sketch")
+    {
+        QString sketchName = url.path().section("/", 1);
+        QString fileName = QDir(ideApp->settings()->sketchPath()).filePath(QString("%0/%0.pde").arg(sketchName));
+        emit openProjectRequested(fileName);
+    }
+    else if (url.host() == "open-documentation")
+    {
+        QString path = url.path();
+        if (path[0] == '/')
+            path = path.mid(1);
+        openDocumentation(path);
+    }
+}
+
 void Browser::openDocumentation(const QString &fileName)
 {
-    const QString content = "openDocumentation('{{ fileName|escapejs }}');";
+    QString content = "openDocumentation('{{ html|escapejs }}');";
     Grantlee::Template t = ideApp->engine()->newTemplate(content, "js");
     QVariantHash mapping;
-    mapping.insert("fileName", fileName);
+    QByteArray html = getDocumentationHtml(fileName.isEmpty() ? "index.html" : fileName);
+    mapping.insert("html", html);
     Grantlee::Context context(mapping);
-
     page()->mainFrame()->evaluateJavaScript(t->render(&context));
+}
+
+QByteArray Browser::getDocumentationHtml(const QString &fileName)
+{
+    QByteArray html;
+    QString referencePath = Toolkit::referencePath();
+    QString fullPath = QDir(referencePath).filePath(fileName);
+    QFile f(fullPath);
+    if (! f.open(QFile::ReadOnly))
+        return html;
+    html = f.readAll();
+    f.close();
+    return html;
 }
 
 void Browser::refresh()

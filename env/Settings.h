@@ -12,6 +12,9 @@
 
 #include "IDEGlobal.h"
 
+class LexerArduino;
+class Editor;
+
 class IDE_EXPORT Settings : public QObject
 {
     Q_OBJECT
@@ -21,14 +24,17 @@ public:
     void setArduinoPath(const QString &path);
     QString sketchPath();
     void setSketchPath(const QString &path);
-    QFont editorFont();
-    void setEditorFont(const QFont &f);
     QString devicePort();
     void setDevicePort(const QString &port);
     QString board();
     void setBoard(const QString &board);
     bool verboseUpload();
     void setVerboseUpload(bool verbose);
+
+    void loadLexerProperties(LexerArduino *lexer);
+    void saveLexerProperties(LexerArduino *lexer);
+    void loadEditorSettings(Editor *editor);
+    void saveEditorSettings(Editor *editor);
 
     bool isCorrect();
 

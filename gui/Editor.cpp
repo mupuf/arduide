@@ -151,3 +151,17 @@ void Editor::setLexerFont(const QFont &font)
 {
     lexer()->setFont(font);
 }
+
+// workaround: impossible to get these attributes in QsciScintilla directly
+// so override them instead
+void Editor::setCaretForegroundColor(const QColor &col)
+{
+    mCaretForegroundColor = col;
+    QsciScintilla::setCaretForegroundColor(col);
+}
+
+void Editor::setSelectionBackgroundColor(const QColor &col)
+{
+    mSelectionBackgroundColor = col;
+    QsciScintilla::setSelectionBackgroundColor(col);
+}

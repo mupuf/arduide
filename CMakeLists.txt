@@ -132,10 +132,19 @@ else()
     "utils/unix/*.cpp" "utils/unix/*.h")
 endif()
 
-file(GLOB utils_SOURCES
-  "utils/*.cpp" "utils/*.h"
-  "utils/qxt/*.cpp" "utils/qxt/*.h"
-  "utils/hexview/*.cpp" "utils/hexview/*.h")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  file(GLOB utils_SOURCES
+    "utils/*.cpp" "utils/*.h"
+    "utils/qxt/*.cpp" "utils/qxt/*.h"
+    "utils/qxt/win/*.cpp" "utils/qxt/win/*.h"
+    "utils/hexview/*.cpp" "utils/hexview/*.h")
+else()
+  file(GLOB utils_SOURCES
+    "utils/*.cpp" "utils/*.h"
+    "utils/qxt/*.cpp" "utils/qxt/*.h"
+    "utils/qxt/unix/*.cpp" "utils/qxt/unix/*.h"
+    "utils/hexview/*.cpp" "utils/hexview/*.h")
+endif()
 
 file(GLOB utils_MOCS
   "utils/*.h"

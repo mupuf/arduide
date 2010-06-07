@@ -10,10 +10,13 @@
 
 #include "Editor.h"
 
+class LexerArduino;
+
 class EditorFactory
 {
 public:
     static Editor *createEditor(const QString &text = initialText, QWidget *parent = NULL);
+    static LexerArduino *createLexer(QObject *parent = NULL);
 
 private:
     static const QString initialText;

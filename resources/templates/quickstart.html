@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="tabs">
+      <ul>
+        <li><a href="#tab-quickstart">Develop</a></li>
+        <li><a href="#tab-examples">Examples</a></li>
+        <li><a href="#tab-docs">Documentation</a></li>
+      </ul>
+
+      <div id="tab-quickstart">
+        <div class="column">
+          <h2>Quick start</h2>
+          <ul>
+            <li><a href="ide://new-project">Start a new project</a></li>
+            <li><a href="ide://open-project">Open an existing project</a></li>
+          </ul>
+        </div>
+
+        <div class="column">
+          <h2>Recent projects</h2>
+          {% for project in recentProjects %}
+          {% if forloop.first %}<ul>{% endif %}
+            <li><a href="ide://open-project/{{ project.filename }}">{{ project.name }}</a></li>
+          {% if forloop.last %}</ul>{% endif %}
+          {% empty %}
+          <p>No recent projects</p>
+          {% endfor %}
+        </div>
+
+        <div class="column">
+          <h2>Sketch book</h2>
+          {% for sketch in sketches %}
+          {% if forloop.first %}<ul>{% endif %}
+            <li><a href="ide://open-sketch/{{ sketch }}">{{ sketch }}</a></li>
+          {% if forloop.last %}</ul>{% endif %}
+          {% empty %}
+          <p>No sketches</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="tab-examples">
+        <h2>Start using an example</h2>
+        <div>
+          {% for cat in exampleCategories %}
+          <div class="column">
+            <h3>{{ cat.name }}</h3>
+            {% for example in cat.examples %}
+            {% if forloop.first %}<ul>{% endif %}
+              <li><a href="ide://example/{{ cat.name }}/{{ example }}">{{ example }}</a></li>
+              {% if forloop.last %}</ul>{% endif %}
+            {% empty %}
+            <p>No examples</p>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <hr />
+
+        <div>
+          {% for lib in librariesWithExamples %}
+          <div class="column">
+            <h3>{{ lib.name }}</h3>
+            {% for example in lib.examples %}
+            {% if forloop.first %}<ul>{% endif %}
+              <li><a href="ide://library-example/{{ lib.name }}/{{ example }}">{{ example }}</a></li>
+              {% if forloop.last %}</ul>{% endif %}
+            {% empty %}
+            <p>No examples</p>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="tab-docs">
+          <div id="docs"></div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      <!--
+         function openDocumentation(html)
+         {
+           // clean up the html before inserting it
+           // first extract the interesting part of the page
+           var doc = $(html).find('#wikitext');
+
+           // convert all the links to ide:// links
+           doc.find('a').each(function() {
+             var link = $(this);
+             var href = $(this).attr('href');
+             if (href.indexOf('/') == -1)
+             {
+               // the href is not a path nor a URL, e.g.: "index.html"
+               $(this).attr('href', 'ide://open-documentation/' + href)
+             }
+           });
+
+           $('#docs').html(doc.html());
+         }
+
+         $(document).ready(function ()
+         {
+           var tabs = $('#tabs');
+           tabs.tabs();
+           openDocumentation('{{ documentationHtml|escapejs }}');
+         });
+        -->
+    </script>
+{% endblock %}

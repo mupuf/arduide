@@ -42,10 +42,12 @@ void IDEApplication::initializeTemplates()
 {
     mEngine = new Grantlee::Engine(this);
     mEngine->setPluginPaths(QStringList() << QDir(GRANTLEE_PLUGIN_DIR).absolutePath());
+#if 0
 #pragma message("grantlee_scriptabletags disabled because it's broken")
     mEngine->removeDefaultLibrary("grantlee_scriptabletags");
+#endif
     Grantlee::FileSystemTemplateLoader::Ptr loader = Grantlee::FileSystemTemplateLoader::Ptr(new Grantlee::FileSystemTemplateLoader);
-    loader->setTemplateDirs(QStringList() << QDir(mDataPath).filePath("templates"));
+    loader->setTemplateDirs(QStringList() << ":/templates");
     mEngine->addTemplateLoader(loader);
 }
 

@@ -14,9 +14,11 @@
 Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
 {
     Editor *editor = new Editor(parent);
-    LexerArduino *lexer = new LexerArduino;
-    lexer->setFont(ideApp->settings()->editorFont());
+    LexerArduino *lexer = createLexer(editor);
+    Settings *settings = ideApp->settings();
     editor->setLexer(lexer);
+    settings->loadEditorSettings(editor);
+
     editor->setMarginLineNumbers(1, true);
     editor->setMarginWidth(1, 40);
     editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
@@ -25,10 +27,18 @@ Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
     editor->setFolding(QsciScintilla::BoxedTreeFoldStyle);
     editor->setSelectionToEol(true);
     editor->setAutoIndent(true);
-    editor->setTabWidth(4);
     editor->setText(text);
     editor->setModified(false);
+
     return editor;
+}
+
+LexerArduino *EditorFactory::createLexer(QObject *parent)
+{
+    LexerArduino *lexer = new LexerArduino(parent);
+    Settings *settings = ideApp->settings();
+    settings->loadLexerProperties(lexer);
+    return lexer;
 }
 
 const QString EditorFactory::initialText =

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">  <head>
+    <title>Quick Start</title>
+    <link href="../css/style.css" rel="stylesheet" type="text/css" media="screen" />
+    <script src="../js/jquery-1.4.2.min.js" type="text/javascript"></script>
+    <link href="../css/jquery-ui-themes-1.8.2/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" media="screen" />
+    <script src="../js/jquery-ui-1.8.2.min.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <div id="wrapper" class="ui-widget-content ui-corner-all">
+      <img id="logo" alt="Logo" src="../images/arduino.png" height="64" />
+      <h1 id="title">{{ applicationName }}</h1>
+      <hr id="title-separator" />
+
+      <div id="links-box" class="ui-widget-header ui-corner-all">
+        <table>
+          <tr><td>Arduino homepage:</td><td><a href="http://arduino.cc/">http://arduino.cc/</td></tr>
+          <tr><td>IDE homepage: </td><td><a href="{{ applicationUrl }}">{{ applicationUrl }}</a></td></tr>
+        </table>
+      </div>
+
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

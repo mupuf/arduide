@@ -24,10 +24,12 @@ void PageRenderer::render(const QString &pageName, const QVariantHash &mapping)
         Grantlee::Template t = ideApp->engine()->loadByName(pageName);
         Grantlee::Context c(mapping);
 
-        QString path = QDir(ideApp->dataPath()).filePath(QString("templates/%0").arg(pageName));
+        QString path = QString("/templates/%0").arg(pageName);
 
         // the url determines the relative path to the data files (css, js)
-        mUrl = Browser::toFileUrl(path);
+        mUrl.setScheme("qrc");
+        mUrl.setPath(path);
+
         mPage = t->render(&c);
     }
     catch(Grantlee::Exception e)

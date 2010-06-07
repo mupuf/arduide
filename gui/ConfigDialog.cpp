@@ -13,26 +13,102 @@
 
 #include "env/Settings.h"
 #include "env/Toolkit.h"
+#include "gui/EditorFactory.h"
+#include "gui/LexerArduino.h"
 #include "IDEApplication.h"
 
-ConfigDialog::ConfigDialog(QWidget *parent)
-    : QxtConfigDialog(parent)
+ConfigWidget::ConfigWidget(QWidget *parent)
+    : QxtConfigWidget(parent)
 {
-    setWindowTitle(tr("Configuration"));
     setupUi();
+    reset();
 }
 
-void ConfigDialog::setupUi()
+void ConfigWidget::initializePage(int index)
 {
-    setMinimumWidth(400);
-    setMinimumHeight(300);
+    switch (index)
+    {
+    case EditorIndex:
+        static const QString sampleText =
+            "/* Example code */\n"
+            "#include <EEPROM.h>\n\n"
+            "int a, b = 3;\n"
+            "void loop()\n"
+            "{\n"
+            "    Serial.println(\"Hello, World!\");\n"
+            "}\n";
+        mEditor->setText(sampleText);
+        break;
+    case PathsIndex:
+        break;
+    case BuildIndex:
+        break;
+    }
+}
 
-    dialogButtonBox()->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel);
+void ConfigWidget::resetPage(int index)
+{
+    Settings *settings = ideApp->settings();
+    LexerArduino *lexer;
 
-    QWidget *page;
+    switch (index)
+    {
+    case EditorIndex:
+        lexer = dynamic_cast<LexerArduino *>(mEditor->lexer());
+        Q_ASSERT(lexer != NULL);
+        settings->loadLexerProperties(lexer);
+        settings->loadEditorSettings(mEditor);
+        updateFontLabel(lexer->font(LexerArduino::Default));
+        uiEditor.colorBox->setCurrentIndex(0);
+        setColorAtIndex(0);
+        uiEditor.caretColorButton->setColor(mEditor->caretForegroundColor());
+        uiEditor.selectionColorButton->setColor(mEditor->selectionBackgroundColor());
+        break;
+    case PathsIndex:
+        uiPaths.arduinoPathEdit->setText(settings->arduinoPath());
+        uiPaths.sketchbookPathEdit->setText(settings->sketchPath());
+        break;
+    case BuildIndex:
+        uiBuild.verboseBox->setChecked(settings->verboseUpload());
+        break;
+    }
+}
 
-    page = new QWidget;
+void ConfigWidget::reset()
+{
+    // resets all the fields and goes to the first page
+    resetPage(EditorIndex);
+    resetPage(PathsIndex);
+    resetPage(BuildIndex);
+    setCurrentIndex(EditorIndex);
+}
+
+void ConfigWidget::setupUi()
+{
+    QWidget *page = new QWidget;
     uiEditor.setupUi(page);
+    mEditor = EditorFactory::createEditor(QString());
+    uiEditor.editorFrame->layout()->addWidget(mEditor);
+    uiEditor.colorBox->addItem(tr("Default"), LexerArduino::Default);
+    uiEditor.colorBox->addItem(tr("Comment"), LexerArduino::Comment);
+    uiEditor.colorBox->addItem(tr("CommentLine"), LexerArduino::CommentLine);
+    uiEditor.colorBox->addItem(tr("CommentDoc"), LexerArduino::CommentDoc);
+    uiEditor.colorBox->addItem(tr("Number"), LexerArduino::Number);
+    uiEditor.colorBox->addItem(tr("Keyword"), LexerArduino::Keyword);
+    uiEditor.colorBox->addItem(tr("DoubleQuotedString"), LexerArduino::DoubleQuotedString);
+    uiEditor.colorBox->addItem(tr("SingleQuotedString"), LexerArduino::SingleQuotedString);
+    uiEditor.colorBox->addItem(tr("UUID"), LexerArduino::UUID);
+    uiEditor.colorBox->addItem(tr("PreProcessor"), LexerArduino::PreProcessor);
+    uiEditor.colorBox->addItem(tr("Operator"), LexerArduino::Operator);
+    uiEditor.colorBox->addItem(tr("Identifier"), LexerArduino::Identifier);
+    uiEditor.colorBox->addItem(tr("UnclosedString"), LexerArduino::UnclosedString);
+    uiEditor.colorBox->addItem(tr("VerbatimString"), LexerArduino::VerbatimString);
+    uiEditor.colorBox->addItem(tr("Regex"), LexerArduino::Regex);
+    uiEditor.colorBox->addItem(tr("CommentLineDoc"), LexerArduino::CommentLineDoc);
+    uiEditor.colorBox->addItem(tr("KeywordSet2"), LexerArduino::KeywordSet2);
+    uiEditor.colorBox->addItem(tr("CommentDocKeyword"), LexerArduino::CommentDocKeyword);
+    uiEditor.colorBox->addItem(tr("CommentDocKeywordError"), LexerArduino::CommentDocKeywordError);
+    uiEditor.colorBox->addItem(tr("GlobalClass"), LexerArduino::GlobalClass);
     addPage(page, QIcon(":/images/32x32/accessories-text-editor.png"), tr("Editor"));
 
     page = new QWidget;
@@ -43,28 +119,112 @@ void ConfigDialog::setupUi()
     uiBuild.setupUi(page);
     addPage(page, QIcon(":/images/32x32/applications-development.png"), tr("Build"));
 
-    connect(dialogButtonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
     connect(uiPaths.arduinoPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
     connect(uiPaths.sketchbookPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
     connect(uiBuild.verboseBox, SIGNAL(stateChanged(int)), this, SLOT(fieldChange()));
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
+    connect(uiEditor.colorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setColorAtIndex(int)));
+    connect(uiEditor.fgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setFgColor(const QColor &)));
+    connect(uiEditor.bgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setBgColor(const QColor &)));
+    connect(uiEditor.caretColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setCaretColor(const QColor &)));
+    connect(uiEditor.selectionColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setSelectionColor(const QColor &)));
     connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
     connect(uiPaths.sketchbookPathButton, SIGNAL(clicked()), this, SLOT(chooseSketchbookPath()));
 }
 
-bool ConfigDialog::apply()
+void ConfigWidget::setColorAtIndex(int index)
+{
+    if (index < 0)
+        return;
+    int style = uiEditor.colorBox->itemData(index).toInt();
+    LexerArduino *lexer = dynamic_cast<LexerArduino *>(mEditor->lexer());
+    Q_ASSERT(lexer != NULL);
+    uiEditor.fgColorButton->setColor(lexer->color(style));
+    uiEditor.bgColorButton->setColor(lexer->paper(style));
+}
+
+void ConfigWidget::setFgColor(const QColor &color)
+{
+    QComboBox *colorBox = uiEditor.colorBox;
+    QsciLexer *lexer = mEditor->lexer();
+    int style = colorBox->itemData(colorBox->currentIndex()).toInt();
+    if (style == LexerArduino::Default)
+        lexer->setDefaultColor(color);
+    lexer->setColor(color, style);
+}
+
+void ConfigWidget::setBgColor(const QColor &color)
+{
+    QComboBox *colorBox = uiEditor.colorBox;
+    QsciLexer *lexer = mEditor->lexer();
+    int style = colorBox->itemData(colorBox->currentIndex()).toInt();
+    if (style == LexerArduino::Default)
+        lexer->setDefaultPaper(color);
+    lexer->setPaper(color, style);
+}
+
+void ConfigWidget::setCaretColor(const QColor &color)
+{
+    mEditor->setCaretForegroundColor(color);
+}
+
+void ConfigWidget::setSelectionColor(const QColor &color)
+{
+    mEditor->setSelectionBackgroundColor(color);
+}
+
+void ConfigWidget::updateFontLabel(const QFont &f)
+{
+    static QString format("%0 %1");
+    QString text = format.arg(f.family()).arg(f.pointSize());
+    uiEditor.fontLabel->setProperty("selectedFont", f);
+    uiEditor.fontLabel->setFont(f);
+    uiEditor.fontLabel->setText(text);
+}
+
+void ConfigWidget::chooseFont()
+{
+    bool ok;
+    QFont initialFont = mEditor->lexer()->font(LexerArduino::Default);
+    QFont f = QFontDialog::getFont(&ok, initialFont, this);
+    if (ok)
+    {
+        QsciLexer *lexer = mEditor->lexer();
+        lexer->setDefaultFont(f);
+        lexer->setFont(f);
+        updateFontLabel(f);
+        mChangedFields << uiEditor.fontLabel;
+    }
+}
+
+void ConfigWidget::chooseArduinoPath()
+{
+    QString path = QFileDialog::getExistingDirectory(this, tr("Choose Arduino path"), uiPaths.arduinoPathEdit->text());
+    if (! path.isEmpty())
+            uiPaths.arduinoPathEdit->setText(path);
+}
+
+void ConfigWidget::chooseSketchbookPath()
+{
+    QString path = QFileDialog::getExistingDirectory(this, tr("Choose Sketchbook path"), uiPaths.sketchbookPathEdit->text());
+    if (! path.isEmpty())
+        uiPaths.sketchbookPathEdit->setText(path);
+}
+
+void ConfigWidget::fieldChange()
+{
+    QWidget *w = qobject_cast<QWidget *>(sender());
+    Q_ASSERT(w != NULL);
+    mChangedFields << w;
+}
+
+bool ConfigWidget::saveConfig()
 {
     Settings *settings = ideApp->settings();
     foreach (QWidget *field, mChangedFields)
     {
-        if (field == uiEditor.fontLabel)
-        {
-            QVariant var = uiEditor.fontLabel->property("selectedFont");
-            if (var.type() == QVariant::Font)
-                ideApp->settings()->setEditorFont(var.value<QFont>());
-        }
-        else if (field == uiPaths.arduinoPathEdit)
+        if (field == uiPaths.arduinoPathEdit)
         {
             QString path = uiPaths.arduinoPathEdit->text();
             if (! Toolkit::isValidArduinoPath(path))
@@ -83,7 +243,41 @@ bool ConfigDialog::apply()
             settings->setVerboseUpload(uiBuild.verboseBox->isChecked());
     }
     mChangedFields.clear();
+
+    // save all the editor/lexer settings
+    settings->saveEditorSettings(mEditor);
+    LexerArduino *lexer = dynamic_cast<LexerArduino *>(mEditor->lexer());
+    Q_ASSERT(lexer != NULL);
+    settings->saveLexerProperties(lexer);
+    // update any existing editor
+    ideApp->mainWindow()->configureEditors();
     return true;
+}
+
+ConfigDialog::ConfigDialog(QWidget *parent)
+    : QxtConfigDialog(parent)
+{
+    setWindowTitle(tr("Configuration"));
+    setupUi();
+}
+
+void ConfigDialog::setupUi()
+{
+    setMinimumWidth(500);
+    setMinimumHeight(400);
+
+    mConfigWidget = new ConfigWidget;
+    QxtConfigWidget *oldConfigWidget = configWidget();
+    setConfigWidget(mConfigWidget);
+    delete oldConfigWidget;
+
+    dialogButtonBox()->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel);
+    connect(dialogButtonBox()->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
+}
+
+bool ConfigDialog::apply()
+{
+    return mConfigWidget->saveConfig();
 }
 
 void ConfigDialog::accept()
@@ -93,61 +287,4 @@ void ConfigDialog::accept()
         hide();
         setResult(QDialog::Accepted);
     }
-}
-
-void ConfigDialog::initializePage(int index)
-{
-    switch (index)
-    {
-    case editorIndex:
-        setupFontChooser();
-        break;
-    case pathsIndex:
-        uiPaths.arduinoPathEdit->setText(ideApp->settings()->arduinoPath());
-        uiPaths.sketchbookPathEdit->setText(ideApp->settings()->sketchPath());
-        break;
-    }
-}
-
-void ConfigDialog::setupFontChooser()
-{
-    static QString format("%0 %1");
-
-    QFont f = ideApp->settings()->editorFont();
-    uiEditor.fontLabel->setFont(f);
-    uiEditor.fontLabel->setText(format.arg(f.family()).arg(f.pointSize()));
-}
-
-void ConfigDialog::chooseFont()
-{
-    bool ok;
-    QFont initialFont = ideApp->settings()->editorFont();
-    QFont f = QFontDialog::getFont(&ok, initialFont, this);
-    if (ok)
-    {
-        uiEditor.fontLabel->setProperty("selectedFont", f);
-        mChangedFields << uiEditor.fontLabel;
-        setupFontChooser();
-    }
-}
-
-void ConfigDialog::chooseArduinoPath()
-{
-    QString path = QFileDialog::getExistingDirectory(this, tr("Choose Arduino path"), uiPaths.arduinoPathEdit->text());
-    if (! path.isEmpty())
-            uiPaths.arduinoPathEdit->setText(path);
-}
-
-void ConfigDialog::chooseSketchbookPath()
-{
-    QString path = QFileDialog::getExistingDirectory(this, tr("Choose Sketchbook path"), uiPaths.sketchbookPathEdit->text());
-    if (! path.isEmpty())
-        uiPaths.sketchbookPathEdit->setText(path);
-}
-
-void ConfigDialog::fieldChange()
-{
-    QWidget *w = qobject_cast<QWidget *>(sender());
-    Q_ASSERT(w != NULL);
-    mChangedFields << w;
 }

@@ -23,8 +23,6 @@ Browser:
  * change jQuery style in settings (low importance)
 
 Editor:
- * give it a section in the config dialog (see "General")
-   - fonts, indentation, style, ... (QScintilla)
  * improve the editor (denis)
    - automatic indentation
  * auto-completion
@@ -32,7 +30,7 @@ Editor:
  * code snippets
 
 Plugin ideas:
- * serial debugger
+ * serial debugger [WIP]
  * serial communication [WIP]
    - connect the IDE to the Arduino and make simple reads/writes
  * simulation
@@ -64,3 +62,5 @@ DONE:
    - ctrl+shift selection [DONE]
    - tab switching (Ctrl-PageUp, Ctrl-PageDown) [DONE]
  * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...) [DONE]
+ * give it a section in the config dialog (see "General") [DONE]
+   - fonts, indentation, style, ... (QScintilla)
