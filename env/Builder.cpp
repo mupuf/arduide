@@ -149,51 +149,7 @@ bool Builder::build(const QString &code, bool upload)
     objects.clear();
 
     // compile the libraries
-    /*QRegExp importRegexp("^\\s*#include\\s+[<\"](\\S+)[\">]");
-    foreach (const QString &line, code.split('\n'))
-    {
-        if (importRegexp.indexIn(line) != -1)
-        {
-            QString library = importRegexp.cap(1);
-            library = QFileInfo(library).baseName();
-            QString libPath = Toolkit::libraryPath(library);
-            QString utilityPath = QDir(libPath).filePath("utility");
-            bool libPathExists = QFileInfo(libPath).exists();
-            bool utilityPathExists = QFileInfo(utilityPath).exists();
-            QStringList libSources, utilitySources;
-
-            if (libPathExists)
-                includePaths << libPath;
-            if (utilityPathExists)
-                includePaths << utilityPath;
-
-            if (libPathExists)
-            {
-                QString outputDirectory = QDir(buildPath).filePath(library);
-                if (! QDir().mkdir(outputDirectory))
-                {
-                    mLogger.logError(tr("Failed to create build directory."));
-                    return false;
-                }
-                foreach (const QString &source, QDir(libPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
-                    libSources << QDir(libPath).filePath(source);
-                objects << compile(libSources, includePaths, cflags, cxxflags, sflags, outputDirectory);
-            }
-
-            if (utilityPathExists)
-            {
-                QString outputDirectory = QDir(buildPath).filePath(QString("%0/utility").arg(library));
-                if (! QDir().mkdir(outputDirectory))
-                {
-                    mLogger.logError(tr("Failed to create build directory."));
-                    return false;
-                }
-                foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
-                    utilitySources << QDir(utilityPath).filePath(source);
-                objects << compile(utilitySources, includePaths, cflags, cxxflags, sflags, outputDirectory);
-            }
-        }
-    }*/
+    cxxflags << "-include" << "WProgram.h";
     objects << compileDependencies(code, includePaths, buildPath, cflags, cxxflags, sflags);
 
     // compile the sketch
@@ -223,10 +179,10 @@ bool Builder::build(const QString &code, bool upload)
 
     sketchFile.close();
 
-    QStringList sketchCxxFlags = cxxflags;
-    sketchCxxFlags << "-include" << "WProgram.h";
+    /*QStringList sketchCxxFlags = cxxflags;
+    sketchCxxFlags << "-include" << "WProgram.h";*/
 
-    objects << compile(QStringList() << sketchFileName, includePaths, cflags, sketchCxxFlags, sflags);
+    objects << compile(QStringList() << sketchFileName, includePaths, cflags, cxxflags, sflags);
     if (objects.isEmpty())
     {
         mLogger.logError(tr("Compilation failed."));
