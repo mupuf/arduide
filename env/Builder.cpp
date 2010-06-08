@@ -28,6 +28,78 @@ Builder::Builder(ILogger &logger, QObject *parent)
 {
 }
 
+QString Builder::readAllFile(const QString& filepath)
+{
+    QFile file(filepath);
+
+    if(!file.open(QIODevice::ReadOnly))
+        mLogger.logError(tr("Cannot read file '%1'.").arg(file.fileName()));
+
+    return file.readAll();
+}
+
+QStringList Builder::compileDependencies(const QString& code, QStringList& includePaths, QString buildPath, const QStringList& cflags, const QStringList& cxxflags, const QStringList& sflags)
+{
+    QStringList objects;
+
+    QRegExp importRegexp("^\\s*#include\\s+[<\"](\\S+)[\">]");
+    foreach (const QString &line, code.split('\n'))
+    {
+        if (importRegexp.indexIn(line) != -1)
+        {
+            QString library = importRegexp.cap(1);
+            library = QFileInfo(library).baseName();
+            QString libPath = Toolkit::libraryPath(library);
+            QString utilityPath = QDir(libPath).filePath("utility");
+            bool libPathExists = QFileInfo(libPath).exists();
+            bool utilityPathExists = QFileInfo(utilityPath).exists();
+            QStringList libSources, utilitySources;
+
+            if (libPathExists && !includePaths.contains(libPath))
+            {
+                // Add the path of the library we are compiling to the global includePaths
+                includePaths << libPath;
+
+                QString outputDirectory = QDir(buildPath).filePath(library);
+                if (! QDir().mkdir(outputDirectory))
+                {
+                    mLogger.logError(tr("Failed to create build directory."));
+                    return QStringList();
+                }
+                foreach (const QString &source, QDir(libPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
+                {
+                    QString path=QDir(libPath).filePath(source);
+                    libSources << path;
+                    objects << compileDependencies(readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags);
+                }
+                objects << compile(libSources, includePaths, cflags, cxxflags, sflags, outputDirectory);
+            }
+
+            if (utilityPathExists && !includePaths.contains(libPath))
+            {
+                // Add the path of the utility we are compiling to the global includePaths
+                includePaths << utilityPath;
+
+                QString outputDirectory = QDir(buildPath).filePath(QString("%0/utility").arg(library));
+                if (! QDir().mkdir(outputDirectory))
+                {
+                    mLogger.logError(tr("Failed to create build directory."));
+                    return QStringList();
+                }
+                foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
+                {
+                    QString path=QDir(utilityPath).filePath(source);
+                    utilitySources << path;
+                    objects << compileDependencies(readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags);
+                }
+                objects << compile(utilitySources, includePaths, cflags, cxxflags, sflags, outputDirectory);
+            }
+        }
+    }
+
+    return objects;
+}
+
 bool Builder::build(const QString &code, bool upload)
 {
     if (mBoard == NULL)
@@ -77,7 +149,7 @@ bool Builder::build(const QString &code, bool upload)
     objects.clear();
 
     // compile the libraries
-    QRegExp importRegexp("^\\s*#include\\s+[<\"](\\S+)[\">]");
+    /*QRegExp importRegexp("^\\s*#include\\s+[<\"](\\S+)[\">]");
     foreach (const QString &line, code.split('\n'))
     {
         if (importRegexp.indexIn(line) != -1)
@@ -121,7 +193,8 @@ bool Builder::build(const QString &code, bool upload)
                 objects << compile(utilitySources, includePaths, cflags, cxxflags, sflags, outputDirectory);
             }
         }
-    }
+    }*/
+    objects << compileDependencies(code, includePaths, buildPath, cflags, cxxflags, sflags);
 
     // compile the sketch
     QString sketchFileName = QDir(buildPath).filePath("sketch.cpp");
