@@ -179,9 +179,6 @@ bool Builder::build(const QString &code, bool upload)
 
     sketchFile.close();
 
-    /*QStringList sketchCxxFlags = cxxflags;
-    sketchCxxFlags << "-include" << "WProgram.h";*/
-
     objects << compile(QStringList() << sketchFileName, includePaths, cflags, cxxflags, sflags);
     if (objects.isEmpty())
     {

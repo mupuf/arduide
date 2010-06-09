@@ -1,10 +1,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "linked_list.h"
 #include "variable.h"
 #include "frame.h"
+
+#define FRAME_END 0
+#define FRAME_TRACE 1
+#define FRAME_SEND_STATE 2
 
 // Contains the list of the frames
 linked_list* frames;
@@ -129,15 +134,74 @@ void _DbgWatchVariable(const char* name, void* data)
 	return _DbgWatchVariable(name, _void_pointer, sizeof(&data), (void*)data);
 }
 
-void DbgSendTrace(const char* pattern, ...)
+void DbgSendTrace(const char* format, ...)
 {
-	// TODO: I want something just like printf
+	va_list list;
+	va_start(list, format);
+	
+	// Send the trace byte
+	Serial.print(FRAME_TRACE, BYTE);
+	
+	// Read all the format string
+	int i=0;
+	while(format[i])
+	{
+		if(format[i]=='%')
+		{
+			// Get the next char
+			++i;
+			
+			// If we are not at the end of the string
+			if(format[i]==NULL)
+			{
+			}
+			else if(format[i]=='i')
+			{
+				int value=va_arg(list, int);
+				Serial.print(value, DEC);
+			}
+			else if(format[i]=='x')
+			{
+				int value=va_arg(list, int);
+				Serial.print(value, HEX);
+			}
+			else if(format[i]=='c')
+			{
+				char value=va_arg(list, char);
+				Serial.print(value, BYTE);
+			}
+			else if(format[i]=='s')
+			{
+				char* value=va_arg(list, char*);
+				Serial.print(value);
+			}
+			else //if(format[i]=='%')
+			{
+				Serial.print(format[i], BYTE);
+			}
+		}
+		else
+		{
+			Serial.print(format[i], BYTE);
+			++i;
+		}
+	}
+	
+	// Send the end trace byte
+	Serial.print(FRAME_END, BYTE);
+
+	va_end(list);
 }
 
 void _DbgSendState(const char* filename, int line)
 {
 	char* data=IDEdbg_getFrames();
+	
+	Serial.print(FRAME_SEND_STATE, BYTE);
 	printf("Send state at %s:%i\n%s", filename, line, data);
+	
+	// Send the end trace byte
+	Serial.print(FRAME_END, BYTE);
 	free(data);
 }
 

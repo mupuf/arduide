@@ -26,7 +26,7 @@
 	void _DbgWatchVariable(const char* name, void* data);
 	#define DbgWatchVariable(X) (_DbgWatchVariable(#X, &X))
 	
-	void DbgSendTrace(const char* pattern, ...);
+	void DbgSendTrace(const char* format, ...);
 	
 	void _DbgSendState(const char* filename, int line);
 	#define DbgSendState() _DbgSendState(__FILE__, __LINE__);
