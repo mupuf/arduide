@@ -69,6 +69,7 @@ char* IDEdbg_getFrames()
 void DbgInit()
 {
 	frames=NULL;
+	Serial.begin(9600); 
 }
 
 void DbgNewFrame(const char* name)
