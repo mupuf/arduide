@@ -32,6 +32,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -Wall)
 endif()
 
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "Release")
+endif(NOT CMAKE_BUILD_TYPE)
+
 # Data path
 option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everything in the same folder." OFF)
 
