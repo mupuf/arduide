@@ -325,15 +325,23 @@ int Builder::runCommand(const QStringList &command)
     proc.waitForStarted();
     proc.waitForFinished();
 
-    mLogger.log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
+    if(proc.error()==QProcess::FailedToStart)
+    {
+	   mLogger.logError(QString("Cannot start program %1").arg(program));
+	   return -1;
+    }
+    else
+    {
+	    mLogger.log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
 
-    QFutureWatcher<int> watcher;
-    QxtSignalWaiter waiter(&watcher, SIGNAL(finished()));
-    QFuture<int> futureExitCode = QtConcurrent::run(&proc, &QProcess::exitCode);
-    watcher.setFuture(futureExitCode);
-    waiter.wait();
+	    QFutureWatcher<int> watcher;
+	    QxtSignalWaiter waiter(&watcher, SIGNAL(finished()));
+	    QFuture<int> futureExitCode = QtConcurrent::run(&proc, &QProcess::exitCode);
+	    watcher.setFuture(futureExitCode);
+	    waiter.wait();
 
-    return futureExitCode.result();
+	    return futureExitCode.result();
+    }
 }
 
 bool Builder::extractEEPROM(const QString &input, const QString &output)
