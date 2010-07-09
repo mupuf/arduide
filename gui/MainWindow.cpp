@@ -55,10 +55,13 @@ void MainWindow::setupActions()
     buildActions->addAction(ui.action_Upload);
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(editorStateChanged()));
     connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newProject()));
     connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui.action_Close, SIGNAL(triggered()), this, SLOT(closeTab()));
+    connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(undo()));
+    connect(ui.actionRedo, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui.action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
     connect(ui.action_Cut, SIGNAL(triggered()), this, SLOT(cut()));
     connect(ui.action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
@@ -247,6 +250,22 @@ void MainWindow::configureEditors()
     }
 }
 
+void MainWindow::editorStateChanged()
+{
+	bool undoAvail = false;
+	bool redoAvail = false;
+
+	Editor *e = currentEditor();
+	if (e)
+	{
+		undoAvail = e->isUndoAvailable();
+		redoAvail = e->isRedoAvailable();
+	}
+
+	ui.actionUndo->setEnabled(undoAvail);
+	ui.actionRedo->setEnabled(redoAvail);
+}
+
 void MainWindow::open(const QString &_fileName)
 {
     QString fileName(_fileName);
@@ -294,6 +313,18 @@ void MainWindow::save()
         // update the history
         ideApp->projectHistory()->updateHistory(e->fileName());
     }
+}
+
+void MainWindow::undo()
+{
+    Editor *e = currentEditor();
+    if (e) e->undo();
+}
+
+void MainWindow::redo()
+{
+    Editor *e = currentEditor();
+    if (e) e->redo();
 }
 
 void MainWindow::copy()
