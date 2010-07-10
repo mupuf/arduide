@@ -450,6 +450,7 @@ void MainWindow::about()
     QDialog *dialog = new QDialog(this);
     Ui::AboutDialog ui;
     ui.setupUi(dialog);
+    dialog->setWindowTitle(dialog->windowTitle().arg(PROJECT_NAME));
     ui.nameLabel->setText(ui.nameLabel->text().arg(PROJECT_NAME));
     ui.urlLabel->setText(ui.urlLabel->text().arg(PROJECT_URL));
     ui.authorsLabel->setText(ui.authorsLabel->text().arg(PROJECT_AUTHORS));
