@@ -29,13 +29,19 @@ signals:
     void newProjectRequested(const QString &initialCode, const QString &name);
     void openProjectRequested();
     void openProjectRequested(const QString &fileName);
+    void newPageLoaded(const QUrl& url);
 
 private:
     QString mPage;
     QUrl mUrl;
+    QList<QUrl> history;
+    unsigned history_curr;
 
-    void handleIdeLink(const QUrl &url);
+    void quickstart_p(bool updateHistory=true);
+    void handleIdeLink(const QUrl &url, bool updateHistory=true);
     QByteArray getDocumentationHtml(const QString &fileName);
+    void goToHistoryItem(unsigned index);
+    void addItemToHistory(const QUrl& url);
 
 protected:
     void initializeContext(QVariantHash &mapping);
