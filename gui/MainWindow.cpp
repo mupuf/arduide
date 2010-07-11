@@ -341,19 +341,28 @@ void MainWindow::redo()
 void MainWindow::copy()
 {
     Editor *e = currentEditor();
-    if (e) e->copy();
+    if (e)
+	    e->copy();
+    else
+	    browser->triggerPageAction(QWebPage::Copy);
 }
 
 void MainWindow::cut()
 {
     Editor *e = currentEditor();
-    if (e) e->cut();
+    if (e)
+	   e->cut();
+    else
+	   browser->triggerPageAction(QWebPage::Cut);
 }
 
 void MainWindow::paste()
 {
     Editor *e = currentEditor();
-    if (e) e->paste();
+    if (e)
+	   e->paste();
+    else
+	   browser->triggerPageAction(QWebPage::Paste);
 }
 
 void MainWindow::setDevice(const QString &device)
