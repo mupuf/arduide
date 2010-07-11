@@ -12,6 +12,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QWebFrame>
+#include <QWebHistory>
 #include <QDebug>
 
 #include <grantlee_core.h>
@@ -195,6 +196,20 @@ void Browser::refresh()
     quickstart();
 }
 
+void Browser::back()
+{
+	QWebHistory* history = this->history();
+	history->back();
+	handleLink(history->currentItem().url());
+}
+
+void Browser::forward()
+{
+	QWebHistory* history = this->history();
+	history->forward();
+	handleLink(history->currentItem().url());
+}
+
 QUrl Browser::toFileUrl(const QString &path)
 {
     QUrl url;
@@ -217,4 +232,14 @@ QString Browser::toFileName(const QUrl &url)
         return path.mid(1);
 #endif
     return url.path();
+}
+
+bool Browser::canGoBack()
+{
+	return history()->canGoBack();
+}
+
+bool Browser::canGoForward()
+{
+	return history()->canGoForward();
 }

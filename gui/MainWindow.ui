@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1020</width>
-    <height>764</height>
+    <width>1018</width>
+    <height>762</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1020</width>
+     <width>1018</width>
      <height>20</height>
     </rect>
    </property>
@@ -88,6 +88,9 @@
    <addaction name="action_Copy"/>
    <addaction name="action_Cut"/>
    <addaction name="action_Paste"/>
+   <addaction name="separator"/>
+   <addaction name="action_Prev"/>
+   <addaction name="action_Next"/>
   </widget>
   <widget class="QToolBar" name="deviceToolBar">
    <property name="windowTitle">
@@ -368,6 +371,36 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="action_Prev">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/go-previous.png</normaloff>:/images/16x16/go-previous.png</iconset>
+   </property>
+   <property name="text">
+    <string>Previous</string>
+   </property>
+   <property name="toolTip">
+    <string>Previous</string>
+   </property>
+  </action>
+  <action name="action_Next">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/go-next.png</normaloff>:/images/16x16/go-next.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next</string>
+   </property>
+   <property name="toolTip">
+    <string>Next</string>
    </property>
   </action>
  </widget>

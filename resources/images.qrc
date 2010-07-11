@@ -24,5 +24,8 @@
         <file>images/16x16/edit-cut.png</file>
         <file>images/16x16/edit-redo.png</file>
         <file>images/16x16/edit-undo.png</file>
+        <file>images/16x16/go-next.png</file>
+        <file>images/16x16/go-previous.png</file>
+        <file>images/16x16/go-up.png</file>
     </qresource>
 </RCC>

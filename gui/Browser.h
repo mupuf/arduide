@@ -21,6 +21,9 @@ public:
     static QUrl toFileUrl(const QString &path);
     static QString toFileName(const QUrl &url);
 
+    bool canGoBack();
+    bool canGoForward();
+
 signals:
     void newProjectRequested();
     void newProjectRequested(const QString &initialCode, const QString &name);
@@ -42,6 +45,8 @@ protected slots:
 
 public slots:
     void refresh();
+    void back();
+    void forward();
 };
 
 #endif // BROWSER_H

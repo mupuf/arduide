@@ -78,6 +78,8 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
+    connect(ui.action_Prev, SIGNAL(triggered()), browser, SLOT(back()));
+    connect(ui.action_Next, SIGNAL(triggered()), browser, SLOT(forward()));
 
     connect(ideApp->projectHistory(), SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 
@@ -254,6 +256,8 @@ void MainWindow::editorStateChanged()
 {
 	bool undoAvail = false;
 	bool redoAvail = false;
+	bool previousAvail = false;
+	bool forwardAvail = false;
 
 	Editor *e = currentEditor();
 	if (e)
@@ -261,9 +265,16 @@ void MainWindow::editorStateChanged()
 		undoAvail = e->isUndoAvailable();
 		redoAvail = e->isRedoAvailable();
 	}
+	else
+	{
+		previousAvail = browser->canGoBack();
+		forwardAvail = browser->canGoForward();
+	}
 
 	ui.actionUndo->setEnabled(undoAvail);
 	ui.actionRedo->setEnabled(redoAvail);
+	ui.action_Prev->setEnabled(previousAvail);
+	ui.action_Next->setEnabled(forwardAvail);
 }
 
 void MainWindow::open(const QString &_fileName)
