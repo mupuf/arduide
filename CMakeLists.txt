@@ -6,6 +6,7 @@ include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
 
+PROJECT(arduide)
 set(PROJECT_NAME "Arduino IDE")
 set(PROJECT_SHORT_NAME "ArduIDE")
 set(PROJECT_URL "http://mupuf.org/project/arduide/")
