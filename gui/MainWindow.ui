@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>768</height>
+    <width>1018</width>
+    <height>762</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1024</width>
-     <height>19</height>
+     <width>1018</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -38,6 +38,9 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
     <addaction name="action_Copy"/>
     <addaction name="action_Cut"/>
     <addaction name="action_Paste"/>
@@ -85,6 +88,9 @@
    <addaction name="action_Copy"/>
    <addaction name="action_Cut"/>
    <addaction name="action_Paste"/>
+   <addaction name="separator"/>
+   <addaction name="action_Prev"/>
+   <addaction name="action_Next"/>
   </widget>
   <widget class="QToolBar" name="deviceToolBar">
    <property name="windowTitle">
@@ -335,6 +341,66 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About &amp;Qt</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/edit-undo.png</normaloff>:/images/16x16/edit-undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/edit-redo.png</normaloff>:/images/16x16/edit-redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="action_Prev">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/go-previous.png</normaloff>:/images/16x16/go-previous.png</iconset>
+   </property>
+   <property name="text">
+    <string>Previous</string>
+   </property>
+   <property name="toolTip">
+    <string>Previous</string>
+   </property>
+  </action>
+  <action name="action_Next">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/go-next.png</normaloff>:/images/16x16/go-next.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next</string>
+   </property>
+   <property name="toolTip">
+    <string>Next</string>
    </property>
   </action>
  </widget>

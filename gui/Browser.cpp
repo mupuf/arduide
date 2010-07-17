@@ -12,6 +12,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QWebFrame>
+#include <QWebHistory>
 #include <QDebug>
 
 #include <grantlee_core.h>
@@ -22,7 +23,7 @@
 #include "../env/ProjectHistory.h"
 
 Browser::Browser(QWidget *parent)
-    : QWebView(parent)
+    : QWebView(parent), history_curr(0)
 {
 #ifndef QT_NO_DEBUG
     settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
@@ -33,6 +34,11 @@ Browser::Browser(QWidget *parent)
 }
 
 void Browser::quickstart()
+{
+    quickstart_p();
+}
+
+void Browser::quickstart_p(bool updateHistory)
 {
     // generate the quickstart page
     QVariantHash mapping;
@@ -92,6 +98,9 @@ void Browser::quickstart()
     mUrl = renderer->url();
     setHtml(mPage, mUrl);
     delete renderer;
+
+    if (updateHistory)
+        addItemToHistory(QUrl("ide://quickstart/"));
 }
 
 void Browser::initializeContext(QVariantHash &mapping)
@@ -109,8 +118,12 @@ void Browser::handleLink(const QUrl &url)
         QDesktopServices::openUrl(url);
 }
 
-void Browser::handleIdeLink(const QUrl &url)
+void Browser::handleIdeLink(const QUrl &url, bool updateHistory)
 {
+    if (url.host() == "quickstart")
+    {
+        quickstart_p(updateHistory);
+    }
     if (url.host() == "new-project")
         // empty project
         emit newProjectRequested();
@@ -162,7 +175,12 @@ void Browser::handleIdeLink(const QUrl &url)
         if (path[0] == '/')
             path = path.mid(1);
         openDocumentation(path);
+
+        if (updateHistory)
+            addItemToHistory(url);
     }
+
+    emit newPageLoaded(url);
 }
 
 void Browser::openDocumentation(const QString &fileName)
@@ -189,10 +207,38 @@ QByteArray Browser::getDocumentationHtml(const QString &fileName)
     return html;
 }
 
+void Browser::goToHistoryItem(unsigned index)
+{
+    if (index<(unsigned)history.size())
+    {
+        history_curr = index;
+        refresh();
+    }
+}
+
+void Browser::addItemToHistory(const QUrl& url)
+{
+    while ((unsigned)history.size() > history_curr+1)
+            history.pop_back();
+
+    history.append(url);
+    history_curr = history.size()-1;
+}
+
 void Browser::refresh()
 {
-    // we should handle this in better way (reload and show the right page)
-    quickstart();
+    if ((unsigned)history.size()>history_curr)
+        handleIdeLink(history[history_curr], false);
+}
+
+void Browser::back()
+{
+    goToHistoryItem(history_curr-1);
+}
+
+void Browser::forward()
+{
+    goToHistoryItem(history_curr+1);
 }
 
 QUrl Browser::toFileUrl(const QString &path)
@@ -217,4 +263,14 @@ QString Browser::toFileName(const QUrl &url)
         return path.mid(1);
 #endif
     return url.path();
+}
+
+bool Browser::canGoBack()
+{
+    return history_curr>0;
+}
+
+bool Browser::canGoForward()
+{
+    return history_curr+1<(unsigned)history.size();
 }

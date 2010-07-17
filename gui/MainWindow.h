@@ -41,6 +41,8 @@ public slots:
     void save();
     void chooseDevice();
     void chooseBoard();
+    void undo();
+    void redo();
     void copy();
     void cut();
     void paste();
@@ -52,6 +54,7 @@ public slots:
     void configure();
     void about();
     void configureEditors();
+    void editorStateChanged();
 
 private:
     void setupActions();

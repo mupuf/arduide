@@ -55,10 +55,13 @@ void MainWindow::setupActions()
     buildActions->addAction(ui.action_Upload);
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(editorStateChanged()));
     connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newProject()));
     connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui.action_Close, SIGNAL(triggered()), this, SLOT(closeTab()));
+    connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(undo()));
+    connect(ui.actionRedo, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui.action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
     connect(ui.action_Cut, SIGNAL(triggered()), this, SLOT(cut()));
     connect(ui.action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
@@ -75,6 +78,9 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
+    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(editorStateChanged()));
+    connect(ui.action_Prev, SIGNAL(triggered()), browser, SLOT(back()));
+    connect(ui.action_Next, SIGNAL(triggered()), browser, SLOT(forward()));
 
     connect(ideApp->projectHistory(), SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 
@@ -247,6 +253,31 @@ void MainWindow::configureEditors()
     }
 }
 
+void MainWindow::editorStateChanged()
+{
+	bool undoAvail = false;
+	bool redoAvail = false;
+	bool previousAvail = false;
+	bool forwardAvail = false;
+
+	Editor *e = currentEditor();
+	if (e)
+	{
+		undoAvail = e->isUndoAvailable();
+		redoAvail = e->isRedoAvailable();
+	}
+	else
+	{
+		previousAvail = browser->canGoBack();
+		forwardAvail = browser->canGoForward();
+	}
+
+	ui.actionUndo->setEnabled(undoAvail);
+	ui.actionRedo->setEnabled(redoAvail);
+	ui.action_Prev->setEnabled(previousAvail);
+	ui.action_Next->setEnabled(forwardAvail);
+}
+
 void MainWindow::open(const QString &_fileName)
 {
     QString fileName(_fileName);
@@ -296,22 +327,43 @@ void MainWindow::save()
     }
 }
 
+void MainWindow::undo()
+{
+    Editor *e = currentEditor();
+    if (e) e->undo();
+}
+
+void MainWindow::redo()
+{
+    Editor *e = currentEditor();
+    if (e) e->redo();
+}
+
 void MainWindow::copy()
 {
     Editor *e = currentEditor();
-    if (e) e->copy();
+    if (e)
+	    e->copy();
+    else
+	    browser->triggerPageAction(QWebPage::Copy);
 }
 
 void MainWindow::cut()
 {
     Editor *e = currentEditor();
-    if (e) e->cut();
+    if (e)
+	   e->cut();
+    else
+	   browser->triggerPageAction(QWebPage::Cut);
 }
 
 void MainWindow::paste()
 {
     Editor *e = currentEditor();
-    if (e) e->paste();
+    if (e)
+	   e->paste();
+    else
+	   browser->triggerPageAction(QWebPage::Paste);
 }
 
 void MainWindow::setDevice(const QString &device)
@@ -419,6 +471,7 @@ void MainWindow::about()
     QDialog *dialog = new QDialog(this);
     Ui::AboutDialog ui;
     ui.setupUi(dialog);
+    dialog->setWindowTitle(dialog->windowTitle().arg(PROJECT_NAME));
     ui.nameLabel->setText(ui.nameLabel->text().arg(PROJECT_NAME));
     ui.urlLabel->setText(ui.urlLabel->text().arg(PROJECT_URL));
     ui.authorsLabel->setText(ui.authorsLabel->text().arg(PROJECT_AUTHORS));
