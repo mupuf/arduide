@@ -171,7 +171,7 @@ void DbgSendTrace(const char* format, ...)
 			}
 			else if(format[i]=='c')
 			{
-				char value=va_arg(list, char);
+				int value=va_arg(list, int);
 				Serial.print(value, BYTE);
 				++i;
 			}
