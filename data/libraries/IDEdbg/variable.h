@@ -20,4 +20,5 @@
 	void variable_free(void* var);
 
 	char* show_variable(void* data);
+	void print_variable(variable* var);
 #endif

@@ -1,6 +1,4 @@
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 #include "frame.h"
 
@@ -48,51 +46,25 @@ void frame_add_variable(frame* frame, variable* var)
 	frame->vars=linked_list_element_push_front(frame->vars, var);
 }
 
-char* generateFrameTrace(frame* frame)
+void generateFrameTrace(frame* frame)
 {
 	if(frame==NULL)
-		return NULL;
-	
-	// the string that will be returned
-	char* ret;
+		return;
 	
 	// Frame header's size
-	int sizeRet=strlen("frame '")+strlen(frame->name)+3; // "frame 'name': "
+	Serial.print("<frame id=\"");
+	Serial.print(frame->name);
+	Serial.print("\">");
 	
 	// Variables' size
 	linked_list* f_vars=frame_get_variables(frame);
 	int varCount=linked_list_length(f_vars);
-	char** variables=(char**)malloc(varCount*sizeof(char*));
 	
-	// Get all the text for the variables
-	int i;
-	for(i=0; i<varCount; ++i)
+	for(int i=0; i<varCount; ++i)
 	{
-		variables[i]=show_variable(f_vars->data);
-		sizeRet+=strlen(variables[i]);
-		
+		print_variable((variable*)f_vars->data);
 		f_vars=f_vars->next;
 	}
-	
-	// Add the final \0 char
-	++sizeRet;
-	
-	// Allocate the final string
-	ret=(char*)malloc(sizeRet*sizeof(char));
-	
-	// add the header
-	int pos=snprintf(ret, sizeRet, "frame '%s': ", frame->name);
-	
-	// Create a single string that will contain all this
-	for(i=0; i<varCount; ++i)
-	{
-		pos+=snprintf(ret+pos, sizeRet-pos, "%s", variables[i]);
-		free(variables[i]);
-	}
-	
-	// Free the each variable string
-	free(variables);
-	
-	return ret;
-}
 
+	Serial.print("</frame>");
+}

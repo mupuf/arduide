@@ -8,7 +8,7 @@
 	char* IDEdbg_getFrames();
 	
 	// Public
-	void DbgInit();
+	void DbgInit(int baud_rate);
 	
 	void DbgNewFrame(const char* name);
 	

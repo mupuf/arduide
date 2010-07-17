@@ -7,69 +7,14 @@
 #include "variable.h"
 #include "frame.h"
 
-#define FRAME_END 0
-#define FRAME_TRACE 1
-#define FRAME_SEND_STATE 2
-
 // Contains the list of the frames
 linked_list* frames;
 
-// Private
-char* IDEdbg_getFrames()
-{
-	int frameCount=linked_list_length(frames);
-	char** traces=(char**)malloc(frameCount*sizeof(char*));
-	
-	// Result string
-	int sizeRet=strlen("<frames>\n");
-	char* ret;
-	
-	// Get a string from each frame
-	linked_list* tmpFrame=linked_list_first_element(frames);
-	int i;
-	for(i=0; tmpFrame!=NULL && i<frameCount; ++i)
-	{
-		traces[i]=generateFrameTrace((frame*)tmpFrame->data);
-		sizeRet+=strlen(traces[i]);
-		tmpFrame=tmpFrame->next;
-	}
-	
-	// Add the needed space for the \n separator
-	sizeRet+=frameCount;
-	
-	// Add the final </frames>
-	sizeRet+=strlen("</frames>\n");
-	
-	// Add the final \0 char
-	++sizeRet;
-	
-	// Allocate the final string
-	ret=(char*)malloc(sizeRet*sizeof(char));
-	
-	// Copy the frame tag
-	int pos=snprintf(ret, sizeRet, "<frames>\n");
-	
-	// Create a single string that will contain all this
-	for(i=0; i<frameCount; ++i)
-	{
-		pos+=snprintf(ret+pos, sizeRet-pos, "%s\n", traces[i]);
-		free(traces[i]);
-	}
-	
-	// Copy the closing frames tag
-	pos+=snprintf(ret+pos, sizeRet-pos, "<\\frames>\n");
-	
-	// Free the each variable string
-	free(traces);
-	
-	return ret;
-}
-
 // Public
-void DbgInit()
+void DbgInit(int baud_rate)
 {
 	frames=NULL;
-	Serial.begin(9600); 
+	Serial.begin(baud_rate);
 }
 
 void DbgNewFrame(const char* name)
@@ -140,8 +85,7 @@ void DbgSendTrace(const char* format, ...)
 	va_list list;
 	va_start(list, format);
 	
-	// Send the trace byte
-	Serial.print(FRAME_TRACE, BYTE);
+	Serial.print("<trace>");
 	
 	// Read all the format string
 	int i=0;
@@ -194,22 +138,25 @@ void DbgSendTrace(const char* format, ...)
 		}
 	}
 	
-	// Send the end trace byte
-	Serial.print(FRAME_END, BYTE);
+	Serial.print("</trace>");
 
 	va_end(list);
 }
 
 void _DbgSendState(const char* filename, int line)
 {
-	char* data=IDEdbg_getFrames();
+	Serial.print("<frames>");
+
+	int frameCount=linked_list_length(frames);
+	linked_list* tmpFrame=linked_list_first_element(frames);
 	
-	Serial.print(FRAME_SEND_STATE, BYTE);
-	printf("Send state at %s:%i\n%s", filename, line, data);
-	
-	// Send the end trace byte
-	Serial.print(FRAME_END, BYTE);
-	free(data);
+	for(int i=0; tmpFrame!=NULL && i<frameCount; ++i)
+	{
+		generateFrameTrace((frame*)tmpFrame->data);
+		tmpFrame=tmpFrame->next;
+	}
+
+	Serial.print("</frames>");
 }
 
 // Useless

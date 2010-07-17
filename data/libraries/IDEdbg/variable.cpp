@@ -69,17 +69,77 @@ void variable_free(void* var)
 {
 	variable_free((variable*) var);
 }
+void print_variable(variable* var)
+{
+	if(var==NULL)
+		return;
+	
+	const char* s_type=variable_type_to_string(var->type);
+
+	Serial.print("<var id=\"");
+	Serial.print(var->name);
+	Serial.print("\" t=\"");
+	Serial.print(s_type);
+	Serial.print("\" v=\"");
+	switch(var->type)
+	{
+		case _int:
+		{
+			Serial.print(*((int*)var->data), DEC);
+			break;
+		}
+		case _unsigned_int:
+		{
+			Serial.print(*((unsigned int*)var->data), DEC);
+			break;
+		}
+		case _char:
+		{
+			Serial.print(*((char*)var->data), BYTE);
+			break;
+		}
+		case _unsigned_char:
+		{
+			Serial.print(*((unsigned char*)var->data), BYTE);
+			break;
+		}
+		case _float:
+		{
+			Serial.print(*((float*)var->data), 4);
+			break;
+		}
+		case _double:
+		{
+			Serial.print(*((double*)var->data), 4);
+			break;
+		}
+		case _char_pointer:
+		{
+			Serial.print(*((char**)var->data));
+			break;
+		}
+		case _error:
+		case _void_pointer:
+		{
+			Serial.print("0x");
+			Serial.print((int)var->data, HEX);
+			break;
+		}
+	}
+	Serial.print("\" />");
+}
+
 char* show_variable(void* data)
 {
 	variable* var=(variable*)data;
-	
+
 	if(var==NULL)
 		return NULL;
-	
+
 	const char* s_type=variable_type_to_string(var->type);
-	
+
 	int size=strlen(s_type)+1+strlen(var->name)+3+1+1;
-	
+
 	// Get the pattern
 	char* ret;
 	const char* pattern;

@@ -18,5 +18,5 @@
 	
 	void frame_add_variable(frame* frame, variable* var);
 	
-	char* generateFrameTrace(frame* frame);
+	void generateFrameTrace(frame* frame);
 #endif
