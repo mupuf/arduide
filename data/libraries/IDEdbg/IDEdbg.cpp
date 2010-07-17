@@ -160,25 +160,31 @@ void DbgSendTrace(const char* format, ...)
 			{
 				int value=va_arg(list, int);
 				Serial.print(value, DEC);
+				++i;
 			}
 			else if(format[i]=='x')
 			{
 				int value=va_arg(list, int);
+				Serial.print("0x");
 				Serial.print(value, HEX);
+				++i;
 			}
 			else if(format[i]=='c')
 			{
 				char value=va_arg(list, char);
 				Serial.print(value, BYTE);
+				++i;
 			}
 			else if(format[i]=='s')
 			{
 				char* value=va_arg(list, char*);
 				Serial.print(value);
+				++i;
 			}
 			else //if(format[i]=='%')
 			{
 				Serial.print(format[i], BYTE);
+				++i;
 			}
 		}
 		else
