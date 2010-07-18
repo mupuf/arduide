@@ -120,6 +120,8 @@ void Browser::handleLink(const QUrl &url)
 
 void Browser::handleIdeLink(const QUrl &url, bool updateHistory)
 {
+    qDebug("Handle url: %s", qPrintable(url.toString()));
+
     if (url.host() == "quickstart")
     {
         quickstart_p(updateHistory);
@@ -185,13 +187,16 @@ void Browser::handleIdeLink(const QUrl &url, bool updateHistory)
 
 void Browser::openDocumentation(const QString &fileName)
 {
-    QString content = "openDocumentation('{{ html|escapejs }}');";
+    QString content = "openDocumentation('{{ html|escapejs }}'); showDocTab();";
     Grantlee::Template t = ideApp->engine()->newTemplate(content, "js");
     QVariantHash mapping;
     QByteArray html = getDocumentationHtml(fileName.isEmpty() ? "index.html" : fileName);
     mapping.insert("html", html);
     Grantlee::Context context(mapping);
     page()->mainFrame()->evaluateJavaScript(t->render(&context));
+
+    // Go to the documentation tab
+    //page()->mainFrame()->evaluateJavaScript("$('#tabs').tabs( \"select\", 2 );");
 }
 
 QByteArray Browser::getDocumentationHtml(const QString &fileName)
