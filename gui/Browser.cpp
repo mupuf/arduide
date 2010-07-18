@@ -120,8 +120,6 @@ void Browser::handleLink(const QUrl &url)
 
 void Browser::handleIdeLink(const QUrl &url, bool updateHistory)
 {
-    qDebug("Handle url: %s", qPrintable(url.toString()));
-
     if (url.host() == "quickstart")
     {
         quickstart_p(updateHistory);
@@ -194,9 +192,6 @@ void Browser::openDocumentation(const QString &fileName)
     mapping.insert("html", html);
     Grantlee::Context context(mapping);
     page()->mainFrame()->evaluateJavaScript(t->render(&context));
-
-    // Go to the documentation tab
-    //page()->mainFrame()->evaluateJavaScript("$('#tabs').tabs( \"select\", 2 );");
 }
 
 QByteArray Browser::getDocumentationHtml(const QString &fileName)
