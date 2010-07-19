@@ -53,6 +53,7 @@ public slots:
     void refresh();
     void back();
     void forward();
+    bool docHelpRequested(QString);
 };
 
 #endif // BROWSER_H
