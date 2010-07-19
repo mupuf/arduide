@@ -300,7 +300,12 @@ void MainWindow::contextualHelp()
 bool MainWindow::docHelpRequested(QString word)
 {
     if (browser->docHelpRequested(word))
+    {
         tabWidget->setCurrentIndex(0);
+        return true;
+    }
+
+    return false;
 }
 
 void MainWindow::open(const QString &_fileName)
