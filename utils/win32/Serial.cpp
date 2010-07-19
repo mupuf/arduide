@@ -110,6 +110,11 @@ error:
     return -1;
 }
 
+bool Serial::waitForReadyRead (int msecs)
+{
+    return false;
+}
+
 bool Serial::setDTR(bool enable)
 {
     if (! isOpen())

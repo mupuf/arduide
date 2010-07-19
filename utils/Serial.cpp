@@ -42,6 +42,18 @@ bool Serial::isOpen() const
     return mSerial != INVALID_SERIAL_DESCRIPTOR;
 }
 
+QByteArray Serial::readAll()
+{
+    QByteArray ret;
+    char buf[16];
+    qint64 size;
+
+    while ((size = readData(buf, 16)) > 0)
+        ret.append(buf, size);
+
+    return ret;
+}
+
 bool Serial::flushBuffer()
 {
     if (! isOpen())
