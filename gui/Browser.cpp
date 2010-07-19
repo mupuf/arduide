@@ -248,18 +248,26 @@ bool Browser::docHelpRequested(QString name)
 {
     QString originalName=name;
 
-    // Shape up
-    name[0]=name[0].toUpper();
-
-    int pos=0;
-    while ((pos = name.indexOf('.', pos)+1) != 0)
+    if (name == "HIGH" || name == "LOW" ||
+        name == "INPUT" || name == "OUTPUT")
     {
-        name[pos]=name[pos].toUpper();
+        name = "Constants.html";
     }
-    name = name.replace(QRegExp("Serial\\d"), "Serial");
-    name=name.replace('.', '_');
+    else
+    {
+        // Shape up
+        name[0]=name[0].toUpper();
 
-    name+=".html";
+        int pos=0;
+        while ((pos = name.indexOf('.', pos)+1) != 0)
+        {
+            name[pos]=name[pos].toUpper();
+        }
+        name = name.replace(QRegExp("Serial\\d"), "Serial");
+        name=name.replace('.', '_');
+
+        name+=".html";
+    }
 
     // Does the doc exists ?
     if (getDocumentationHtml(name).size() == 0)

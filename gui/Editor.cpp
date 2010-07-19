@@ -173,10 +173,9 @@ void Editor::showContextualHelp()
 
     QString line_s = text(line);
 
-    if (QChar(line_s[index]).isSpace())
-        return;
-
     int start = line_s.lastIndexOf(QRegExp("\\W"), index)+1;
+    if (start > index)
+            start = line_s.lastIndexOf(QRegExp("\\W"), index-1)+1;
     if (start > 0 && line_s[start-1] == '.')
         start = line_s.lastIndexOf(QRegExp("\\W"), start-2)+1;
 
