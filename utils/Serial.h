@@ -12,12 +12,14 @@
 #include <windows.h>
 #endif
 
-class Serial : public QIODevice
+#include "IDEGlobal.h"
+
+class IDE_EXPORT Serial : public QIODevice
 {
 public:
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
     typedef ::HANDLE descriptor;
-    static const descriptor INVALID_SERIAL_DESCRIPTOR = INVALID_HANDLE_VALUE;
+    static const descriptor INVALID_SERIAL_DESCRIPTOR;
 #else
     typedef int descriptor;
     static const descriptor INVALID_SERIAL_DESCRIPTOR = -1;

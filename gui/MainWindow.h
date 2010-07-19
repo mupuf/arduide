@@ -11,6 +11,8 @@
 #include <QComboBox>
 #include <QToolButton>
 
+#include "IDEGlobal.h"
+
 class QUrl;
 class Browser;
 class Editor;
@@ -20,7 +22,7 @@ class DeviceChooser;
 class BoardChooser;
 class ConfigDialog;
 
-class MainWindow : public QMainWindow
+class IDE_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 

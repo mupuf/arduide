@@ -10,6 +10,10 @@
 
 #include "Compat.h"
 
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+const Serial::descriptor Serial::INVALID_SERIAL_DESCRIPTOR = INVALID_HANDLE_VALUE;
+#endif
+
 Serial::Serial(const QString &port, int baudRate)
     : mPort(port),
       mBaudRate(baudRate),

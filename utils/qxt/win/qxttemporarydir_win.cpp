@@ -28,9 +28,9 @@
 QString QxtTemporaryDirPrivate::create()
 {
     QString res;
-    TCHAR buffer[MAX_PATH];
+    wchar_t buffer[MAX_PATH];
     QFileInfo fileInfo(dirTemplate);
-    UINT uUnique = GetTempFileName((wchar_t*)fileInfo.path().utf16(), (wchar_t*)fileInfo.baseName().utf16(), 0, buffer);
+    UINT uUnique = GetTempFileNameW((wchar_t*)fileInfo.path().utf16(), (wchar_t*)fileInfo.baseName().utf16(), 0, buffer);
     if (uUnique != 0)
     {
         res = QString::fromUtf16((const ushort*)buffer);

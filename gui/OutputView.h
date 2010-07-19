@@ -10,7 +10,9 @@
 
 #include "../env/ILogger.h"
 
-class OutputView : public QTextBrowser, public ILogger
+#include "IDEGlobal.h"
+
+class IDE_EXPORT OutputView : public QTextBrowser, public ILogger
 {
 public:
     OutputView(QWidget *parent = NULL);
