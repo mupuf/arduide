@@ -3,14 +3,13 @@ General:
    - output verbosity
  * network stuff
    - check for updates (when we have a first release)
-   - download and install the SDK automatically, in a personal place like QDesktopServices::DataLocation
+   - download and install the SDK automatically, in a personal place like QDesktopServices::DataLocation (WIP)
  * use native system icons when available
  * help menu:
    - community links: arduino forum, maybe other resources
 
 Browser:
  * ability to search documentation
-   - and remove the silly html search form at the top
    - maybe also remove the page header completely to gain place
    -> The arduino doc is located inside an iframe, but jQuery can't modify it because of Webkit's XSS policy.
       I'm currently looking for a solution.
@@ -18,7 +17,6 @@ Browser:
  * possibility to reload
    - and not lose the current documentation page.
  * make it browsable with keyboard shortcuts
- * have prev, next buttons in the documentation tab (javascript)
  * help for the IDE itself
  * change jQuery style in settings (low importance)
 
@@ -27,10 +25,19 @@ Editor:
    - automatic indentation
  * auto-completion
    - need to find out how to lex implicit includes (WProgram.h)
+ * F1 on a known command should open the right documentation page in the browser (WIP)
+ * Search & replace
  * code snippets
 
 Plugin ideas:
  * serial debugger [WIP]
+   - send traces (kind of sprintf) (Done)
+   - send the current state (Done)
+   - interactive mode
+     - ask for pin state
+     - set pin state
+     - get/set registered variables
+   - Update the GUI to help the user using the lib (WIP)
  * serial communication [WIP]
    - connect the IDE to the Arduino and make simple reads/writes
  * simulation
