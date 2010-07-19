@@ -297,7 +297,7 @@ void MainWindow::contextualHelp()
     }
 }
 
-void MainWindow::docHelpRequested(QString word)
+bool MainWindow::docHelpRequested(QString word)
 {
     if (browser->docHelpRequested(word))
         tabWidget->setCurrentIndex(0);

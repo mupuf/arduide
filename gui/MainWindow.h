@@ -56,7 +56,7 @@ public slots:
     void configureEditors();
     void editorStateChanged();
     void contextualHelp();
-    void docHelpRequested(QString);
+    bool docHelpRequested(QString);
 
 private:
     void setupActions();
