@@ -39,6 +39,16 @@ void DeviceChooser::refresh()
             action->setChecked(true);
         addAction(action);
     }
+
+    // If there are no devices, add a dummy one
+    if (actionGroup->actions().size() == 0)
+    {
+        action = new QAction("No device found", actionGroup);
+        action->setData(-1);
+        action->setCheckable(true);
+        action->setEnabled(false);
+        addAction(action);
+    }
 }
 
 void DeviceChooser::onActionTriggered(QAction *action)
