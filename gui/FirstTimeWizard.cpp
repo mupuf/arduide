@@ -73,7 +73,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
-#warn TODO: platform not supported yet
+#pragma message("TODO: platform not supported yet")
     mDownloadOs = "Windows";
 #elif defined(Q_OS_DARWIN) // MacOSX
 #warn TODO: platform not supported yet

@@ -26,17 +26,18 @@ ConfigWidget::ConfigWidget(QWidget *parent)
 
 void ConfigWidget::initializePage(int index)
 {
+    static const QString sampleText =
+        "/* Example code */\n"
+        "#include <EEPROM.h>\n\n"
+        "int a, b = 3;\n"
+        "void loop()\n"
+        "{\n"
+        "    Serial.println(\"Hello, World!\");\n"
+        "}\n";
+
     switch (index)
     {
     case EditorIndex:
-        static const QString sampleText =
-            "/* Example code */\n"
-            "#include <EEPROM.h>\n\n"
-            "int a, b = 3;\n"
-            "void loop()\n"
-            "{\n"
-            "    Serial.println(\"Hello, World!\");\n"
-            "}\n";
         mEditor->setText(sampleText);
         break;
     case PathsIndex:

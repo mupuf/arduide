@@ -46,7 +46,7 @@ bool Serial::open(OpenMode mode)
     if (! GetCommState(mSerial, &dcb))
         goto error;
     dcb.BaudRate = dwBaudRate;
-    if (! SetCommState(hComm, &dcb))
+    if (! SetCommState(mSerial, &dcb))
         goto error;
 
     setOpenMode(mode);
@@ -56,7 +56,7 @@ error:
     DWORD dwErr = ::GetLastError();
     LPSTR lpMsg;
     ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &lpMsg, 0, NULL);
+                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &lpMsg, 0, NULL);
     setErrorString(lpMsg);
     ::LocalFree(lpMsg);
     if (mSerial != INVALID_SERIAL_DESCRIPTOR)
@@ -71,7 +71,7 @@ void Serial::close()
 {
     emit aboutToClose();
     if (isOpen())
-        ::closeHandle(mSerial);
+        ::CloseHandle(mSerial);
     setOpenMode(NotOpen);
     setErrorString(QString());
 }
@@ -87,7 +87,7 @@ error:
     DWORD dwErr = GetLastError();
     LPSTR lpMsg;
     ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &lpMsg, 0, NULL);
+                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &lpMsg, 0, NULL);
     setErrorString(lpMsg);
     ::LocalFree(lpMsg);
     return -1;
@@ -104,7 +104,7 @@ error:
     DWORD dwErr = GetLastError();
     LPSTR lpMsg;
     ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &lpMsg, 0, NULL);
+                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &lpMsg, 0, NULL);
     setErrorString(lpMsg);
     ::LocalFree(lpMsg);
     return -1;
