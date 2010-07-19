@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1018</width>
-    <height>762</height>
+    <width>1016</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1018</width>
+     <width>1016</width>
      <height>20</height>
     </rect>
    </property>
@@ -61,6 +61,8 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="action_Contextual_help"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
@@ -401,6 +403,14 @@
    </property>
    <property name="toolTip">
     <string>Next</string>
+   </property>
+  </action>
+  <action name="action_Contextual_help">
+   <property name="text">
+    <string>Contextual help</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
    </property>
   </action>
  </widget>

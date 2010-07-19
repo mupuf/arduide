@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <QWebFrame>
 #include <QWebHistory>
+#include <QStatusBar>
 #include <QDebug>
 
 #include <grantlee_core.h>
@@ -120,6 +121,8 @@ void Browser::handleLink(const QUrl &url)
 
 void Browser::handleIdeLink(const QUrl &url, bool updateHistory)
 {
+    // qDebug("Open url '%s'", qPrintable(url.toString()));
+
     if (url.host() == "quickstart")
     {
         quickstart_p(updateHistory);
@@ -185,7 +188,7 @@ void Browser::handleIdeLink(const QUrl &url, bool updateHistory)
 
 void Browser::openDocumentation(const QString &fileName)
 {
-    QString content = "openDocumentation('{{ html|escapejs }}');";
+    QString content = "openDocumentation('{{ html|escapejs }}'); showDocTab();";
     Grantlee::Template t = ideApp->engine()->newTemplate(content, "js");
     QVariantHash mapping;
     QByteArray html = getDocumentationHtml(fileName.isEmpty() ? "index.html" : fileName);
@@ -239,6 +242,35 @@ void Browser::back()
 void Browser::forward()
 {
     goToHistoryItem(history_curr+1);
+}
+
+bool Browser::docHelpRequested(QString name)
+{
+    QString originalName=name;
+
+    // Shape up
+    name[0]=name[0].toUpper();
+
+    int pos=0;
+    while ((pos = name.indexOf('.', pos)+1) != 0)
+    {
+        name[pos]=name[pos].toUpper();
+    }
+    name = name.replace(QRegExp("Serial\\d"), "Serial");
+    name=name.replace('.', '_');
+
+    name+=".html";
+
+    // Does the doc exists ?
+    if (getDocumentationHtml(name).size() == 0)
+    {
+        ideApp->mainWindow()->statusBar()->showMessage(tr("No documentation found for %1.").arg(originalName), 1500);
+        return false;
+    }
+
+    // Load the doc
+    handleIdeLink(QString("ide://open-documentation/%1").arg(name), true);
+    return true;
 }
 
 QUrl Browser::toFileUrl(const QString &path)

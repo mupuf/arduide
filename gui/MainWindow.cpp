@@ -46,6 +46,8 @@ void MainWindow::initialize()
     createBoardChooser();
 
     setupActions();
+
+    editorStateChanged();
 }
 
 void MainWindow::setupActions()
@@ -71,6 +73,7 @@ void MainWindow::setupActions()
     connect(ui.actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
     connect(ui.actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
     connect(ui.action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
+    connect(ui.action_Contextual_help, SIGNAL(triggered()), this, SLOT(contextualHelp()));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -255,27 +258,49 @@ void MainWindow::configureEditors()
 
 void MainWindow::editorStateChanged()
 {
-	bool undoAvail = false;
-	bool redoAvail = false;
-	bool previousAvail = false;
-	bool forwardAvail = false;
+    bool undoAvail = false;
+    bool redoAvail = false;
+    bool previousAvail = false;
+    bool forwardAvail = false;
+    bool contextualHelpAvail = false;
 
-	Editor *e = currentEditor();
-	if (e)
-	{
-		undoAvail = e->isUndoAvailable();
-		redoAvail = e->isRedoAvailable();
-	}
-	else
-	{
-		previousAvail = browser->canGoBack();
-		forwardAvail = browser->canGoForward();
-	}
+    Editor *e = currentEditor();
+    if (e)
+    {
+        undoAvail = e->isUndoAvailable();
+        redoAvail = e->isRedoAvailable();
+        contextualHelpAvail = true;
+    }
+    else
+    {
+        previousAvail = browser->canGoBack();
+        forwardAvail = browser->canGoForward();
+    }
 
-	ui.actionUndo->setEnabled(undoAvail);
-	ui.actionRedo->setEnabled(redoAvail);
-	ui.action_Prev->setEnabled(previousAvail);
-	ui.action_Next->setEnabled(forwardAvail);
+    ui.actionUndo->setEnabled(undoAvail);
+    ui.actionRedo->setEnabled(redoAvail);
+    ui.action_Prev->setEnabled(previousAvail);
+    ui.action_Next->setEnabled(forwardAvail);
+    ui.action_Contextual_help->setEnabled(contextualHelpAvail);
+}
+
+void MainWindow::contextualHelp()
+{
+    Editor *e = currentEditor();
+    if (e && e->hasFocus())
+    {
+        e->showContextualHelp();
+    }
+    else
+    {
+        // TODO: Show the IDE manual
+    }
+}
+
+void MainWindow::docHelpRequested(QString word)
+{
+    if (browser->docHelpRequested(word))
+        tabWidget->setCurrentIndex(0);
 }
 
 void MainWindow::open(const QString &_fileName)
@@ -343,27 +368,27 @@ void MainWindow::copy()
 {
     Editor *e = currentEditor();
     if (e)
-	    e->copy();
+        e->copy();
     else
-	    browser->triggerPageAction(QWebPage::Copy);
+        browser->triggerPageAction(QWebPage::Copy);
 }
 
 void MainWindow::cut()
 {
     Editor *e = currentEditor();
     if (e)
-	   e->cut();
+       e->cut();
     else
-	   browser->triggerPageAction(QWebPage::Cut);
+       browser->triggerPageAction(QWebPage::Cut);
 }
 
 void MainWindow::paste()
 {
     Editor *e = currentEditor();
     if (e)
-	   e->paste();
+       e->paste();
     else
-	   browser->triggerPageAction(QWebPage::Paste);
+       browser->triggerPageAction(QWebPage::Paste);
 }
 
 void MainWindow::setDevice(const QString &device)
@@ -437,14 +462,14 @@ bool MainWindow::upload()
         Builder builder(*ui.outputView);
         builder.setBoard(board);
         builder.setDevice(device);
-	   bool ret=builder.build(editor->text(), true);
+       bool ret=builder.build(editor->text(), true);
 
         buildActions->setEnabled(true);
 
-	   return ret;
+       return ret;
     }
     else
-	    return false;
+        return false;
 }
 
 void MainWindow::toggleDock()

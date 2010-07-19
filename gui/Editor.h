@@ -25,6 +25,7 @@ public:
 
 public slots:
     void save();
+    void showContextualHelp();
 
 private:
     void setupShortcuts();
@@ -47,6 +48,9 @@ private slots:
 
     void goToPreviousParagraph();
     void goToNextParagraph();
+
+signals:
+    void helpRequested(QString);
 };
 
 #endif // EDITOR_H
