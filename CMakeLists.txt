@@ -34,7 +34,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "Release")
+    set(CMAKE_BUILD_TYPE "Release")
 endif(NOT CMAKE_BUILD_TYPE)
 
 # Data path
@@ -85,7 +85,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(USE_DBUS ON)
     add_definitions(-DUSE_DBUS)
   endif()
-  
+
   # add grantlee's default directory on Linux systems
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee")
 endif()
