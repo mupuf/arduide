@@ -69,7 +69,7 @@ void MainWindow::setupActions()
     connect(ui.action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
     connect(ui.action_Build, SIGNAL(triggered()), this, SLOT(build()));
     connect(ui.action_Upload, SIGNAL(triggered()), this, SLOT(upload()));
-    connect(ui.actionToggle_dock, SIGNAL(triggered()), this, SLOT(toggleDock()));
+    connect(ui.action_Utilities, SIGNAL(triggered()), this, SLOT(toggleDock()));
     connect(ui.actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
     connect(ui.actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
     connect(ui.action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1016</width>
+    <width>999</width>
     <height>760</height>
    </rect>
   </property>
@@ -19,8 +19,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1016</width>
-     <height>20</height>
+     <width>999</width>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -45,12 +45,6 @@
     <addaction name="action_Cut"/>
     <addaction name="action_Paste"/>
    </widget>
-   <widget class="QMenu" name="menu_View">
-    <property name="title">
-     <string>&amp;View</string>
-    </property>
-    <addaction name="actionToggle_dock"/>
-   </widget>
    <widget class="QMenu" name="menu_Settings">
     <property name="title">
      <string>&amp;Settings</string>
@@ -66,6 +60,12 @@
     <addaction name="actionAbout"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Utilities"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
@@ -77,7 +77,7 @@
     <string>Edition</string>
    </property>
    <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
+    <enum>BottomToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
@@ -102,7 +102,7 @@
     <enum>Qt::ToolButtonTextUnderIcon</enum>
    </property>
    <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
+    <enum>BottomToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
@@ -116,13 +116,14 @@
     <enum>Qt::ToolButtonTextUnderIcon</enum>
    </property>
    <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
+    <enum>BottomToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
    <addaction name="action_Build"/>
    <addaction name="action_Upload"/>
+   <addaction name="action_Utilities"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <property name="features">
@@ -287,12 +288,16 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionToggle_dock">
+  <action name="action_Utilities">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/applications-development.png</normaloff>:/images/16x16/applications-development.png</iconset>
+   </property>
    <property name="text">
-    <string>Toggle &amp;dock</string>
+    <string>&amp;Utilities</string>
    </property>
    <property name="toolTip">
-    <string>Toggle dock</string>
+    <string>Utilities</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
