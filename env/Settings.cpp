@@ -149,6 +149,16 @@ void Settings::saveEditorSettings(Editor *editor)
     mSettings.setValue("editorSelectionBackgroundColor", editor->selectionBackgroundColor());
 }
 
+void Settings::saveMainWindowState(const QByteArray& state)
+{
+    mSettings.setValue("mainWindowState", state);
+}
+
+QByteArray Settings::mainWindowState()
+{
+    return mSettings.value("mainWindowState").toByteArray();
+}
+
 bool Settings::isCorrect()
 {
     return Toolkit::isValidArduinoPath(arduinoPath()) && QFileInfo(sketchPath()).isDir();

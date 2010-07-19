@@ -48,6 +48,8 @@ void MainWindow::initialize()
     setupActions();
 
     editorStateChanged();
+
+    restoreState(ideApp->settings()->mainWindowState());
 }
 
 void MainWindow::setupActions()
@@ -425,6 +427,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
             return;
         }
     }
+
+    ideApp->settings()->saveMainWindowState(saveState());
 
     event->accept();
 }

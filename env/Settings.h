@@ -36,6 +36,9 @@ public:
     void loadEditorSettings(Editor *editor);
     void saveEditorSettings(Editor *editor);
 
+    void saveMainWindowState(const QByteArray& state);
+    QByteArray mainWindowState();
+
     bool isCorrect();
 
 signals:
