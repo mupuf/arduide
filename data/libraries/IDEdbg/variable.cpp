@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "variable.h"
+#include "IDEdbgPrivate.h"
 
 const char* variable_type_to_string(variable_type type)
 {
@@ -44,10 +45,11 @@ variable_type variable_type_from_string(const char* type)
 		return _error;
 }
 
-variable* variable_create(const char* name, variable_type type, int size, void* data)
+variable* variable_create(int line, const char* name, variable_type type, int size, void* data)
 {
 	variable* var = (variable*)malloc(sizeof(variable));
-	
+
+    var->line=line;
 	var->name=strdup(name);
 	var->type=type;
 	var->size=size;
@@ -76,11 +78,8 @@ void print_variable(variable* var)
 	
 	const char* s_type=variable_type_to_string(var->type);
 
-	Serial.print("<var id=\"");
-	Serial.print(var->name);
-	Serial.print("\" t=\"");
-	Serial.print(s_type);
-	Serial.print("\" v=\"");
+	DbgPrintf("<var l=\"%i\" id=\"%s\" t=\"%s\"  v=\"",
+			  var->line, var->name, s_type);
 	switch(var->type)
 	{
 		case _int:

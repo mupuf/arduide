@@ -20,9 +20,11 @@ DebuggerWidget::DebuggerWidget(QWidget *parent)
     connect(pushStartStop, SIGNAL(pressed()), this, SLOT(onStartStopPressed()));
     connect(checkBreak, SIGNAL(stateChanged(int)), this, SLOT(onBreakToggled(int)));
 
+    connect(pushClearLogs, SIGNAL(pressed()), debugLogs, SLOT(clear()));
+
     // If the combo has a line edit
     if(commandBox->lineEdit())
-	   connect(commandBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
+       connect(commandBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
 }
 
 bool DebuggerWidget::isStarted()
@@ -32,7 +34,7 @@ bool DebuggerWidget::isStarted()
 
 bool DebuggerWidget::shouldBreakASAP()
 {
-	return _break;
+    return _break;
 }
 
 int DebuggerWidget::baudRate()
@@ -51,6 +53,16 @@ void DebuggerWidget::stopDebugging()
 {
     _started=false;
     onDebugStatusChanged();
+}
+
+void DebuggerWidget::clearLogs()
+{
+    debugLogs->clear();
+}
+
+void DebuggerWidget::logImportant(const QString& result)
+{
+    debugLogs->logImportant(result);
 }
 
 void DebuggerWidget::logResult(const QString& result)
@@ -73,10 +85,6 @@ void DebuggerWidget::onDebugStatusChanged()
 {
     // Update the GUI
     pushStartStop->setText(_started?tr("Stop"):tr("Start"));
-
-    // Add some info in the logs
-    QString msg = _started?tr("Start debugging"):tr("Stop debugging");
-    debugLogs->logImportant(msg);
 
     // Emit the signal
     if(_started)

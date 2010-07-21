@@ -3,6 +3,8 @@
 
 #include "IDEApplication.h"
 
+#include <QDomDocument>
+
 bool DebuggerPlugin::setup(IDEApplication *app)
 {
     mApp = app;
@@ -16,12 +18,23 @@ bool DebuggerPlugin::setup(IDEApplication *app)
     /*connect(widget, SIGNAL(readRequested()), this, SLOT(read()));
     connect(widget, SIGNAL(writeRequested(const QByteArray &)), this, SLOT(write(const QByteArray &)));*/
 
-
     return true;
+}
+
+int DebuggerPlugin::debugTime()
+{
+    return startTime.msecsTo(QTime::currentTime());
 }
 
 bool DebuggerPlugin::startDebugging()
 {
+    // Clear the logs
+    widget->clearLogs();
+    widget->treeFrames->clear();
+
+    // Add some info in the logs
+    widget->logImportant(tr("Start debugging"));
+
     // Recompile and upload the current program
     widget->setStatus(tr("Compile & Upload"));
     if(!mApp->mainWindow()->upload())
@@ -35,11 +48,17 @@ bool DebuggerPlugin::startDebugging()
     if(!openSerial())
         return false;
 
+    // Store the current time
+    startTime = QTime::currentTime();
+
     return true;
 }
 
 void DebuggerPlugin::stopDebugging()
 {
+    // Add some info in the logs
+    widget->logImportant(tr("%1ms: Stop debugging").arg(debugTime()));
+
     // Close the serial connection
     if (serial.data() != NULL)
         serial->close();
@@ -93,7 +112,7 @@ void DebuggerPlugin::closeSerial()
 
 void DebuggerPlugin::dataArrived(QByteArray data)
 {
-    QRegExp packet_re("<(trace|frames)>");
+    QRegExp packet_re("<(trace|frames).*>");
 
     serialData+=data;
 
@@ -105,25 +124,21 @@ void DebuggerPlugin::dataArrived(QByteArray data)
             return;
 
         QString type = packet_re.capturedTexts().at(1);
-        start+= (2+type.size());
 
         //Look for the ending tag of this one
         int end = serialData.indexOf(QString("</%1>").arg(type));
         if (end == -1)
             return;
+        end+=3+type.size();
 
-        QStringRef packet(&serialData, start, end-start);
+        QString packet = serialData.mid(start, end-start);
         if (type == "trace")
             parseTrace(packet);
         else if (type == "frames")
             parseState(packet);
 
         // Remove data we already parsed
-        int realEnd = end+3+type.size();
-        if (realEnd >= serialData.size())
-            serialData = QString();
-        else
-            serialData = serialData.right(realEnd);
+        serialData = serialData.mid(end);
     }
 }
 
@@ -161,14 +176,76 @@ bool DebuggerPlugin::writeSerial(const QByteArray &data)
     return false;
 }
 
-void DebuggerPlugin::parseTrace(QStringRef trace)
+void DebuggerPlugin::parseTrace(QString trace)
 {
-    widget->logResult("New trace: "+trace.toString());
+    trace = trace.replace("<trace>", "");
+    trace = trace.replace("</trace>", "");
+    trace = trace.replace("&lt;", "<");
+    trace = trace.replace("&gt;", ">");
+
+    widget->logResult(tr("%1ms: %2").arg(debugTime()).arg(trace));
 }
 
-void DebuggerPlugin::parseState(QStringRef state)
+void DebuggerPlugin::parseState(QString state)
 {
-    widget->logResult("New state: "+state.toString());
+    int arrivalTime = debugTime();
+
+    // Read the xml
+    QDomDocument doc;
+    QString err;
+    int errLine, errCol;
+    if(!doc.setContent(state, &err, &errLine, &errCol))
+    {
+        qDebug("Error while parsing the state '%s' at (%i,%i): %s.",
+               qPrintable(state), errLine, errCol, qPrintable(err));
+    }
+
+    // Read top element
+    QDomElement docElem = doc.documentElement();
+    int sourceLine = docElem.attribute("l", "-1").toInt();
+
+    // Create the top element of the treewidget
+    QTreeWidgetItem* topNode = new QTreeWidgetItem();
+    topNode->setText(0, QString::number(arrivalTime));
+    topNode->setText(1, tr("At line %1").arg(sourceLine));
+
+    QDomNodeList frames = docElem.elementsByTagName("frame");
+    for(int i=0; i<frames.size(); i++)
+    {
+        QDomElement frame_e = frames.item(i).toElement();
+
+        // Create a new entry from the frame
+        QString frame_name = frame_e.attribute("id", tr("<no_name>"));
+
+        QTreeWidgetItem* wnode = new QTreeWidgetItem(topNode);
+        //wnode->setText(0, QString::number(arrivalTime));
+        wnode->setText(1, frame_name);
+
+        // Read all the variables of the frame
+        QDomNodeList vars = frame_e.elementsByTagName("var");
+        for(int e=0; e<vars.size(); e++)
+        {
+            QDomElement var_e = vars.item(e).toElement();
+
+            int line = var_e.attribute("l", "-1").toInt();
+            QString name = var_e.attribute("id");
+            QString type = var_e.attribute("t");
+            QString value = var_e.attribute("v");
+
+            QTreeWidgetItem* wvar = new QTreeWidgetItem(wnode);
+            //wvar->setText(0, QString::number(arrivalTime));
+            //wvar->setText(1, frame_name);
+            wvar->setText(2, type);
+            wvar->setText(3, name);
+            wvar->setText(4, value);
+            wvar->setData(0, Qt::UserRole, line);
+        }
+    }
+
+    // Add the new top node
+    widget->treeFrames->addTopLevelItem(topNode);
+
+    widget->logResult(tr("%1ms: New state received").arg(arrivalTime));
 }
 
 Q_EXPORT_PLUGIN2(debugger, DebuggerPlugin)

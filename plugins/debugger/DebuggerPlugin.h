@@ -12,6 +12,7 @@
 #include "../../utils/Serial.h"
 
 #include <QScopedPointer>
+#include <QTime>
 
 class DebuggerPlugin : public QObject, public IDEPluginInterface
 {
@@ -21,6 +22,8 @@ class DebuggerPlugin : public QObject, public IDEPluginInterface
 public:
     bool setup(IDEApplication *app);
     const QString &name() { return mName; };
+
+    int debugTime();
 
 public slots:
     bool startDebugging();
@@ -38,12 +41,13 @@ private:
     QScopedPointer<DebuggerWidget> widget;
     QScopedPointer<Serial> serial;
     QString serialData;
+    QTime startTime;
 
     QByteArray readSerial(qint64 readCount);
     bool writeSerial(const QByteArray &data);
 
-    void parseTrace(QStringRef trace);
-    void parseState(QStringRef state);
+    void parseTrace(QString trace);
+    void parseState(QString state);
 
 };
 

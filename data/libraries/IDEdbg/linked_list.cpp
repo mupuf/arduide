@@ -76,8 +76,8 @@ linked_list* linked_list_push_front(linked_list* list, linked_list* list2)
 	}
 	else
 	{
-		if(linked_list_is_empty(list2))
-			printf("linked_list_push_front: both list1 and list2 are empty.\n");
+		/*if(linked_list_is_empty(list2))
+			printf("linked_list_push_front: both list1 and list2 are empty.\n");*/
 		
 		//List1 is empty
 		if(list)
@@ -141,6 +141,8 @@ linked_list* linked_list_remove_front(linked_list* list, linked_list_data_freer 
 	if(destructor)
 		destructor(tmp->data);
 	free(tmp);
+
+	return list;
 }
 
 void linked_list_print(const linked_list* list, linked_list_data_show show)

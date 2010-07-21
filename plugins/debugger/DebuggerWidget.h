@@ -12,6 +12,8 @@ class DebuggerWidget : public QWidget, Ui::DebuggerWidget
 {
     Q_OBJECT
 
+    friend class DebuggerPlugin;
+
     bool _break;
     bool _started;
 
@@ -27,6 +29,8 @@ public slots:
     void startDebugging();
     void stopDebugging();
 
+    void clearLogs();
+    void logImportant(const QString& result);
     void logResult(const QString& result);
     void logError(const QString& error);
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>649</width>
-    <height>272</height>
+    <width>647</width>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -53,20 +53,25 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <widget class="QTreeWidget" name="treeWidget">
+            <widget class="QTreeWidget" name="treeFrames">
              <column>
               <property name="text">
-               <string>Frame #</string>
+               <string>Time(ms)</string>
               </property>
              </column>
              <column>
               <property name="text">
-               <string>Variable</string>
+               <string>Frame name</string>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Type</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Variable</string>
               </property>
              </column>
              <column>
@@ -164,6 +169,13 @@ ASAP</string>
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushClearLogs">
+           <property name="text">
+            <string>Clear logs</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
