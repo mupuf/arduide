@@ -17,8 +17,14 @@ const Serial::descriptor Serial::INVALID_SERIAL_DESCRIPTOR = INVALID_HANDLE_VALU
 Serial::Serial(const QString &port, int baudRate)
     : mPort(port),
       mBaudRate(baudRate),
-      mSerial(INVALID_SERIAL_DESCRIPTOR)
+      mSerial(INVALID_SERIAL_DESCRIPTOR),
+      watcher(NULL)
 {
+}
+
+Serial::~Serial()
+{
+    setInReadEventMode(false);
 }
 
 const QList<int> &Serial::baudRates()
@@ -68,4 +74,29 @@ bool Serial::flushBuffer()
     if (! setDTR(true))
       return false;
     return true;
+}
+
+bool Serial::isInReadEventMode()
+{
+    return watcher!=NULL;
+}
+
+void Serial::setInReadEventMode(bool value)
+{
+    if (value && watcher==NULL)
+    {
+        watcher = new SerialWatcher(this, this);
+        watcher->start();
+    }
+    else if (!value)
+    {
+        if (watcher)
+            delete watcher;
+        watcher = NULL;
+    }
+}
+
+void Serial::onNewDataArrived(QByteArray data)
+{
+    emit dataArrived(data);
 }

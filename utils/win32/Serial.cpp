@@ -69,11 +69,14 @@ error:
 
 void Serial::close()
 {
-    emit aboutToClose();
     if (isOpen())
+    {
+        emit aboutToClose();
         ::CloseHandle(mSerial);
-    setOpenMode(NotOpen);
-    setErrorString(QString());
+        setOpenMode(NotOpen);
+        setErrorString(QString());
+        setInReadEventMode(false);
+    }
 }
 
 qint64 Serial::readData(char *data, qint64 maxSize)

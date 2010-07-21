@@ -8,6 +8,7 @@
 
 #include <QIODevice>
 #include <QThread>
+#include <QByteArray>
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
 #include <windows.h>
@@ -19,6 +20,8 @@ class SerialWatcher;
 
 class IDE_EXPORT Serial : public QIODevice
 {
+    Q_OBJECT
+
 public:
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
     typedef ::HANDLE descriptor;
@@ -29,10 +32,15 @@ public:
 #endif
 
     Serial(const QString &port, int baudRate = 9600);
+    ~Serial();
     static const QList<int> &baudRates();
 
     descriptor serialDescriptor();
     bool flushBuffer();
+
+    bool isInReadEventMode();
+    void setInReadEventMode(bool value);
+
 
     // QIODevice implementation
     bool isSequential() const;
@@ -44,12 +52,17 @@ public:
     bool waitForReadyRead (int msecs);
     QByteArray readAll();
 
+signals:
+    void dataArrived(QByteArray);
+
 private:
     bool setDTR(bool enable);
 
     QString mPort;
     int mBaudRate;
     descriptor mSerial;
+
+    void onNewDataArrived(QByteArray data);
 
     /**************************
      **************************
@@ -60,12 +73,12 @@ private:
     class SerialWatcher : public QThread
     {
     private:
-        Serial* serial;
         bool watch;
+        Serial* serial;
 
     public:
-        explicit SerialWatcher(QObject *parent = 0)  :
-                QThread(parent), watch(false)
+        explicit SerialWatcher(Serial* serial, QObject *parent = 0)  :
+                QThread(parent), watch(true), serial(serial)
         {
         }
         ~SerialWatcher()
@@ -74,15 +87,12 @@ private:
             wait(1000);
         }
 
-        void setSerial(Serial* serial) { this->serial = serial; }
-
         void run()
         {
-            while (watch)
+            while (serial && watch)
             {
-                //QByteArray data = serial->readData_sync(300);
-                /*if (data.size() > 0 && watch)
-                        emit newData(data);*/
+                if (serial->waitForReadyRead(300) && watch)
+                    serial->onNewDataArrived(serial->readAll());
             }
         }
 
@@ -90,6 +100,7 @@ private:
         void stopWatching(){ startWatching(false);}
 
     } *watcher;
+    friend class SerialWatcher;
 };
 
 #endif // SERIAL_H
