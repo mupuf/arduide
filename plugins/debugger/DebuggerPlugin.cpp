@@ -3,12 +3,12 @@
 
 #include "IDEApplication.h"
 
-bool DebuggerPlugin::setup(IDEApplication *app)                                                  
+bool DebuggerPlugin::setup(IDEApplication *app)
 {
-	mApp = app;
-	mName = tr("Debugger");
-	widget.reset(new DebuggerWidget);
-	
+    mApp = app;
+    mName = tr("Debugger");
+    widget.reset(new DebuggerWidget);
+
     app->mainWindow()->utilityTabWidget()->addTab(widget.data(), name());
 
     connect(widget.data(), SIGNAL(debuggerStarted()), this, SLOT(startDebugging()));
@@ -26,9 +26,9 @@ bool DebuggerPlugin::startDebugging()
     widget->setStatus(tr("Compile & Upload"));
     if(!mApp->mainWindow()->upload())
     {
-	    widget->logError(tr("Compilation or Upload failed. Please take a look at the 'Output' tab."));
+        widget->logError(tr("Compilation or Upload failed. Please take a look at the 'Output' tab."));
         widget->stopDebugging();
-	    return false;
+        return false;
     }
 
     // Open the serial connection
@@ -76,6 +76,10 @@ bool DebuggerPlugin::openSerial()
     // Set the status
     widget->setStatus(tr("Debugging serial port opened successfully at %1 bauds.").arg(widget->baudRate()));
 
+    // Set in readEvent mode
+    serial->setInReadEventMode(true);
+    connect(serial.data(), SIGNAL(dataArrived(QByteArray)), this, SLOT(dataArrived(QByteArray)));
+
     return true;
 }
 
@@ -85,6 +89,42 @@ void DebuggerPlugin::closeSerial()
         serial->close();
 
     widget->setStatus(tr("Serial port closed."));
+}
+
+void DebuggerPlugin::dataArrived(QByteArray data)
+{
+    QRegExp packet_re("<(trace|frames)>");
+
+    serialData+=data;
+
+    while(true)
+    {
+        // Parse traces
+        int start = packet_re.indexIn(serialData);
+        if (start == -1)
+            return;
+
+        QString type = packet_re.capturedTexts().at(1);
+        start+= (2+type.size());
+
+        //Look for the ending tag of this one
+        int end = serialData.indexOf(QString("</%1>").arg(type));
+        if (end == -1)
+            return;
+
+        QStringRef packet(&serialData, start, end-start);
+        if (type == "trace")
+            parseTrace(packet);
+        else if (type == "frames")
+            parseState(packet);
+
+        // Remove data we already parsed
+        int realEnd = end+3+type.size();
+        if (realEnd >= serialData.size())
+            serialData = QString();
+        else
+            serialData = serialData.right(realEnd);
+    }
 }
 
 // Private
@@ -119,6 +159,16 @@ bool DebuggerPlugin::writeSerial(const QByteArray &data)
         widget->setStatus(tr("Unable to write, the port is not opened."));
 
     return false;
+}
+
+void DebuggerPlugin::parseTrace(QStringRef trace)
+{
+    widget->logResult("New trace: "+trace.toString());
+}
+
+void DebuggerPlugin::parseState(QStringRef state)
+{
+    widget->logResult("New state: "+state.toString());
 }
 
 Q_EXPORT_PLUGIN2(debugger, DebuggerPlugin)

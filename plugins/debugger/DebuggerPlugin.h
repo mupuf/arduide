@@ -30,14 +30,20 @@ private slots:
     bool openSerial();
     void closeSerial();
 
+    void dataArrived(QByteArray data);
+
 private:
     IDEApplication *mApp;
     QString mName;
     QScopedPointer<DebuggerWidget> widget;
     QScopedPointer<Serial> serial;
+    QString serialData;
 
     QByteArray readSerial(qint64 readCount);
     bool writeSerial(const QByteArray &data);
+
+    void parseTrace(QStringRef trace);
+    void parseState(QStringRef state);
 
 };
 
