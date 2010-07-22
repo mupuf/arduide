@@ -7,9 +7,99 @@
 #include "variable.h"
 #include "frame.h"
 #include "IDEdbg.h"
+#include "IDEdbgPrivate.h"
+#include "IDEdbgConstants.h"
 
 // Contains the list of the frames
 linked_list* frames = NULL;
+
+static unsigned char readValue()
+{
+	unsigned char value;
+	do
+	{
+		value = Serial.read();
+	} while(value == 255);
+	return value;
+}
+
+static void miniShell()
+{
+	// Stop if the user didn't ask for the minishell
+	if (Serial.available()==0)
+	{
+		DbgPrintf("<No commands>");
+		return;
+	}
+
+	// If the command was not for a shell, exit
+	unsigned char cmd = readValue();
+	if(cmd != SHELL_REQUESTED)
+	{
+		DbgPrintf("<%i != SHELL_REQUESTED(%i)>", cmd, SHELL_REQUESTED);
+		return;
+	}
+
+	// Enter the miniShell
+	while(true)
+	{
+		// Get the command ID
+		unsigned char cid = readValue();
+
+		// Get the command
+		unsigned char cmd = readValue();
+		if(cmd == DIGITAL_READ)
+		{
+			unsigned char pin = readValue();
+			int pin_val = digitalRead(pin);
+			const char* ret = (pin_val==HIGH?"HIGH":"LOW");
+			DbgPrintf("<ret id=\"%i\" v=\"%s\"/>", cid, ret);
+		}
+		else if(cmd == DIGITAL_WRITE)
+		{
+			unsigned char pin = readValue();
+			unsigned char value = readValue();
+			digitalWrite(pin, value==1?HIGH:LOW);
+			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+		}
+		else if(cmd == ANALOG_READ)
+		{
+			unsigned char pin = readValue();
+			int pin_val = digitalRead(pin);
+			DbgPrintf("<ret id=\"%i\" v=\"%i\"/>", cid, pin_val);
+		}
+		else if(cmd == ANALOG_WRITE)
+		{
+			unsigned char pin = readValue();
+			unsigned char value = readValue();
+			digitalWrite(pin, value);
+			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+		}
+		else if(cmd == PIN_MODE)
+		{
+			unsigned char pin = readValue();
+			unsigned char mode = readValue();
+			pinMode(pin, mode==1?OUTPUT:INPUT);
+			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+		}
+		else if(cmd == EXIT_SHELL)
+		{
+			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+			break;
+		}
+		else
+		{
+			DbgPrintf("<error>id %i: Unknown command %i</error>", cid, cmd);
+
+			//Empty the input buffer
+			while (Serial.available()>0)
+				Serial.read();
+
+			// Leave the minishell
+			break;
+		}
+	}
+}
 
 // Public
 void DbgInit(int baud_rate)
@@ -89,21 +179,21 @@ void _DbgWatchVariable(int l, const char* name, void* data)
 
 void DbgSendChar(char c)
 {
-    if(c == '<')
-        Serial.print("&lt;");
-    else if(c == '>')
-        Serial.print("&gt;");
-    else
-        Serial.print(c, BYTE);
+	if(c == '<')
+		Serial.print("&lt;");
+	else if(c == '>')
+		Serial.print("&gt;");
+	else
+		Serial.print(c, BYTE);
 }
 
 void DbgSendString(const char* s)
 {
-    while(*s)
-    {
-        DbgSendChar(*s);
-        s++;
-    }
+	while(*s)
+	{
+		DbgSendChar(*s);
+		s++;
+	}
 }
 
 static void _DbgPrintf(const char* format, bool escapeFormat, va_list list)
@@ -165,24 +255,26 @@ static void _DbgPrintf(const char* format, bool escapeFormat, va_list list)
 
 void DbgPrintf(const char* format, ...)
 {
-    va_list list;
-    va_start(list, format);
+	va_list list;
+	va_start(list, format);
 
-    _DbgPrintf(format, false, list);
+	_DbgPrintf(format, false, list);
 
-    va_end(list);
+	va_end(list);
 }
 
 void DbgSendTrace(const char* format, ...)
 {
-    va_list list;
-    va_start(list, format);
+	va_list list;
+	va_start(list, format);
 
-    Serial.print("<trace>");
-    _DbgPrintf(format, true, list);
-    Serial.print("</trace>");
+	Serial.print("<trace>");
+	_DbgPrintf(format, true, list);
+	Serial.print("</trace>");
 
-    va_end(list);
+	va_end(list);
+
+	miniShell();
 }
 
 void _DbgSendState(const char* filename, int line)
@@ -199,6 +291,8 @@ void _DbgSendState(const char* filename, int line)
 	}
 
 	Serial.print("</frames>");
+
+	miniShell();
 }
 
 // Useless
