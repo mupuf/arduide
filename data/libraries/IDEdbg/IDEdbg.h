@@ -10,7 +10,8 @@
 	// Public
 	void DbgInit(int baud_rate);
 	
-	void DbgNewFrame(const char* name);
+	void _DbgNewFrame(int l, const char* name);
+	#define DbgNewFrame(X) (_DbgNewFrame(__LINE__, X))
 	
 	void DbgCloseFrame();
 

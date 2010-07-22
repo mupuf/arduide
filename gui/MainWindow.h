@@ -33,6 +33,8 @@ public:
     // widget getters
     QTabWidget *utilityTabWidget() { return ui.utilityTabWidget; }
 
+    Editor *currentEditor();
+
 public slots:
     void setFont(const QFont &font);
     void closeTab(int index = -1);
@@ -80,7 +82,6 @@ private:
 
     ConfigDialog *configDialog;
 
-    Editor *currentEditor();
     QList<Editor *> editors();
 
     Ui::MainWindow ui;

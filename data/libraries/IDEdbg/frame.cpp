@@ -1,10 +1,12 @@
 #include <string.h>
 
 #include "frame.h"
+#include "IDEdbgPrivate.h"
 
-frame* frame_create(const char* name)
+frame* frame_create(int l, const char* name)
 {
 	frame* f=(frame*)malloc(sizeof(frame));
+	f->line=l;
 	f->name=strdup(name);
 	f->vars=NULL;
 	return f;
@@ -52,9 +54,7 @@ void generateFrameTrace(frame* frame)
 		return;
 	
 	// Frame header's size
-	Serial.print("<frame id=\"");
-	Serial.print(frame->name);
-	Serial.print("\">");
+	DbgPrintf("<frame l=\"%i\" id=\"%s\">", frame->line, frame->name);
 	
 	// Variables' size
 	linked_list* f_vars=frame_get_variables(frame);

@@ -2,6 +2,7 @@
 #include "DebuggerWidget.h"
 
 #include "IDEApplication.h"
+#include "gui/Editor.h"
 
 #include <QDomDocument>
 
@@ -15,8 +16,8 @@ bool DebuggerPlugin::setup(IDEApplication *app)
 
     connect(widget.data(), SIGNAL(debuggerStarted()), this, SLOT(startDebugging()));
     connect(widget.data(), SIGNAL(debuggerStopped()), this, SLOT(stopDebugging()));
-    /*connect(widget, SIGNAL(readRequested()), this, SLOT(read()));
-    connect(widget, SIGNAL(writeRequested(const QByteArray &)), this, SLOT(write(const QByteArray &)));*/
+
+    connect(widget->treeFrames, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeItemClicked(QTreeWidgetItem*,int)));
 
     return true;
 }
@@ -142,6 +143,27 @@ void DebuggerPlugin::dataArrived(QByteArray data)
     }
 }
 
+void DebuggerPlugin::treeItemClicked(QTreeWidgetItem* item, int column)
+{
+    if(!item)
+        return;
+
+    bool ok;
+    int line = item->data(0, Qt::UserRole).toInt(&ok);
+
+    if(!ok)
+        return;
+
+    Editor* e = ideApp->mainWindow()->currentEditor();
+    if(e)
+    {
+        line--;
+        e->ensureLineVisible(line);
+        e->setCursorPosition(line, 0);
+        e->setSelection(line, 0, line, e->lineLength(line));
+    }
+}
+
 // Private
 QByteArray DebuggerPlugin::readSerial(qint64 readCount)
 {
@@ -201,13 +223,15 @@ void DebuggerPlugin::parseState(QString state)
     }
 
     // Read top element
+    bool hasLine;
     QDomElement docElem = doc.documentElement();
-    int sourceLine = docElem.attribute("l", "-1").toInt();
+    int sourceLine = docElem.attribute("l", "-1").toInt(&hasLine);
 
     // Create the top element of the treewidget
     QTreeWidgetItem* topNode = new QTreeWidgetItem();
     topNode->setText(0, QString::number(arrivalTime));
     topNode->setText(1, tr("At line %1").arg(sourceLine));
+    topNode->setData(0, Qt::UserRole, sourceLine);
 
     QDomNodeList frames = docElem.elementsByTagName("frame");
     for(int i=0; i<frames.size(); i++)
@@ -216,10 +240,13 @@ void DebuggerPlugin::parseState(QString state)
 
         // Create a new entry from the frame
         QString frame_name = frame_e.attribute("id", tr("<no_name>"));
+        int line = frame_e.attribute("l", "-1").toInt(&hasLine);
 
         QTreeWidgetItem* wnode = new QTreeWidgetItem(topNode);
         //wnode->setText(0, QString::number(arrivalTime));
         wnode->setText(1, frame_name);
+        if(hasLine)
+            wnode->setData(0, Qt::UserRole, line);
 
         // Read all the variables of the frame
         QDomNodeList vars = frame_e.elementsByTagName("var");
@@ -227,7 +254,7 @@ void DebuggerPlugin::parseState(QString state)
         {
             QDomElement var_e = vars.item(e).toElement();
 
-            int line = var_e.attribute("l", "-1").toInt();
+            int line = var_e.attribute("l", "-1").toInt(&hasLine);
             QString name = var_e.attribute("id");
             QString type = var_e.attribute("t");
             QString value = var_e.attribute("v");
@@ -238,12 +265,13 @@ void DebuggerPlugin::parseState(QString state)
             wvar->setText(2, type);
             wvar->setText(3, name);
             wvar->setText(4, value);
-            wvar->setData(0, Qt::UserRole, line);
+            if(hasLine)
+                wvar->setData(0, Qt::UserRole, line);
         }
     }
 
     // Add the new top node
-    widget->treeFrames->addTopLevelItem(topNode);
+    widget->treeFrames->insertTopLevelItem(0, topNode);
 
     widget->logResult(tr("%1ms: New state received").arg(arrivalTime));
 }

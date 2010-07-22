@@ -18,10 +18,10 @@ void DbgInit(int baud_rate)
 	Serial.begin(baud_rate);
 }
 
-void DbgNewFrame(const char* name)
+void _DbgNewFrame(int l, const char* name)
 {
 	// Create a new frame and add it as an element on the frames' list
-	frames=linked_list_element_push_front(frames, frame_create(name));
+	frames=linked_list_element_push_front(frames, frame_create(l, name));
 }
 
 void DbgCloseFrame()

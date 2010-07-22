@@ -34,6 +34,7 @@ private slots:
     void closeSerial();
 
     void dataArrived(QByteArray data);
+    void treeItemClicked(QTreeWidgetItem* item, int column);
 
 private:
     IDEApplication *mApp;
