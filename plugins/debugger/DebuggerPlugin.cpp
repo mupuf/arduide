@@ -16,7 +16,7 @@ bool DebuggerPlugin::setup(IDEApplication *app)
 
     connect(widget.data(), SIGNAL(debuggerStarted()), this, SLOT(startDebugging()));
     connect(widget.data(), SIGNAL(debuggerStopped()), this, SLOT(stopDebugging()));
-
+    connect(widget.data(), SIGNAL(sendCommand(QString)), this, SLOT(newCommand(QString)));
     connect(widget->treeFrames, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeItemClicked(QTreeWidgetItem*,int)));
 
     return true;
@@ -111,38 +111,6 @@ void DebuggerPlugin::closeSerial()
     widget->setStatus(tr("Serial port closed."));
 }
 
-void DebuggerPlugin::dataArrived(QByteArray data)
-{
-    QRegExp packet_re("<(trace|frames).*>");
-
-    serialData+=data;
-
-    while(true)
-    {
-        // Parse traces
-        int start = packet_re.indexIn(serialData);
-        if (start == -1)
-            return;
-
-        QString type = packet_re.capturedTexts().at(1);
-
-        //Look for the ending tag of this one
-        int end = serialData.indexOf(QString("</%1>").arg(type));
-        if (end == -1)
-            return;
-        end+=3+type.size();
-
-        QString packet = serialData.mid(start, end-start);
-        if (type == "trace")
-            parseTrace(packet);
-        else if (type == "frames")
-            parseState(packet);
-
-        // Remove data we already parsed
-        serialData = serialData.mid(end);
-    }
-}
-
 void DebuggerPlugin::treeItemClicked(QTreeWidgetItem* item, int column)
 {
     if(!item)
@@ -164,40 +132,243 @@ void DebuggerPlugin::treeItemClicked(QTreeWidgetItem* item, int column)
     }
 }
 
-// Private
-QByteArray DebuggerPlugin::readSerial(qint64 readCount)
+#include "data/libraries/IDEdbg/IDEdbgConstants.h"
+#include <QStringList>
+void DebuggerPlugin::newCommand(QString cmd)
 {
-    if (serial.data() != NULL && serial->isOpen())
-    {
-        QByteArray pData;
-        pData.resize(readCount);
-        readCount = serial->readData(pData.data(), readCount);
-        if (readCount < 0)
-            widget->setStatus(tr("Read error: %0").arg(serial->errorString()));
-        else
-        {
-            widget->setStatus(tr("Read %0 bytes of data.").arg(readCount));
-            pData.resize(readCount);
+    QRegExp func_re("\\s*(\\w+)\\((.*)\\).*");
 
-            return pData;
+    if(!func_re.exactMatch(cmd))
+    {
+        widget->logError(tr("Invalid command format."));
+        return;
+    }
+
+    // Get the infos
+    QString func = func_re.capturedTexts()[1];
+    QStringList args = func_re.capturedTexts()[2].split(",");
+    for(int i=0; i<args.size(); i++)
+        args[i] = args[i].simplified();
+
+    // For each command
+    QByteArray data;
+    if (func == "openShell")
+    {
+        data[0] = SHELL_REQUESTED;
+    }
+    else if (func == "exit")
+    {
+        data.append(EXIT_SHELL);
+    }
+    else if (func == "digitalRead")
+    {
+        bool ok;
+        int pin = args[0].toInt(&ok);
+
+        if (ok && args.size()==1)
+        {
+            data.append(DIGITAL_READ);
+            data.append(pin);
+        }
+        else if (args.size()!=1)
+        {
+            widget->logError(tr("Invalid number of arguments"));
+            return;
+        }
+        else if (!ok)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[1]));
+            return;
         }
     }
-    else
-        widget->setStatus(tr("Unable to read, the port is not opened."));
+    else if (func == "digitalWrite")
+    {
+        bool ok1;
+        int pin = args[0].toInt(&ok1);
+        bool ok2 = (args[1]=="HIGH" || args[1]=="LOW");
+        int value = (args[1]=="HIGH"?1:0);
 
-    return QByteArray();
+        if (ok1 && ok2 && args.size()==2)
+        {
+            data.append(DIGITAL_WRITE);
+            data.append(pin);
+            data.append(value);
+        }
+        else if (args.size()!=2)
+        {
+            widget->logError(tr("Invalid number of arguments"));
+            return;
+        }
+        else if (!ok1)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[0]));
+            return;
+        }
+        else if (!ok2)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' should either be %3 or %4.").arg(2).arg(args[1], "HIGH", "LOW"));
+            return;
+        }
+    }
+    else if (func == "analogRead")
+    {
+        bool ok;
+        int pin = args[0].toInt(&ok);
+
+        if (ok && args.size()==1)
+        {
+            data.append(ANALOG_READ);
+            data.append(pin);
+        }
+        else if (args.size()!=1)
+        {
+            widget->logError(tr("Invalid number of arguments"));
+            return;
+        }
+        else if (!ok)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[1]));
+            return;
+        }
+    }
+    else if (func == "analogWrite")
+    {
+        bool ok1, ok2;
+        int pin = args[0].toInt(&ok1);
+        int value = args[1].toInt(&ok2);
+
+        if (ok1 && ok2 && args.size()==2)
+        {
+            data.append(ANALOG_WRITE);
+            data.append(pin);
+            data.append(value);
+        }
+        else if (args.size()!=2)
+        {
+            widget->logError(tr("Invalid number of arguments"));
+            return;
+        }
+        else if (!ok1)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[0]));
+            return;
+        }
+        else if (!ok2)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(2).arg(args[1]));
+            return;
+        }
+    }
+    else if (func == "pinMode")
+    {
+        bool ok1;
+        int pin = args[0].toInt(&ok1);
+        bool ok2 = (args[1]=="INPUT" || args[1]=="OUTPUT");
+        int value = (args[1]=="OUTPUT"?1:0);
+
+        if (ok1 && ok2 && args.size()==2)
+        {
+            data.append(PIN_MODE);
+            data.append(pin);
+            data.append(value);
+        }
+        else if (args.size()!=2)
+        {
+            widget->logError(tr("Invalid number of arguments"));
+            return;
+        }
+        else if (!ok1)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[0]));
+            return;
+        }
+        else if (!ok2)
+        {
+            widget->logError(tr("Invalid argument %1: '%2' should either be %3 or %4.").arg(2).arg(args[1], "INPUT", "OUTPUT"));
+            return;
+        }
+    }
+    else if (func == "help")
+    {
+        widget->logResult("Here is a summary of the existing commands:");
+        widget->logResult("openShell(): Open a shell on the arduino");
+        widget->logResult("exit(): Exits the arduino shell");
+        widget->logResult("digitalRead(pin): Read the value of the pin 'pin'. Result will be either HIGH or LOW.");
+        widget->logResult("digitalWrite(pin, value): Write 'value' to the pin 'pin'. 'Value' should be either HIGH or LOW.");
+        widget->logResult("analogRead(pin): Read the value of the pin 'pin'. Result will be between 0 and 1023");
+        widget->logResult("analogWrite(pin, value): Write 'value' to the pin 'pin'. 'Value' should be between 0 and 254");
+        widget->logResult("pinMode(pin, mode): Set the pin 'pin' to mode 'mode'. 'Mode' should be either OUTPUT or INPUT.\n");
+    }
+    else
+    {
+        widget->logError(tr("Unknown command"));
+        return;
+    }
+
+    // Check the serial is available
+    if (!serial || !serial->isOpen())
+    {
+        widget->logError(tr("The serial connection is not openned. Please start the debug"));
+        return;
+    }
+
+    // Send data
+    serial->write(data);
+
 }
 
-bool DebuggerPlugin::writeSerial(const QByteArray &data)
+// Inbound data
+void DebuggerPlugin::dataArrived(QByteArray data)
 {
-    if (serial.data() != NULL && serial->isOpen())
-        return serial->write(data) == data.size();
-    else
-        widget->setStatus(tr("Unable to write, the port is not opened."));
+    QRegExp packet_re("<(trace|frames|error).*>");
+    QRegExp packetRet_re("<(ret) .*/>");
 
-    return false;
+    serialData+=data;
+
+    while(true)
+    {
+        QString type;
+        int start, end;
+
+        // Get the right format
+        start = packet_re.indexIn(serialData);
+        if (start != -1)
+        {
+            type = packet_re.capturedTexts().at(1);
+
+            //Look for the ending tag of this one
+            end = serialData.indexOf(QString("</%1>").arg(type));
+            if (end == -1)
+                return;
+            end+=3+type.size();
+        }
+        else
+        {
+            start = packetRet_re.indexIn(serialData);
+            if (start == -1)
+                return;
+
+            type = "ret";
+
+            end = start+packetRet_re.matchedLength();
+        }
+
+        QString packet = serialData.mid(start, end-start);
+        if (type == "trace")
+            parseTrace(packet);
+        else if (type == "frames")
+            parseState(packet);
+        else if (type == "error")
+            parseError(packet);
+        else if (type == "ret")
+            parseRet(packet);
+        else
+            widget->logError(tr("Unknown return type '%1'").arg(type));
+
+        // Remove data we already parsed
+        serialData = serialData.mid(end);
+    }
 }
-
 void DebuggerPlugin::parseTrace(QString trace)
 {
     trace = trace.replace("<trace>", "");
@@ -274,6 +445,41 @@ void DebuggerPlugin::parseState(QString state)
     widget->treeFrames->insertTopLevelItem(0, topNode);
 
     widget->logResult(tr("%1ms: New state received").arg(arrivalTime));
+}
+
+void DebuggerPlugin::parseRet(QString ret)
+{
+    // Read the xml
+    QDomDocument doc;
+    QString err;
+    int errLine, errCol;
+    if(!doc.setContent(ret, &err, &errLine, &errCol))
+    {
+        qDebug("Error while parsing a return value '%s' at (%i,%i): %s.",
+               qPrintable(ret), errLine, errCol, qPrintable(err));
+    }
+
+    // Read top element
+    QDomElement docElem = doc.documentElement();
+    QString code = docElem.attribute("v", "NOK");
+
+    bool ok;
+    code.toInt(&ok);
+
+    if (code!="OK" && !ok)
+        widget->logError("<<< " + code);
+    else
+        widget->logResult("<<< " + code);
+}
+
+void DebuggerPlugin::parseError(QString error)
+{
+    error = error.replace("<error>", "");
+    error = error.replace("</error>", "");
+    error = error.replace("&lt;", "<");
+    error = error.replace("&gt;", ">");
+
+    widget->logError(tr("<<< %2").arg(error));
 }
 
 Q_EXPORT_PLUGIN2(debugger, DebuggerPlugin)

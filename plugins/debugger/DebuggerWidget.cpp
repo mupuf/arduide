@@ -23,8 +23,7 @@ DebuggerWidget::DebuggerWidget(QWidget *parent)
     connect(pushClearLogs, SIGNAL(pressed()), debugLogs, SLOT(clear()));
 
     // If the combo has a line edit
-    if(commandBox->lineEdit())
-       connect(commandBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
+    connect(commandEdit, SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
 }
 
 bool DebuggerWidget::isStarted()
@@ -113,7 +112,7 @@ void DebuggerWidget::onBreakToggled(int state)
 
 void DebuggerWidget::onSendCommand()
 {
-    QString cmd=commandBox->currentText();
+    QString cmd=commandEdit->text();
 
     // Add a line in the Log
     debugLogs->logCommand(cmd.split(' '));
@@ -122,8 +121,7 @@ void DebuggerWidget::onSendCommand()
     emit sendCommand(cmd);
 
     // Clear the line
-    if(commandBox->lineEdit())
-        commandBox->lineEdit()->clear();
+    commandEdit->clear();
 }
 
 void DebuggerWidget::updateBaudList()
@@ -132,7 +130,7 @@ void DebuggerWidget::updateBaudList()
     foreach(int rate, Serial::baudRates())
     {
         baudRateBox->addItem(QString::number(rate), rate);
-        if (rate == 9600)
+        if (rate == 19200)
             baudRateBox->setCurrentIndex(index);
         index++;
     }

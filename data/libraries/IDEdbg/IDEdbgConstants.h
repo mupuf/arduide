@@ -1,12 +1,12 @@
 #ifndef IDEDBG_CONSTANTS_H
 #define IDEDBG_CONSTANTS_H
 
-#define SHELL_REQUESTED	125
-#define EXIT_SHELL		126
-#define DIGITAL_READ 	127
-#define DIGITAL_WRITE 	128
-#define ANALOG_READ 	129
-#define ANALOG_WRITE 	130
-#define PIN_MODE		131
+#define SHELL_REQUESTED	1
+#define EXIT_SHELL		2
+#define DIGITAL_READ 	3
+#define DIGITAL_WRITE 	4
+#define ANALOG_READ 	5
+#define ANALOG_WRITE 	6
+#define PIN_MODE		7
 
 #endif

@@ -28,7 +28,7 @@ static void miniShell()
 	// Stop if the user didn't ask for the minishell
 	if (Serial.available()==0)
 	{
-		DbgPrintf("<No commands>");
+		//DbgPrintf("<No commands>");
 		return;
 	}
 
@@ -36,16 +36,15 @@ static void miniShell()
 	unsigned char cmd = readValue();
 	if(cmd != SHELL_REQUESTED)
 	{
-		DbgPrintf("<%i != SHELL_REQUESTED(%i)>", cmd, SHELL_REQUESTED);
+		DbgPrintf("<error>Unknown command %i</error>", cmd);
 		return;
 	}
+	else
+		DbgPrintf("<ret v=\"OK\" />");
 
 	// Enter the miniShell
 	while(true)
 	{
-		// Get the command ID
-		unsigned char cid = readValue();
-
 		// Get the command
 		unsigned char cmd = readValue();
 		if(cmd == DIGITAL_READ)
@@ -53,43 +52,43 @@ static void miniShell()
 			unsigned char pin = readValue();
 			int pin_val = digitalRead(pin);
 			const char* ret = (pin_val==HIGH?"HIGH":"LOW");
-			DbgPrintf("<ret id=\"%i\" v=\"%s\"/>", cid, ret);
+			DbgPrintf("<ret v=\"%s\"/>", ret);
 		}
 		else if(cmd == DIGITAL_WRITE)
 		{
 			unsigned char pin = readValue();
 			unsigned char value = readValue();
 			digitalWrite(pin, value==1?HIGH:LOW);
-			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+			DbgPrintf("<ret v=\"OK\"/>");
 		}
 		else if(cmd == ANALOG_READ)
 		{
 			unsigned char pin = readValue();
-			int pin_val = digitalRead(pin);
-			DbgPrintf("<ret id=\"%i\" v=\"%i\"/>", cid, pin_val);
+			int pin_val = analogRead(pin);
+			DbgPrintf("<ret v=\"%i\"/>", pin_val);
 		}
 		else if(cmd == ANALOG_WRITE)
 		{
 			unsigned char pin = readValue();
 			unsigned char value = readValue();
-			digitalWrite(pin, value);
-			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+			analogWrite(pin, value);
+			DbgPrintf("<ret v=\"OK\"/>");
 		}
 		else if(cmd == PIN_MODE)
 		{
 			unsigned char pin = readValue();
 			unsigned char mode = readValue();
 			pinMode(pin, mode==1?OUTPUT:INPUT);
-			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+			DbgPrintf("<ret v=\"OK\"/>");
 		}
 		else if(cmd == EXIT_SHELL)
 		{
-			DbgPrintf("<ret id=\"%i\" v=\"OK\"/>", cid);
+			DbgPrintf("<ret v=\"OK\"/>");
 			break;
 		}
 		else
 		{
-			DbgPrintf("<error>id %i: Unknown command %i</error>", cid, cmd);
+			DbgPrintf("<error>Unknown command %i</error>", cmd);
 
 			//Empty the input buffer
 			while (Serial.available()>0)

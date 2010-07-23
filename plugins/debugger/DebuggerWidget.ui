@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
-    <height>268</height>
+    <width>787</width>
+    <height>235</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,11 +39,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="commandBox">
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-            </widget>
+            <widget class="QLineEdit" name="commandEdit"/>
            </item>
           </layout>
          </widget>

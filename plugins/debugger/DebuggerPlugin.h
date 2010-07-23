@@ -35,6 +35,7 @@ private slots:
 
     void dataArrived(QByteArray data);
     void treeItemClicked(QTreeWidgetItem* item, int column);
+    void newCommand(QString cmd);
 
 private:
     IDEApplication *mApp;
@@ -44,11 +45,10 @@ private:
     QString serialData;
     QTime startTime;
 
-    QByteArray readSerial(qint64 readCount);
-    bool writeSerial(const QByteArray &data);
-
     void parseTrace(QString trace);
     void parseState(QString state);
+    void parseRet(QString ret);
+    void parseError(QString error);
 
 };
 
