@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>787</width>
-    <height>235</height>
+    <width>785</width>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="commandEdit"/>
+            <widget class="QLineEdit" name="commandEdit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -137,6 +141,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QPushButton" name="pushStartStop">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>&amp;Start</string>
            </property>
@@ -144,6 +151,9 @@
          </item>
          <item>
           <widget class="QCheckBox" name="checkBreak">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>&amp;Break
 ASAP</string>

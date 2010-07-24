@@ -17,6 +17,8 @@ class DebuggerWidget : public QWidget, Ui::DebuggerWidget
     bool _break;
     bool _started;
 
+    void addCmdLineCompleter();
+
 public:
     DebuggerWidget(QWidget *parent = NULL);
 
@@ -42,6 +44,8 @@ private slots:
     void onStartStopPressed();
     void onBreakToggled(int);
     void onSendCommand();
+
+    void debugStarted(bool value);
 
     void updateBaudList();
 

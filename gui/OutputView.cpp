@@ -40,8 +40,13 @@ void OutputView::logError(const QString &text)
     setTextColor(oldColor);
 }
 
+void OutputView::logCommand(const QString &command)
+{
+    static const QString format = tr("<<< %0");
+    log(format.arg(command));
+}
+
 void OutputView::logCommand(const QStringList &command)
 {
-    static const QString format = tr(">>> %0");
-    log(format.arg(command.join(" ")));
+    logCommand(command.join(" "));
 }

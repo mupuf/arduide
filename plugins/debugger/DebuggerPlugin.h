@@ -10,6 +10,7 @@
 
 #include "DebuggerWidget.h"
 #include "../../utils/Serial.h"
+#include "../../gui/Editor.h"
 
 #include <QScopedPointer>
 #include <QTime>
@@ -23,6 +24,8 @@ public:
     bool setup(IDEApplication *app);
     const QString &name() { return mName; };
 
+    bool isDebugging();
+
     int debugTime();
 
 public slots:
@@ -35,7 +38,10 @@ private slots:
 
     void dataArrived(QByteArray data);
     void treeItemClicked(QTreeWidgetItem* item, int column);
-    void newCommand(QString cmd);
+    void sendCommand(QString cmd);
+    void shouldBreakOnTrace(bool value);
+    void mainWindowTabChanged(bool isBrowser);
+    void mainWindowEditorDeleted(Editor *editor);
 
 private:
     IDEApplication *mApp;
@@ -44,6 +50,7 @@ private:
     QScopedPointer<Serial> serial;
     QString serialData;
     QTime startTime;
+    Editor* debuggedEditor;
 
     void parseTrace(QString trace);
     void parseState(QString state);

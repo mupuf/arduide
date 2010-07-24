@@ -19,6 +19,7 @@ public:
     void log(const QString &text);
     void logImportant(const QString &text);
     void logError(const QString &text);
+    void logCommand(const QString &command);
     void logCommand(const QStringList &command);
 };
 

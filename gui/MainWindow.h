@@ -58,7 +58,8 @@ public slots:
     void configure();
     void about();
     void configureEditors();
-    void editorStateChanged();
+    void tabContentHasChanged();
+    void tabHasChanged();
     void contextualHelp();
     bool docHelpRequested(QString);
 
@@ -88,6 +89,11 @@ private:
 
 protected:
     void closeEvent(QCloseEvent *event);
+
+signals:
+    void tabContentChanged();
+    void tabChanged(bool isBrowser);
+    void editorDeleted(Editor* editor);
 };
 
 #endif // MAINWINDOW_H

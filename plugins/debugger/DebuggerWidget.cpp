@@ -7,6 +7,19 @@
 #include "../../utils/Serial.h"
 
 #include <QLineEdit>
+#include <QCompleter>
+
+void DebuggerWidget::addCmdLineCompleter()
+{
+    QStringList wordList;
+    wordList << "openShell()" << "exit()" << "digitalRead(pin)" << "digitalWrite(pin, value)";
+    wordList << "analogRead(pin)" << "analogWrite(pin, value)" << "pinMode(pin, mode)";
+    wordList << "help()";
+
+    QCompleter *completer = new QCompleter(wordList, this);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+    commandEdit->setCompleter(completer);
+}
 
 DebuggerWidget::DebuggerWidget(QWidget *parent)
     : QWidget(parent),
@@ -19,11 +32,11 @@ DebuggerWidget::DebuggerWidget(QWidget *parent)
 
     connect(pushStartStop, SIGNAL(pressed()), this, SLOT(onStartStopPressed()));
     connect(checkBreak, SIGNAL(stateChanged(int)), this, SLOT(onBreakToggled(int)));
-
     connect(pushClearLogs, SIGNAL(pressed()), debugLogs, SLOT(clear()));
-
-    // If the combo has a line edit
     connect(commandEdit, SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
+
+    // Set the completer list
+    addCmdLineCompleter();
 }
 
 bool DebuggerWidget::isStarted()
@@ -57,6 +70,7 @@ void DebuggerWidget::stopDebugging()
 void DebuggerWidget::clearLogs()
 {
     debugLogs->clear();
+    treeFrames->clear();
 }
 
 void DebuggerWidget::logImportant(const QString& result)
@@ -102,12 +116,12 @@ void DebuggerWidget::onStartStopPressed()
 
 void DebuggerWidget::onBreakToggled(int state)
 {
+    // Add some info in the logs
+    QString msg = state==Qt::Checked?tr("openShell() // Break ASAP"):tr("exit(): // Just log");
+    debugLogs->logCommand(msg);
+
     // Emit the signal
     emit shouldBreakOnTrace(state==Qt::Checked);
-
-    // Add some info in the logs
-    QString msg = state==Qt::Checked?tr("Break ASAP"):tr("Just log");
-    debugLogs->log(msg);
 }
 
 void DebuggerWidget::onSendCommand()
@@ -122,6 +136,12 @@ void DebuggerWidget::onSendCommand()
 
     // Clear the line
     commandEdit->clear();
+}
+
+void DebuggerWidget::debugStarted(bool value)
+{
+    commandEdit->setEnabled(value);
+    checkBreak->setEnabled(value);
 }
 
 void DebuggerWidget::updateBaudList()

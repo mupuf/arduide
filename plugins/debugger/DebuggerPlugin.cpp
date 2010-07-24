@@ -11,15 +11,24 @@ bool DebuggerPlugin::setup(IDEApplication *app)
     mApp = app;
     mName = tr("Debugger");
     widget.reset(new DebuggerWidget);
+    debuggedEditor = NULL;
 
     app->mainWindow()->utilityTabWidget()->addTab(widget.data(), name());
 
     connect(widget.data(), SIGNAL(debuggerStarted()), this, SLOT(startDebugging()));
     connect(widget.data(), SIGNAL(debuggerStopped()), this, SLOT(stopDebugging()));
-    connect(widget.data(), SIGNAL(sendCommand(QString)), this, SLOT(newCommand(QString)));
+    connect(widget.data(), SIGNAL(sendCommand(QString)), this, SLOT(sendCommand(QString)));
+    connect(widget.data(), SIGNAL(shouldBreakOnTrace(bool)), this, SLOT(shouldBreakOnTrace(bool)));
     connect(widget->treeFrames, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeItemClicked(QTreeWidgetItem*,int)));
+    connect(app->mainWindow(), SIGNAL(tabChanged(bool)), this, SLOT(mainWindowTabChanged(bool)));
+    connect(app->mainWindow(), SIGNAL(editorDeleted(Editor*)), this, SLOT(mainWindowEditorDeleted(Editor*)));
 
     return true;
+}
+
+bool DebuggerPlugin::isDebugging()
+{
+    return serial->isOpen();
 }
 
 int DebuggerPlugin::debugTime()
@@ -52,6 +61,12 @@ bool DebuggerPlugin::startDebugging()
     // Store the current time
     startTime = QTime::currentTime();
 
+    // Store the debugged editor
+    debuggedEditor = mApp->mainWindow()->currentEditor();
+
+    // Tell the widget we started debugging
+    widget->debugStarted(true);
+
     return true;
 }
 
@@ -65,6 +80,12 @@ void DebuggerPlugin::stopDebugging()
         serial->close();
 
     widget->setStatus(tr("Serial port closed."));
+
+    // Reset the debugged editor
+    debuggedEditor = NULL;
+
+    // Tell the widget we stopped debugging
+    widget->debugStarted(false);
 }
 
 // Private slots
@@ -134,7 +155,7 @@ void DebuggerPlugin::treeItemClicked(QTreeWidgetItem* item, int column)
 
 #include "data/libraries/IDEdbg/IDEdbgConstants.h"
 #include <QStringList>
-void DebuggerPlugin::newCommand(QString cmd)
+void DebuggerPlugin::sendCommand(QString cmd)
 {
     QRegExp func_re("\\s*(\\w+)\\((.*)\\).*");
 
@@ -177,7 +198,7 @@ void DebuggerPlugin::newCommand(QString cmd)
         }
         else if (!ok)
         {
-            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[1]));
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[0]));
             return;
         }
     }
@@ -227,7 +248,7 @@ void DebuggerPlugin::newCommand(QString cmd)
         }
         else if (!ok)
         {
-            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[1]));
+            widget->logError(tr("Invalid argument %1: '%2' is not a number.").arg(1).arg(args[0]));
             return;
         }
     }
@@ -315,6 +336,34 @@ void DebuggerPlugin::newCommand(QString cmd)
     // Send data
     serial->write(data);
 
+}
+
+void DebuggerPlugin::shouldBreakOnTrace(bool value)
+{
+    if (value)
+        sendCommand("openShell()");
+    else
+        sendCommand("exit()");
+}
+
+void DebuggerPlugin::mainWindowTabChanged(bool isBrowser)
+{
+    widget->pushStartStop->setEnabled(!isBrowser);
+
+    bool widgetEnabled = isBrowser || debuggedEditor==NULL || debuggedEditor==mApp->mainWindow()->currentEditor();
+    widget->setEnabled(widgetEnabled);
+}
+
+void DebuggerPlugin::mainWindowEditorDeleted(Editor *editor)
+{
+    if (editor == debuggedEditor)
+    {
+        widget->onStartStopPressed();
+        widget->clearLogs();
+        debuggedEditor = NULL;
+
+        mainWindowTabChanged(false);
+    }
 }
 
 // Inbound data
@@ -467,9 +516,9 @@ void DebuggerPlugin::parseRet(QString ret)
     code.toInt(&ok);
 
     if (code!="OK" && !ok)
-        widget->logError("<<< " + code);
+        widget->logError(">>> " + code);
     else
-        widget->logResult("<<< " + code);
+        widget->logResult(">>> " + code);
 }
 
 void DebuggerPlugin::parseError(QString error)
@@ -479,7 +528,7 @@ void DebuggerPlugin::parseError(QString error)
     error = error.replace("&lt;", "<");
     error = error.replace("&gt;", ">");
 
-    widget->logError(tr("<<< %2").arg(error));
+    widget->logError(tr(">>> %2").arg(error));
 }
 
 Q_EXPORT_PLUGIN2(debugger, DebuggerPlugin)

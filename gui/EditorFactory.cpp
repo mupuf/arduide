@@ -30,7 +30,7 @@ Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)
     editor->setText(text);
     editor->setModified(false);
 
-    QObject::connect(editor, SIGNAL(textChanged()), ideApp->mainWindow(), SLOT(editorStateChanged()));
+    QObject::connect(editor, SIGNAL(textChanged()), ideApp->mainWindow(), SLOT(tabContentHasChanged()));
 
     return editor;
 }

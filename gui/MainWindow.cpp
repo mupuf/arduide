@@ -47,7 +47,7 @@ void MainWindow::initialize()
 
     setupActions();
 
-    editorStateChanged();
+    tabHasChanged();
 
     restoreState(ideApp->settings()->mainWindowState());
 }
@@ -59,7 +59,7 @@ void MainWindow::setupActions()
     buildActions->addAction(ui.action_Upload);
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(editorStateChanged()));
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabHasChanged()));
     connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newProject()));
     connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
@@ -83,7 +83,7 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
-    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(editorStateChanged()));
+    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(tabChanged()));
     connect(ui.action_Prev, SIGNAL(triggered()), browser, SLOT(back()));
     connect(ui.action_Next, SIGNAL(triggered()), browser, SLOT(forward()));
 
@@ -223,6 +223,8 @@ void MainWindow::closeTab(int index)
             {
                 names.removeOne(tabWidget->tabText(index));
                 tabWidget->removeTab(index);
+
+                emit editorDeleted(editor);
             }
         }
     }
@@ -258,7 +260,7 @@ void MainWindow::configureEditors()
     }
 }
 
-void MainWindow::editorStateChanged()
+void MainWindow::tabContentHasChanged()
 {
     bool undoAvail = false;
     bool redoAvail = false;
@@ -284,6 +286,14 @@ void MainWindow::editorStateChanged()
     ui.action_Prev->setEnabled(previousAvail);
     ui.action_Next->setEnabled(forwardAvail);
     ui.action_Contextual_help->setEnabled(contextualHelpAvail);
+}
+
+void MainWindow::tabHasChanged()
+{
+    tabContentChanged();
+
+    Editor *e = currentEditor();
+    emit tabChanged(e==NULL);
 }
 
 void MainWindow::contextualHelp()
