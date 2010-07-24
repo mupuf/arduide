@@ -42,6 +42,9 @@ bool DebuggerPlugin::startDebugging()
     widget->clearLogs();
     widget->treeFrames->clear();
 
+    // Store the debugged editor
+    debuggedEditor = mApp->mainWindow()->currentEditor();
+
     // Add some info in the logs
     widget->logImportant(tr("Start debugging"));
 
@@ -60,9 +63,6 @@ bool DebuggerPlugin::startDebugging()
 
     // Store the current time
     startTime = QTime::currentTime();
-
-    // Store the debugged editor
-    debuggedEditor = mApp->mainWindow()->currentEditor();
 
     // Tell the widget we started debugging
     widget->debugStarted(true);
@@ -350,7 +350,7 @@ void DebuggerPlugin::mainWindowTabChanged(bool isBrowser)
 {
     widget->pushStartStop->setEnabled(!isBrowser);
 
-    bool widgetEnabled = isBrowser || debuggedEditor==NULL || debuggedEditor==mApp->mainWindow()->currentEditor();
+    bool widgetEnabled = debuggedEditor==NULL || debuggedEditor==mApp->mainWindow()->currentEditor();
     widget->setEnabled(widgetEnabled);
 }
 
@@ -516,9 +516,9 @@ void DebuggerPlugin::parseRet(QString ret)
     code.toInt(&ok);
 
     if (code!="OK" && !ok)
-        widget->logError(">>> " + code);
+        widget->logError("<<< " + code);
     else
-        widget->logResult(">>> " + code);
+        widget->logResult("<<< " + code);
 }
 
 void DebuggerPlugin::parseError(QString error)

@@ -3,10 +3,11 @@ General:
    - output verbosity
  * network stuff
    - check for updates (when we have a first release)
-   - download and install the SDK automatically, in a personal place like QDesktopServices::DataLocation (WIP)
+   - download and install the SDK automatically, in a personal place like QDesktopServices::DataLocation (Done)
  * use native system icons when available
  * help menu:
    - community links: arduino forum, maybe other resources
+ * Prepare for the first release
 
 Browser:
  * ability to search documentation
@@ -22,25 +23,25 @@ Browser:
 
 Editor:
  * improve the editor (denis)
-   - automatic indentation
+   - automatic indentation (Almost done)
  * auto-completion
    - need to find out how to lex implicit includes (WProgram.h)
- * F1 on a known command should open the right documentation page in the browser (WIP)
  * Search & replace
  * code snippets
 
 Plugin ideas:
- * serial debugger [WIP]
+ * serial debugger [Almost done]
    - send traces (kind of sprintf) (Done)
    - send the current state (Done)
-   - interactive mode
-     - ask for pin state
-     - set pin state
+   - interactive mode (Done)
+     - ask for pin state (Done)
+     - set pin state (Done)
      - get/set registered variables
-   - Update the GUI to help the user using the lib (WIP)
+   - Update the GUI to help the user using the lib (Done)
  * serial communication [WIP]
    - connect the IDE to the Arduino and make simple reads/writes
  * simulation
+   - requires to hack the arduino libs in order to compile sketches for a local use
  * pastebin
 
 Features from the original IDE:
@@ -71,3 +72,4 @@ DONE:
  * highlight the Arduino-specific keywords for functions (pinMode, digitalRead, ...) [DONE]
  * give it a section in the config dialog (see "General") [DONE]
    - fonts, indentation, style, ... (QScintilla)
+ * F1 on a known command should open the right documentation page in the browser (Done)

@@ -42,7 +42,7 @@ void OutputView::logError(const QString &text)
 
 void OutputView::logCommand(const QString &command)
 {
-    static const QString format = tr("<<< %0");
+    static const QString format = tr(">>>> %0");
     log(format.arg(command));
 }
 
