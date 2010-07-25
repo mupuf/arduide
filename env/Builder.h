@@ -41,7 +41,7 @@ private:
     bool extractHEX(const QString &input, const QString &output);
     bool uploadViaBootloader(const QString &hexFileName);
     SourceType identifySource(const QString &fileName);
-    int runCommand(const QStringList &command);
+    int runCommand(const QStringList &command, bool errorHighlighting=false);
 
     ILogger &mLogger;
     QScopedPointer<QxtTemporaryDir> mBuildDir;

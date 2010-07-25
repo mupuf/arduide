@@ -151,6 +151,11 @@ bool Builder::build(const QString &code, bool upload)
     // compile the libraries
     cxxflags << "-include" << "WProgram.h";
     objects << compileDependencies(code, includePaths, buildPath, cflags, cxxflags, sflags);
+    if (objects.isEmpty())
+    {
+        mLogger.logError(tr("Compilation failed."));
+        return false;
+    }
 
     // compile the sketch
     QString sketchFileName = QDir(buildPath).filePath("sketch.cpp");
@@ -271,7 +276,7 @@ QStringList Builder::compile(const QStringList &sources, const QStringList &incl
             continue;
         }
 
-        if (runCommand(cmdline) != 0)
+        if (runCommand(cmdline, true) != 0)
             return QStringList();
         else
             objects << objectFileName;
@@ -312,7 +317,7 @@ bool Builder::link(const QString &fileName, const QStringList &objects, const QS
     return runCommand(command) == 0;
 }
 
-int Builder::runCommand(const QStringList &command)
+int Builder::runCommand(const QStringList &command, bool errorHighlighting)
 {
     mLogger.logCommand(command);
 
@@ -327,20 +332,33 @@ int Builder::runCommand(const QStringList &command)
 
     if(proc.error()==QProcess::FailedToStart)
     {
-	   mLogger.logError(QString("Cannot start program %1").arg(program));
-	   return -1;
+       mLogger.logError(QString("Cannot start program %1").arg(program));
+       return -1;
     }
     else
     {
-	    mLogger.log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
+        if(!errorHighlighting)
+            mLogger.log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
+        else
+        {
+            foreach (QString line, QString::fromLocal8Bit(proc.readAllStandardOutput()).split('\n'))
+            {
+                if (line.contains(QRegExp(".*\\.cpp:\\d+: error:")))
+                    mLogger.logError(line);
+                else if (line.contains(QRegExp(".*\\.cpp:\\d+: (warning|note):")))
+                    mLogger.logImportant(line);
+                else
+                    mLogger.log(line);
+            }
+        }
 
-	    QFutureWatcher<int> watcher;
-	    QxtSignalWaiter waiter(&watcher, SIGNAL(finished()));
-	    QFuture<int> futureExitCode = QtConcurrent::run(&proc, &QProcess::exitCode);
-	    watcher.setFuture(futureExitCode);
-	    waiter.wait();
+        QFutureWatcher<int> watcher;
+        QxtSignalWaiter waiter(&watcher, SIGNAL(finished()));
+        QFuture<int> futureExitCode = QtConcurrent::run(&proc, &QProcess::exitCode);
+        watcher.setFuture(futureExitCode);
+        waiter.wait();
 
-	    return futureExitCode.result();
+        return futureExitCode.result();
     }
 }
 
