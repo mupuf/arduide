@@ -491,30 +491,24 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-bool MainWindow::build()
+void MainWindow::build()
 {
     Editor *editor = currentEditor();
     if (editor)
     {
-        buildActions->setEnabled(false);
-
         const Board *board = Board::boardInfo(ideApp->settings()->board());
         ui.dockWidget->show();
         ui.outputView->clear();
 
-        Builder builder(*ui.outputView);
-        builder.setBoard(board);
-        bool ret = builder.build(editor->text());
-
-        buildActions->setEnabled(true);
-
-        return ret;
+        BackgroundBuilder *builder = new BackgroundBuilder(*ui.outputView);
+        builder->setRelatedActions(buildActions);
+        builder->setBoard(board);
+        connect(builder, SIGNAL(buildFinished()), builder, SLOT(deleteLater()));
+        builder->backgroundBuild(editor->text());
     }
-    else
-        return false;
 }
 
-bool MainWindow::upload()
+void MainWindow::upload()
 {
     Editor *editor = currentEditor();
     if (editor)
@@ -526,17 +520,13 @@ bool MainWindow::upload()
         ui.dockWidget->show();
         ui.outputView->clear();
 
-        Builder builder(*ui.outputView);
-        builder.setBoard(board);
-        builder.setDevice(device);
-       bool ret=builder.build(editor->text(), true);
-
-        buildActions->setEnabled(true);
-
-       return ret;
+        BackgroundBuilder *builder = new BackgroundBuilder(*ui.outputView);
+        builder->setRelatedActions(buildActions);
+        builder->setBoard(board);
+        builder->setDevice(device);
+        connect(builder, SIGNAL(buildFinished()), builder, SLOT(deleteLater()));
+        builder->backgroundBuild(editor->text(), true);
     }
-    else
-        return false;
 }
 
 void MainWindow::toggleDock()

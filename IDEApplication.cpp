@@ -12,6 +12,14 @@
 
 #include "plugins/IDEPluginInterface.h"
 
+#include <QTextCursor>
+#include <QTextCharFormat>
+void IDEApplication::registerMetaTypes()
+{
+    qRegisterMetaType<QTextCursor>("QTextCursor");
+    qRegisterMetaType<QTextCharFormat>("QTextCharFormat");
+}
+
 IDEApplication::IDEApplication(int argc, char **argv)
     : QApplication(argc, argv)
 {
@@ -21,6 +29,8 @@ IDEApplication::IDEApplication(int argc, char **argv)
 
     // fix the data path
     mDataPath = QDir(DATA_PATH).absolutePath();
+
+    registerMetaTypes();
 
     // initialize Grantlee
     initializeTemplates();
@@ -42,10 +52,7 @@ void IDEApplication::initializeTemplates()
 {
     mEngine = new Grantlee::Engine(this);
     mEngine->setPluginPaths(QStringList() << QDir(GRANTLEE_PLUGIN_DIR).absolutePath());
-#if 0
-#pragma message("grantlee_scriptabletags disabled because it's broken")
-    mEngine->removeDefaultLibrary("grantlee_scriptabletags");
-#endif
+
     Grantlee::FileSystemTemplateLoader::Ptr loader = Grantlee::FileSystemTemplateLoader::Ptr(new Grantlee::FileSystemTemplateLoader);
     loader->setTemplateDirs(QStringList() << ":/templates");
     mEngine->addTemplateLoader(loader);

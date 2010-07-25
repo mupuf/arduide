@@ -30,6 +30,7 @@ public:
     Settings *settings() { return mSettings; }
 
 private:
+    void registerMetaTypes();
     void initializeTemplates();
     void initializeGui();
     void initializeSettings();

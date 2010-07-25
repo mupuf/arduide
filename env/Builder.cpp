@@ -10,11 +10,7 @@
 #include <QFileInfo>
 #include <QRegExp>
 #include <QProcess>
-#include <QFutureWatcher>
-#include <QtConcurrentRun>
 #include <QDebug>
-
-#include <qxtsignalwaiter.h>
 
 #include "../env/Board.h"
 #include "../env/Toolkit.h"
@@ -38,10 +34,8 @@ QString Builder::readAllFile(const QString& filepath)
     return file.readAll();
 }
 
-QStringList Builder::compileDependencies(const QString& code, QStringList& includePaths, QString buildPath, const QStringList& cflags, const QStringList& cxxflags, const QStringList& sflags)
+bool Builder::compileDependencies(QStringList &objects, const QString& code, QStringList& includePaths, QString buildPath, const QStringList& cflags, const QStringList& cxxflags, const QStringList& sflags)
 {
-    QStringList objects;
-
     QRegExp importRegexp("^\\s*#include\\s+[<\"](\\S+)[\">]");
     foreach (const QString &line, code.split('\n'))
     {
@@ -64,15 +58,17 @@ QStringList Builder::compileDependencies(const QString& code, QStringList& inclu
                 if (! QDir().mkdir(outputDirectory))
                 {
                     mLogger.logError(tr("Failed to create build directory."));
-                    return QStringList();
+                    return false;
                 }
                 foreach (const QString &source, QDir(libPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
                 {
                     QString path=QDir(libPath).filePath(source);
                     libSources << path;
-                    objects << compileDependencies(readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags);
+                    if (! compileDependencies(objects, readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags))
+                        return false;
                 }
-                objects << compile(libSources, includePaths, cflags, cxxflags, sflags, outputDirectory);
+                if (! compile(objects, libSources, includePaths, cflags, cxxflags, sflags, outputDirectory))
+                    return false;
             }
 
             if (utilityPathExists && !includePaths.contains(libPath))
@@ -84,20 +80,22 @@ QStringList Builder::compileDependencies(const QString& code, QStringList& inclu
                 if (! QDir().mkdir(outputDirectory))
                 {
                     mLogger.logError(tr("Failed to create build directory."));
-                    return QStringList();
+                    return false;
                 }
                 foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
                 {
                     QString path=QDir(utilityPath).filePath(source);
                     utilitySources << path;
-                    objects << compileDependencies(readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags);
+                    if (! compileDependencies(objects, readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags))
+                        return false;
                 }
-                objects << compile(utilitySources, includePaths, cflags, cxxflags, sflags, outputDirectory);
+                if (! compile(objects, utilitySources, includePaths, cflags, cxxflags, sflags, outputDirectory))
+                    return false;
             }
         }
     }
 
-    return objects;
+    return true;
 }
 
 bool Builder::build(const QString &code, bool upload)
@@ -133,8 +131,9 @@ bool Builder::build(const QString &code, bool upload)
     foreach (const QString &source, coreDir.entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
         coreSources.append(coreDir.filePath(source));
 
-    objects = compile(coreSources, includePaths, cflags, cxxflags, sflags);
-    if (objects.isEmpty())
+    bool success;
+    success = compile(objects, coreSources, includePaths, cflags, cxxflags, sflags);
+    if (! success)
     {
         mLogger.logError(tr("Compilation failed."));
         return false;
@@ -150,8 +149,8 @@ bool Builder::build(const QString &code, bool upload)
 
     // compile the libraries
     cxxflags << "-include" << "WProgram.h";
-    objects << compileDependencies(code, includePaths, buildPath, cflags, cxxflags, sflags);
-    if (objects.isEmpty())
+    success = compileDependencies(objects, code, includePaths, buildPath, cflags, cxxflags, sflags);
+    if (! success)
     {
         mLogger.logError(tr("Compilation failed."));
         return false;
@@ -184,7 +183,7 @@ bool Builder::build(const QString &code, bool upload)
 
     sketchFile.close();
 
-    objects << compile(QStringList() << sketchFileName, includePaths, cflags, cxxflags, sflags);
+    compile(objects, QStringList() << sketchFileName, includePaths, cflags, cxxflags, sflags);
     if (objects.isEmpty())
     {
         mLogger.logError(tr("Compilation failed."));
@@ -235,11 +234,9 @@ bool Builder::build(const QString &code, bool upload)
     return true;
 }
 
-QStringList Builder::compile(const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags, const QString &outputDirectory)
+bool Builder::compile(QStringList &objects, const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags, const QString &outputDirectory)
 {
     Q_ASSERT(mBoard != NULL);
-
-    QStringList objects;
 
     QStringList includeFlags;
     foreach (const QString &path, includePaths)
@@ -277,12 +274,12 @@ QStringList Builder::compile(const QStringList &sources, const QStringList &incl
         }
 
         if (runCommand(cmdline, true) != 0)
-            return QStringList();
+            return false;
         else
             objects << objectFileName;
     }
 
-    return objects;
+    return true;
 }
 
 bool Builder::archive(const QString &fileName, const QStringList &objects)
@@ -328,16 +325,22 @@ int Builder::runCommand(const QStringList &command, bool errorHighlighting)
     proc.setProcessChannelMode(QProcess::MergedChannels);
     proc.start(program, arguments);
     proc.waitForStarted();
-    proc.waitForFinished();
+    QProcess::ProcessError error = proc.error();
 
-    if(proc.error()==QProcess::FailedToStart)
+    if (error == QProcess::FailedToStart || error == QProcess::Crashed)
     {
        mLogger.logError(QString("Cannot start program %1").arg(program));
        return -1;
     }
     else
     {
-        if(!errorHighlighting)
+        proc.waitForFinished();
+
+        error = proc.error();
+        if (error == QProcess::Crashed)
+            return -1;
+
+        if (! errorHighlighting)
             mLogger.log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
         else
         {
@@ -352,13 +355,7 @@ int Builder::runCommand(const QStringList &command, bool errorHighlighting)
             }
         }
 
-        QFutureWatcher<int> watcher;
-        QxtSignalWaiter waiter(&watcher, SIGNAL(finished()));
-        QFuture<int> futureExitCode = QtConcurrent::run(&proc, &QProcess::exitCode);
-        watcher.setFuture(futureExitCode);
-        waiter.wait();
-
-        return futureExitCode.result();
+        return proc.exitCode();
     }
 }
 
@@ -414,4 +411,35 @@ bool Builder::uploadViaBootloader(const QString &hexFileName)
     }
 
     return runCommand(command) == 0;
+}
+
+BackgroundBuilder::BackgroundBuilder(ILogger &logger, QObject *parent) : builder(logger, parent),
+                                                                         actions(NULL)
+{
+}
+
+void BackgroundBuilder::setRelatedActions(QActionGroup *actions)
+{
+    this->actions = actions;
+}
+
+void BackgroundBuilder::backgroundBuild(const QString &code, bool upload)
+{
+    if (isRunning())
+    {
+        qWarning() << "BackgroundBuilder thread already running.";
+        emit buildFinished();
+        return;
+    }
+
+    start();
+}
+
+void BackgroundBuilder::run()
+{
+    actions->setDisabled(true);
+    builder.build(code, upload);
+    actions->setDisabled(false);
+
+    emit buildFinished();
 }

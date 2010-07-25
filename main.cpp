@@ -16,6 +16,23 @@ int main(int argc, char** argv)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    return main(__argc, __argv);
+#define CONSOLE 1
+#if CONSOLE
+    if (! AllocConsole())
+        return 1;
+
+    FILE *stream;
+    freopen_s(&stream, "CONIN$", "rb", stdin);
+    freopen_s(&stream, "CONOUT$", "wb", stdout);
+    freopen_s(&stream, "CONOUT$", "wb", stderr);
+    std::ios::sync_with_stdio();
+#endif
+
+    int ec = main(__argc, __argv);
+
+#if CONSOLE
+    FreeConsole();
+#endif
+    return ec;
 }
 #endif

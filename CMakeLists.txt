@@ -61,7 +61,9 @@ endif()
 # OS-dependent
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(Win32_LIBRARIES wsock32)
-  set(GUI_TYPE WIN32)
+  if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
+    set(GUI_TYPE WIN32)
+  endif()
   add_definitions(-D_WIN32_WINNT=0x501) # Windows XP target
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   find_library(CoreFoundation_LIBRARY CoreFoundation)
@@ -218,11 +220,11 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
     install(TARGETS arduino-ide DESTINATION "${arduino_DATA_PATH}")
 
     # in non-fhs mode we must also install the plugins in the application directory
-    install(DIRECTORY "${Grantlee_PLUGIN_PATH}/"
-      DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
-      PATTERN "*.so"
-      PATTERN "*.dylib"
-      PATTERN "*.dll")
+  #   install(DIRECTORY "${Grantlee_PLUGIN_PATH}/"
+  #     DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
+  #     PATTERN "*.so"
+  #     PATTERN "*.dylib"
+  #     PATTERN "*.dll")
   endif()
 endif()
 

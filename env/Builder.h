@@ -26,8 +26,8 @@ public:
 
 private:
     QString readAllFile(const QString& filepath);
-    QStringList compileDependencies(const QString& code, QStringList& includePaths, QString buildPath, const QStringList& cflags, const QStringList& cxxflags, const QStringList& sflags);
-    QStringList compile(const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags, const QString &outputDirectory = QString());
+    bool compileDependencies(QStringList &objects, const QString& code, QStringList& includePaths, QString buildPath, const QStringList& cflags, const QStringList& cxxflags, const QStringList& sflags);
+    bool compile(QStringList &objects, const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags, const QString &outputDirectory = QString());
     enum SourceType
     {
         CSource,
@@ -47,6 +47,35 @@ private:
     QScopedPointer<QxtTemporaryDir> mBuildDir;
     const Board *mBoard;
     QString mDevice;
+};
+
+#include <QThread>
+#include <QActionGroup>
+
+class BackgroundBuilder : public QThread
+{
+    Q_OBJECT
+
+public:
+    BackgroundBuilder(ILogger &logger = NullLogger::instance(), QObject *parent = NULL);
+    void setRelatedActions(QActionGroup *actions);
+    void backgroundBuild(const QString &code, bool upload = false);
+
+    void setBoard(const Board *board) { builder.setBoard(board); }
+    void setDevice(const QString &device) { builder.setDevice(device); }
+
+    void run();
+
+signals:
+    void buildFinished();
+
+private:
+    Builder builder;
+    QActionGroup *actions;
+
+    QString code;
+    bool upload;
+
 };
 
 #endif // BUILDER_H

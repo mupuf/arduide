@@ -54,8 +54,8 @@ public slots:
     void copy();
     void cut();
     void paste();
-    bool build();
-    bool upload();
+    void build();
+    void upload();
     void toggleDock();
     void setDevice(const QString &device);
     void setBoard(const QString &board);

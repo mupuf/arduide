@@ -8,7 +8,9 @@
 
 #include <Qsci/qsciscintilla.h>
 
-class Editor : public QsciScintilla
+#include "IDEGlobal.h"
+
+class IDE_EXPORT Editor : public QsciScintilla
 {
     Q_OBJECT
 
