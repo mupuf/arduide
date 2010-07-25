@@ -90,7 +90,7 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
-    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(tabHasChanged()));
+    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(tabContentHasChanged()));
     connect(ui.action_Prev, SIGNAL(triggered()), browser, SLOT(back()));
     connect(ui.action_Next, SIGNAL(triggered()), browser, SLOT(forward()));
 
