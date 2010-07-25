@@ -4,7 +4,7 @@
 #include "IDEApplication.h"
 #include "gui/Editor.h"
 
-#include <QDomDocument>
+#include <QXmlStreamReader>
 
 bool DebuggerPlugin::setup(IDEApplication *app)
 {
@@ -430,63 +430,47 @@ void DebuggerPlugin::parseTrace(QString trace)
 
 void DebuggerPlugin::parseState(QString state)
 {
+    QTreeWidgetItem* topNode, *currentFrame;
+    bool hasLine;
+
     int arrivalTime = debugTime();
 
-    // Read the xml
-    QDomDocument doc;
-    QString err;
-    int errLine, errCol;
-    if(!doc.setContent(state, &err, &errLine, &errCol))
+    QXmlStreamReader xml(state);
+    while (!xml.atEnd())
     {
-        qDebug("Error while parsing the state '%s' at (%i,%i): %s.",
-               qPrintable(state), errLine, errCol, qPrintable(err));
-    }
+        if (!xml.readNextStartElement())
+            continue;
 
-    // Read top element
-    bool hasLine;
-    QDomElement docElem = doc.documentElement();
-    int sourceLine = docElem.attribute("l", "-1").toInt(&hasLine);
-
-    // Create the top element of the treewidget
-    QTreeWidgetItem* topNode = new QTreeWidgetItem();
-    topNode->setText(0, QString::number(arrivalTime));
-    topNode->setText(1, tr("At line %1").arg(sourceLine));
-    topNode->setData(0, Qt::UserRole, sourceLine);
-
-    QDomNodeList frames = docElem.elementsByTagName("frame");
-    for(int i=0; i<frames.size(); i++)
-    {
-        QDomElement frame_e = frames.item(i).toElement();
-
-        // Create a new entry from the frame
-        QString frame_name = frame_e.attribute("id", tr("<no_name>"));
-        int line = frame_e.attribute("l", "-1").toInt(&hasLine);
-
-        QTreeWidgetItem* wnode = new QTreeWidgetItem(topNode);
-        //wnode->setText(0, QString::number(arrivalTime));
-        wnode->setText(1, frame_name);
-        if(hasLine)
-            wnode->setData(0, Qt::UserRole, line);
-
-        // Read all the variables of the frame
-        QDomNodeList vars = frame_e.elementsByTagName("var");
-        for(int e=0; e<vars.size(); e++)
+        if (xml.name()=="frames")
         {
-            QDomElement var_e = vars.item(e).toElement();
-
-            int line = var_e.attribute("l", "-1").toInt(&hasLine);
-            QString name = var_e.attribute("id");
-            QString type = var_e.attribute("t");
-            QString value = var_e.attribute("v");
-
-            QTreeWidgetItem* wvar = new QTreeWidgetItem(wnode);
-            //wvar->setText(0, QString::number(arrivalTime));
-            //wvar->setText(1, frame_name);
-            wvar->setText(2, type);
-            wvar->setText(3, name);
-            wvar->setText(4, value);
+            int sourceLine = xml.attributes().value("l").toString().toInt(&hasLine);
+            topNode = new QTreeWidgetItem();
+            topNode->setText(0, QString::number(arrivalTime));
+            topNode->setText(1, tr("At line %1").arg(sourceLine));
+            topNode->setData(0, Qt::UserRole, sourceLine);
+        }
+        else if (xml.name()=="frame")
+        {
+            QString frame_name = xml.attributes().value("id").toString();
+            int sourceLine = xml.attributes().value("l").toString().toInt(&hasLine);
+            currentFrame = new QTreeWidgetItem(topNode);
+            currentFrame->setText(1, frame_name);
             if(hasLine)
-                wvar->setData(0, Qt::UserRole, line);
+                currentFrame->setData(0, Qt::UserRole, sourceLine);
+        }
+        else if (xml.name()=="var")
+        {
+            QString name = xml.attributes().value("id").toString();
+            QString type = xml.attributes().value("t").toString();
+            QString value = xml.attributes().value("v").toString();
+            int sourceLine = xml.attributes().value("l").toString().toInt(&hasLine);
+
+            QTreeWidgetItem* var = new QTreeWidgetItem(currentFrame);
+            var->setText(2, type);
+            var->setText(3, name);
+            var->setText(4, value);
+            if(hasLine)
+                currentFrame->setData(0, Qt::UserRole, sourceLine);
         }
     }
 
@@ -498,19 +482,16 @@ void DebuggerPlugin::parseState(QString state)
 
 void DebuggerPlugin::parseRet(QString ret)
 {
-    // Read the xml
-    QDomDocument doc;
-    QString err;
-    int errLine, errCol;
-    if(!doc.setContent(ret, &err, &errLine, &errCol))
+    QString code;
+    QXmlStreamReader xml(ret);
+    while (!xml.atEnd())
     {
-        qDebug("Error while parsing a return value '%s' at (%i,%i): %s.",
-               qPrintable(ret), errLine, errCol, qPrintable(err));
-    }
+        if (!xml.readNextStartElement())
+            continue;
 
-    // Read top element
-    QDomElement docElem = doc.documentElement();
-    QString code = docElem.attribute("v", "NOK");
+        if (xml.name()=="ret")
+            code = xml.attributes().value("v").toString();
+    }
 
     bool ok;
     code.toInt(&ok);
