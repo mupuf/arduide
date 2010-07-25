@@ -413,8 +413,6 @@ void MainWindow::uploadToPastebin()
         params.addQueryItem("paste_format","c");
         data.append(params.encodedQuery());
 
-        QMessageBox::information(this, "poulpe", QString(data));
-
         pastebin.post(request,data);
     }
 }
