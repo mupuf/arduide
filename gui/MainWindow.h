@@ -10,6 +10,7 @@
 
 #include <QComboBox>
 #include <QToolButton>
+#include <QNetworkAccessManager>
 
 #include "IDEGlobal.h"
 
@@ -21,6 +22,8 @@ class QCloseEvent;
 class DeviceChooser;
 class BoardChooser;
 class ConfigDialog;
+
+class QNetworkReply;
 
 class IDE_EXPORT MainWindow : public QMainWindow
 {
@@ -43,6 +46,7 @@ public slots:
     void newProject(const QString &code = QString(), const QString &name = QString(), Editor **pEditor = NULL);
     void open(const QString &fileName = QString());
     void save();
+    void uploadToPastebin();
     void chooseDevice();
     void chooseBoard();
     void undo();
@@ -62,6 +66,11 @@ public slots:
     void tabHasChanged();
     void contextualHelp();
     bool docHelpRequested(QString);
+
+private slots:
+    void openCommunityArduinoCC();
+    void openCommunityArduinoForums();
+    void pastebinUploadDone(QNetworkReply* reply);
 
 private:
     void setupActions();
@@ -86,6 +95,8 @@ private:
     QList<Editor *> editors();
 
     Ui::MainWindow ui;
+
+    QNetworkAccessManager pastebin;
 
 protected:
     void closeEvent(QCloseEvent *event);

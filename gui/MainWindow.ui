@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>999</width>
-    <height>760</height>
+    <width>997</width>
+    <height>758</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>999</width>
-     <height>19</height>
+     <width>997</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -31,6 +31,8 @@
     <addaction name="action_Open"/>
     <addaction name="action_Save"/>
     <addaction name="action_Close"/>
+    <addaction name="separator"/>
+    <addaction name="actionUpPastebin"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -55,7 +57,21 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <widget class="QMenu" name="menuCommunity">
+     <property name="title">
+      <string>Community</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources/images.qrc">
+       <normaloff>:/images/arduino.png</normaloff>:/images/arduino.png</iconset>
+     </property>
+     <addaction name="actionCommunityArduinoCC"/>
+     <addaction name="actionCommunityArduinoForums"/>
+     <addaction name="separator"/>
+    </widget>
     <addaction name="action_Contextual_help"/>
+    <addaction name="separator"/>
+    <addaction name="menuCommunity"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAbout_Qt"/>
@@ -341,11 +357,19 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/help-about.png</normaloff>:/images/16x16/help-about.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;About %0</string>
    </property>
   </action>
   <action name="actionAbout_Qt">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/help-about.png</normaloff>:/images/16x16/help-about.png</iconset>
+   </property>
    <property name="text">
     <string>About &amp;Qt</string>
    </property>
@@ -411,11 +435,42 @@
    </property>
   </action>
   <action name="action_Contextual_help">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/help-contextual.png</normaloff>:/images/16x16/help-contextual.png</iconset>
+   </property>
    <property name="text">
     <string>Contextual help</string>
    </property>
    <property name="shortcut">
     <string>F1</string>
+   </property>
+  </action>
+  <action name="actionCommunityArduinoCC">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/arduino.png</normaloff>:/images/arduino.png</iconset>
+   </property>
+   <property name="text">
+    <string>The official arduino website</string>
+   </property>
+  </action>
+  <action name="actionCommunityArduinoForums">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/arduino.png</normaloff>:/images/arduino.png</iconset>
+   </property>
+   <property name="text">
+    <string>The arduino forums</string>
+   </property>
+  </action>
+  <action name="actionUpPastebin">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/edit-paste.png</normaloff>:/images/16x16/edit-paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Upload to pastebin</string>
    </property>
   </action>
  </widget>

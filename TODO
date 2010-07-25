@@ -5,8 +5,6 @@ General:
    - check for updates (when we have a first release)
    - download and install the SDK automatically, in a personal place like QDesktopServices::DataLocation (Done)
  * use native system icons when available
- * help menu:
-   - community links: arduino forum, maybe other resources
  * Prepare for the first release
 
 Browser:
@@ -42,7 +40,7 @@ Plugin ideas:
    - connect the IDE to the Arduino and make simple reads/writes
  * simulation
    - requires to hack the arduino libs in order to compile sketches for a local use
- * pastebin
+ * pastebin (Done but not as a plugin so as other plugins could use it)
 
 Features from the original IDE:
  * make menu items for the libraries: they add the needed includes at the top of the current source.

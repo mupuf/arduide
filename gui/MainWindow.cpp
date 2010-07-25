@@ -13,6 +13,9 @@
 #include <QCloseEvent>
 #include <QWebSecurityOrigin>
 #include <QDebug>
+#include <QDesktopServices>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "EditorFactory.h"
 #include "LexerArduino.h"
@@ -26,6 +29,7 @@
 #include "../env/Settings.h"
 #include "../env/ProjectHistory.h"
 #include "IDEApplication.h"
+
 
 #include "ui_AboutDialog.h"
 
@@ -64,6 +68,7 @@ void MainWindow::setupActions()
     connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui.action_Close, SIGNAL(triggered()), this, SLOT(closeTab()));
+    connect(ui.actionUpPastebin, SIGNAL(triggered()), this, SLOT(uploadToPastebin()));
     connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(undo()));
     connect(ui.actionRedo, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui.action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
@@ -76,6 +81,8 @@ void MainWindow::setupActions()
     connect(ui.actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
     connect(ui.action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
     connect(ui.action_Contextual_help, SIGNAL(triggered()), this, SLOT(contextualHelp()));
+    connect(ui.actionCommunityArduinoCC, SIGNAL(triggered()), this, SLOT(openCommunityArduinoCC()));
+    connect(ui.actionCommunityArduinoForums, SIGNAL(triggered()), this, SLOT(openCommunityArduinoForums()));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -83,13 +90,15 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
-    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(tabChanged()));
+    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(tabHasChanged()));
     connect(ui.action_Prev, SIGNAL(triggered()), browser, SLOT(back()));
     connect(ui.action_Next, SIGNAL(triggered()), browser, SLOT(forward()));
 
     connect(ideApp->projectHistory(), SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 
     connect(ideApp->settings(), SIGNAL(fontChanged(const QFont &)), this, SLOT(setFont(const QFont &)));
+
+    connect(&pastebin, SIGNAL(finished(QNetworkReply*)), this, SLOT(pastebinUploadDone(QNetworkReply*)));
 }
 
 void MainWindow::createBrowserAndTabs()
@@ -320,6 +329,27 @@ bool MainWindow::docHelpRequested(QString word)
     return false;
 }
 
+void MainWindow::openCommunityArduinoCC()
+{
+    QDesktopServices::openUrl(QUrl("http://www.arduino.cc"));
+}
+
+void MainWindow::openCommunityArduinoForums()
+{
+    QDesktopServices::openUrl(QUrl("http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl"));
+}
+
+void MainWindow::pastebinUploadDone(QNetworkReply* reply)
+{
+    QString result = reply->readAll();
+    QUrl url(result);
+
+    if (url.isValid())
+        QDesktopServices::openUrl(url);
+    else
+        QMessageBox::warning(this, tr("Pastebin error"), tr("The pastebin upload failed with code:\n%1").arg(result));
+}
+
 void MainWindow::open(const QString &_fileName)
 {
     QString fileName(_fileName);
@@ -366,6 +396,26 @@ void MainWindow::save()
 
         // update the history
         ideApp->projectHistory()->updateHistory(e->fileName());
+    }
+}
+
+void MainWindow::uploadToPastebin()
+{
+    Editor *e = currentEditor();
+    if (e)
+    {
+        QNetworkRequest request(QUrl("http://pastebin.com/api_public.php"));
+        request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+
+        QByteArray data;
+        QUrl params;
+        params.addQueryItem("paste_code",e->text());
+        params.addQueryItem("paste_format","c");
+        data.append(params.encodedQuery());
+
+        QMessageBox::information(this, "poulpe", QString(data));
+
+        pastebin.post(request,data);
     }
 }
 
