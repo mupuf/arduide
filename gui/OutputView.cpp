@@ -17,6 +17,7 @@ void OutputView::log(const QString &text)
     if (! text.isEmpty())
     {
         append(text);
+        moveCursor(QTextCursor::End);
         ensureCursorVisible();
     }
 }
