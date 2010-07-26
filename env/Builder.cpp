@@ -446,6 +446,9 @@ void BackgroundBuilder::backgroundBuild(const QString &code, bool upload)
         return;
     }
 
+    this->code = code;
+    this->upload = upload;
+
     start();
 }
 
