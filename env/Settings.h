@@ -20,15 +20,15 @@ class IDE_EXPORT Settings : public QObject
     Q_OBJECT
 
 public:
-    QString arduinoPath();
+    QString arduinoPath() const;
     void setArduinoPath(const QString &path);
-    QString sketchPath();
+    QString sketchPath() const;
     void setSketchPath(const QString &path);
-    QString devicePort();
+    QString devicePort() const;
     void setDevicePort(const QString &port);
-    QString board();
+    QString board() const;
     void setBoard(const QString &board);
-    bool verboseUpload();
+    bool verboseUpload() const;
     void setVerboseUpload(bool verbose);
 
     void loadLexerProperties(LexerArduino *lexer);
@@ -39,7 +39,7 @@ public:
     void saveMainWindowState(const QByteArray& state);
     QByteArray mainWindowState();
 
-    bool isCorrect();
+    bool isCorrect() const;
 
 signals:
     void fontChanged(const QFont &f);

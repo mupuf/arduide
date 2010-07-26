@@ -16,7 +16,7 @@ Settings::Settings()
 {
 }
 
-QString Settings::arduinoPath()
+QString Settings::arduinoPath() const
 {
     return mSettings.value("arduinoPath").toString();
 }
@@ -26,7 +26,7 @@ void Settings::setArduinoPath(const QString &path)
     mSettings.setValue("arduinoPath", path);
 }
 
-QString Settings::sketchPath()
+QString Settings::sketchPath() const
 {
     return mSettings.value("sketchPath").toString();
 }
@@ -36,7 +36,7 @@ void Settings::setSketchPath(const QString &path)
     mSettings.setValue("sketchPath", path);
 }
 
-QString Settings::devicePort()
+QString Settings::devicePort() const
 {
     return mSettings.value("devicePort").toString();
 }
@@ -46,7 +46,7 @@ void Settings::setDevicePort(const QString &port)
     mSettings.setValue("devicePort", port);
 }
 
-QString Settings::board()
+QString Settings::board() const
 {
     return mSettings.value("board").toString();
 }
@@ -56,7 +56,7 @@ void Settings::setBoard(const QString &board)
     mSettings.setValue("board", board);
 }
 
-bool Settings::verboseUpload()
+bool Settings::verboseUpload() const
 {
     return mSettings.value("verboseUpload", false).toBool();
 }
@@ -159,7 +159,7 @@ QByteArray Settings::mainWindowState()
     return mSettings.value("mainWindowState").toByteArray();
 }
 
-bool Settings::isCorrect()
+bool Settings::isCorrect() const
 {
     return Toolkit::isValidArduinoPath(arduinoPath()) && QFileInfo(sketchPath()).isDir();
 }

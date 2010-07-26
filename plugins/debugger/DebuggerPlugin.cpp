@@ -36,7 +36,7 @@ int DebuggerPlugin::debugTime()
     return startTime.msecsTo(QTime::currentTime());
 }
 
-bool DebuggerPlugin::startDebugging()
+void DebuggerPlugin::startDebugging()
 {
     // Clear the logs
     widget->clearLogs();
@@ -48,26 +48,12 @@ bool DebuggerPlugin::startDebugging()
     // Add some info in the logs
     widget->logImportant(tr("Start debugging"));
 
+    // Prepare to receive the uploadFinished signal from the main window
+    connect(mApp->mainWindow(), SIGNAL(uploadFinished(bool)), this, SLOT(uploadCompleted(bool)));
+
     // Recompile and upload the current program
     widget->setStatus(tr("Compile & Upload"));
-    if(!mApp->mainWindow()->upload())
-    {
-        widget->logError(tr("Compilation or Upload failed. Please take a look at the 'Output' tab."));
-        widget->stopDebugging();
-        return false;
-    }
-
-    // Open the serial connection
-    if(!openSerial())
-        return false;
-
-    // Store the current time
-    startTime = QTime::currentTime();
-
-    // Tell the widget we started debugging
-    widget->debugStarted(true);
-
-    return true;
+    mApp->mainWindow()->upload();
 }
 
 void DebuggerPlugin::stopDebugging()
@@ -86,6 +72,29 @@ void DebuggerPlugin::stopDebugging()
 
     // Tell the widget we stopped debugging
     widget->debugStarted(false);
+}
+
+void DebuggerPlugin::uploadCompleted(bool res)
+{
+    // We don't want to get any more messages from the mainwindow
+    disconnect(mApp->mainWindow(), SIGNAL(uploadFinished(bool)), this, SLOT(uploadCompleted(bool)));
+
+    if(!res)
+    {
+        widget->logError(tr("Compilation or Upload failed. Please take a look at the 'Output' tab."));
+        widget->stopDebugging();
+        return;
+    }
+
+    // Open the serial connection
+    if(!openSerial())
+        return;
+
+    // Store the current time
+    startTime = QTime::currentTime();
+
+    // Tell the widget we started debugging
+    widget->debugStarted(true);
 }
 
 // Private slots

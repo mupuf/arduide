@@ -14,8 +14,11 @@
 
 class IDE_EXPORT OutputView : public QTextBrowser, public ILogger
 {
+    Q_OBJECT
 public:
     OutputView(QWidget *parent = NULL);
+
+public slots:
     void log(const QString &text);
     void logImportant(const QString &text);
     void logError(const QString &text);

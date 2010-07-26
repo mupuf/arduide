@@ -1,4 +1,4 @@
-set(PLUGINS "serial")
+set(PLUGINS "serial" "debugger")
 
 file(GLOB plugins_SOURCES
   "*.h" "*.cpp")
@@ -37,8 +37,7 @@ foreach(PLUGIN ${PLUGINS})
     ${plugin_UI_SOURCES}
     ${plugin_MOC_SOURCES}
     ${plugin_QRC_SOURCES})
-  # TODO: get rid of QtXml dependency
-  target_link_libraries(${PLUGIN} arduino-ide ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTXML_LIBRARY} ${QScintilla_LIBRARY})
+  target_link_libraries(${PLUGIN} arduino-ide ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QScintilla_LIBRARY})
   set_target_properties(${PLUGIN} PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins")
 endforeach()

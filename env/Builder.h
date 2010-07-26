@@ -17,11 +17,9 @@ class Builder : public QObject
 {
     Q_OBJECT
 public:
-    Builder(ILogger &logger = NullLogger::instance(), QObject *parent = NULL);
-    const Board *board() const { return mBoard; }
-    void setBoard(const Board *board) { mBoard = board; }
-    const QString &device() { return mDevice; }
-    void setDevice(const QString &device) { mDevice = device; }
+    Builder(QObject *parent = NULL);
+    const Board *board() const;
+    const QString device() const;
     bool build(const QString &code, bool upload = false);
 
 private:
@@ -43,10 +41,13 @@ private:
     SourceType identifySource(const QString &fileName);
     int runCommand(const QStringList &command, bool errorHighlighting=false);
 
-    ILogger &mLogger;
     QScopedPointer<QxtTemporaryDir> mBuildDir;
-    const Board *mBoard;
-    QString mDevice;
+
+signals:
+    void logCommand(QStringList);
+    void logImportant(QString);
+    void logError(QString);
+    void log(QString);
 };
 
 #include <QThread>
@@ -57,17 +58,18 @@ class BackgroundBuilder : public QThread
     Q_OBJECT
 
 public:
-    BackgroundBuilder(ILogger &logger = NullLogger::instance(), QObject *parent = NULL);
+    BackgroundBuilder(QObject *parent = NULL);
     void setRelatedActions(QActionGroup *actions);
     void backgroundBuild(const QString &code, bool upload = false);
-
-    void setBoard(const Board *board) { builder.setBoard(board); }
-    void setDevice(const QString &device) { builder.setDevice(device); }
 
     void run();
 
 signals:
-    void buildFinished();
+    void buildFinished(bool ok);
+    void logCommand(QStringList);
+    void logImportant(QString);
+    void logError(QString);
+    void log(QString);
 
 private:
     Builder builder;

@@ -350,6 +350,12 @@ void MainWindow::pastebinUploadDone(QNetworkReply* reply)
         QMessageBox::warning(this, tr("Pastebin error"), tr("The pastebin upload failed with code:\n%1").arg(result));
 }
 
+void MainWindow::finishedBuilding()
+{
+
+    emit buildFinished(true);
+}
+
 void MainWindow::open(const QString &_fileName)
 {
     QString fileName(_fileName);
@@ -496,14 +502,17 @@ void MainWindow::build()
     Editor *editor = currentEditor();
     if (editor)
     {
-        const Board *board = Board::boardInfo(ideApp->settings()->board());
         ui.dockWidget->show();
         ui.outputView->clear();
 
-        BackgroundBuilder *builder = new BackgroundBuilder(*ui.outputView);
+        BackgroundBuilder *builder = new BackgroundBuilder(ui.outputView);
         builder->setRelatedActions(buildActions);
-        builder->setBoard(board);
-        connect(builder, SIGNAL(buildFinished()), builder, SLOT(deleteLater()));
+        connect(builder, SIGNAL(buildFinished(bool)), builder, SLOT(deleteLater()));
+        connect(builder, SIGNAL(buildFinished(bool)), this, SIGNAL(buildFinished(bool)));
+        connect(builder, SIGNAL(log(QString)), ui.outputView, SLOT(log(QString)));
+        connect(builder, SIGNAL(logError(QString)), ui.outputView, SLOT(logError(QString)));
+        connect(builder, SIGNAL(logImportant(QString)), ui.outputView, SLOT(logImportant(QString)));
+        connect(builder, SIGNAL(logCommand(QStringList)), ui.outputView, SLOT(logCommand(QStringList)));
         builder->backgroundBuild(editor->text());
     }
 }
@@ -515,16 +524,18 @@ void MainWindow::upload()
     {
         buildActions->setEnabled(false);
 
-        const Board *board = Board::boardInfo(ideApp->settings()->board());
         QString device = ideApp->settings()->devicePort();
         ui.dockWidget->show();
         ui.outputView->clear();
 
-        BackgroundBuilder *builder = new BackgroundBuilder(*ui.outputView);
+        BackgroundBuilder *builder = new BackgroundBuilder(ui.outputView);
         builder->setRelatedActions(buildActions);
-        builder->setBoard(board);
-        builder->setDevice(device);
-        connect(builder, SIGNAL(buildFinished()), builder, SLOT(deleteLater()));
+        connect(builder, SIGNAL(buildFinished(bool)), builder, SLOT(deleteLater()));
+        connect(builder, SIGNAL(buildFinished(bool)), this, SIGNAL(uploadFinished(bool)));
+        connect(builder, SIGNAL(log(QString)), ui.outputView, SLOT(log(QString)));
+        connect(builder, SIGNAL(logError(QString)), ui.outputView, SLOT(logError(QString)));
+        connect(builder, SIGNAL(logImportant(QString)), ui.outputView, SLOT(logImportant(QString)));
+        connect(builder, SIGNAL(logCommand(QStringList)), ui.outputView, SLOT(logCommand(QStringList)));
         builder->backgroundBuild(editor->text(), true);
     }
 }

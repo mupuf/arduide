@@ -12,16 +12,26 @@
 #include <QProcess>
 #include <QDebug>
 
+#include "IDEApplication.h"
+
 #include "../env/Board.h"
 #include "../env/Toolkit.h"
 
 #include "../utils/Serial.h"
 
-Builder::Builder(ILogger &logger, QObject *parent)
-    : QObject(parent),
-      mLogger(logger),
-      mBoard(NULL)
+Builder::Builder(QObject *parent)
+    : QObject(parent)
 {
+}
+
+const Board *Builder::board() const
+{
+    return Board::boardInfo(ideApp->settings()->board());
+}
+
+const QString Builder::device() const
+{
+    return ideApp->settings()->devicePort();
 }
 
 QString Builder::readAllFile(const QString& filepath)
@@ -29,7 +39,7 @@ QString Builder::readAllFile(const QString& filepath)
     QFile file(filepath);
 
     if(!file.open(QIODevice::ReadOnly))
-        mLogger.logError(tr("Cannot read file '%1'.").arg(file.fileName()));
+        emit logError(tr("Cannot read file '%1'.").arg(file.fileName()));
 
     return file.readAll();
 }
@@ -57,7 +67,7 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
                 QString outputDirectory = QDir(buildPath).filePath(library);
                 if (! QDir().mkdir(outputDirectory))
                 {
-                    mLogger.logError(tr("Failed to create build directory."));
+                    emit logError(tr("Failed to create build directory."));
                     return false;
                 }
                 foreach (const QString &source, QDir(libPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
@@ -79,7 +89,7 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
                 QString outputDirectory = QDir(buildPath).filePath(QString("%0/utility").arg(library));
                 if (! QDir().mkdir(outputDirectory))
                 {
-                    mLogger.logError(tr("Failed to create build directory."));
+                    emit logError(tr("Failed to create build directory."));
                     return false;
                 }
                 foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
@@ -100,31 +110,31 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
 
 bool Builder::build(const QString &code, bool upload)
 {
-    if (mBoard == NULL)
+    if (board() == NULL)
     {
-        mLogger.logError(tr("No board selected."));
+        emit logError(tr("No board selected."));
         return false;
     }
 
-    if (upload && mDevice.isEmpty())
+    if (upload && device().isEmpty())
     {
-        mLogger.logError(tr("No device selected."));
+        emit logError(tr("No device selected."));
         return false;
     }
 
-    mLogger.logImportant(tr("Compiling for %0...").arg(mBoard->name()));
+    emit logImportant(tr("Compiling for %0...").arg(board()->name()));
     mBuildDir.reset(new QxtTemporaryDir(QDir(QDir::tempPath()).filePath("arduino-build")));
     QString buildPath = mBuildDir->path();
 
-    QStringList cflags = Toolkit::avrCFlags(mBoard);
-    QStringList cxxflags = Toolkit::avrCxxFlags(mBoard);
-    QStringList sflags = Toolkit::avrSFlags(mBoard);
-    QStringList ldflags = Toolkit::avrLdFlags(mBoard);
+    QStringList cflags = Toolkit::avrCFlags(board());
+    QStringList cxxflags = Toolkit::avrCxxFlags(board());
+    QStringList sflags = Toolkit::avrSFlags(board());
+    QStringList ldflags = Toolkit::avrLdFlags(board());
     QStringList includePaths;
 
     // compile the core
     QStringList objects;
-    QString corePath = Toolkit::corePath(mBoard);
+    QString corePath = Toolkit::corePath(board());
     includePaths << corePath;
     QDir coreDir(corePath);
     QStringList coreSources;
@@ -135,14 +145,14 @@ bool Builder::build(const QString &code, bool upload)
     success = compile(objects, coreSources, includePaths, cflags, cxxflags, sflags);
     if (! success)
     {
-        mLogger.logError(tr("Compilation failed."));
+        emit logError(tr("Compilation failed."));
         return false;
     }
 
     QString coreFileName = QDir(buildPath).filePath("core.a");
     if (! archive(coreFileName, objects))
     {
-        mLogger.logError(tr("Archiving failed."));
+        emit logError(tr("Archiving failed."));
         return false;
     }
     objects.clear();
@@ -152,7 +162,7 @@ bool Builder::build(const QString &code, bool upload)
     success = compileDependencies(objects, code, includePaths, buildPath, cflags, cxxflags, sflags);
     if (! success)
     {
-        mLogger.logError(tr("Compilation failed."));
+        emit logError(tr("Compilation failed."));
         return false;
     }
 
@@ -161,7 +171,7 @@ bool Builder::build(const QString &code, bool upload)
     QFile sketchFile(sketchFileName);
     if (! sketchFile.open(QIODevice::WriteOnly))
     {
-        mLogger.logError(tr("Can't write the sketch to disk."));
+        emit logError(tr("Can't write the sketch to disk."));
         return false;
     }
     sketchFile.write(code.toLocal8Bit());
@@ -173,7 +183,7 @@ bool Builder::build(const QString &code, bool upload)
         QFile sketchMain(sketchMainFileName);
         if (! sketchMain.open(QIODevice::ReadOnly))
         {
-            mLogger.logError(tr("Can't open main.cxx."));
+            emit logError(tr("Can't open main.cxx."));
             sketchFile.close();
             return false;
         }
@@ -186,16 +196,16 @@ bool Builder::build(const QString &code, bool upload)
     compile(objects, QStringList() << sketchFileName, includePaths, cflags, cxxflags, sflags);
     if (objects.isEmpty())
     {
-        mLogger.logError(tr("Compilation failed."));
+        emit logError(tr("Compilation failed."));
         return false;
     }
 
     // link it all together into the .elf file
-    mLogger.logImportant(tr("Linking..."));
+    emit logImportant(tr("Linking..."));
     QString elfFileName = QDir(buildPath).filePath("sketch.elf");
     if (! link(elfFileName, QStringList() << objects << coreFileName, ldflags))
     {
-        mLogger.logError(tr("Link failed."));
+        emit logError(tr("Link failed."));
         return false;
     }
 
@@ -203,7 +213,7 @@ bool Builder::build(const QString &code, bool upload)
     QString eepFileName = QDir(buildPath).filePath("sketch.eep");
     if (! extractEEPROM(elfFileName, eepFileName))
     {
-        mLogger.logError(tr("Failed to extract EEPROM."));
+        emit logError(tr("Failed to extract EEPROM."));
         return false;
     }
 
@@ -211,32 +221,32 @@ bool Builder::build(const QString &code, bool upload)
     QString hexFileName = QDir(buildPath).filePath("sketch.hex");
     if (! extractHEX(elfFileName, hexFileName))
     {
-        mLogger.logError(tr("Failed to extract HEX."));
+        emit logError(tr("Failed to extract HEX."));
         return false;
     }
 
     if (! upload)
     {
-        mLogger.logImportant(tr("Success."));
+        emit logImportant(tr("Success."));
         return true;
     }
 
     // upload
-    mLogger.logImportant(tr("Uploading to %0...").arg(mDevice));
+    emit logImportant(tr("Uploading to %0...").arg(device()));
     if (! uploadViaBootloader(hexFileName))
     {
-        mLogger.logError(tr("Uploading failed."));
+        emit logError(tr("Uploading failed."));
         return false;
     }
     else
-        mLogger.logImportant(tr("Success."));
+        emit logImportant(tr("Success."));
 
     return true;
 }
 
 bool Builder::compile(QStringList &objects, const QStringList &sources, const QStringList &includePaths, const QStringList &cflags, const QStringList &cxxflags, const QStringList &sflags, const QString &outputDirectory)
 {
-    Q_ASSERT(mBoard != NULL);
+    Q_ASSERT(board() != NULL);
 
     QStringList includeFlags;
     foreach (const QString &path, includePaths)
@@ -269,7 +279,7 @@ bool Builder::compile(QStringList &objects, const QStringList &sources, const QS
                 << "-o" << objectFileName << source;
             break;
         default:
-            mLogger.logError(tr("Unknown source type: %0").arg(QFileInfo(source).fileName()));
+            emit logError(tr("Unknown source type: %0").arg(QFileInfo(source).fileName()));
             continue;
         }
 
@@ -316,7 +326,7 @@ bool Builder::link(const QString &fileName, const QStringList &objects, const QS
 
 int Builder::runCommand(const QStringList &command, bool errorHighlighting)
 {
-    mLogger.logCommand(command);
+    emit logCommand(command);
 
     QStringList arguments = command;
     QString program = arguments.takeFirst();
@@ -329,7 +339,7 @@ int Builder::runCommand(const QStringList &command, bool errorHighlighting)
 
     if (error == QProcess::FailedToStart || error == QProcess::Crashed)
     {
-       mLogger.logError(QString("Cannot start program %1").arg(program));
+       emit logError(QString("Cannot start program %1").arg(program));
        return -1;
     }
     else
@@ -341,17 +351,17 @@ int Builder::runCommand(const QStringList &command, bool errorHighlighting)
             return -1;
 
         if (! errorHighlighting)
-            mLogger.log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
+            emit log(QString::fromLocal8Bit(proc.readAllStandardOutput()));
         else
         {
             foreach (QString line, QString::fromLocal8Bit(proc.readAllStandardOutput()).split('\n'))
             {
                 if (line.contains(QRegExp(".*\\.cpp:\\d+: error:")))
-                    mLogger.logError(line);
+                    emit logError(line);
                 else if (line.contains(QRegExp(".*\\.cpp:\\d+: (warning|note):")))
-                    mLogger.logImportant(line);
+                    emit logImportant(line);
                 else
-                    mLogger.log(line);
+                    emit log(line);
             }
         }
 
@@ -387,24 +397,24 @@ bool Builder::extractHEX(const QString &input, const QString &output)
 
 bool Builder::uploadViaBootloader(const QString &hexFileName)
 {
-    QString protocol = mBoard->attribute("upload.protocol");
+    QString protocol = board()->attribute("upload.protocol");
     if (protocol == "stk500")
         protocol = "stk500v1";
 
     QStringList command;
     command
         << Toolkit::avrdudePath()
-        << Toolkit::avrdudeFlags(mBoard)
+        << Toolkit::avrdudeFlags(board())
         << "-c" << protocol
-        << "-P" << mDevice
-        << "-b" << mBoard->attribute("upload.speed")
+        << "-P" << device()
+        << "-b" << board()->attribute("upload.speed")
         << "-D"
         << QString("-Uflash:w:%0:i").arg(hexFileName);
 
-    QString disableFlushing = mBoard->attribute("upload.disable_flushing");
+    QString disableFlushing = board()->attribute("upload.disable_flushing");
     if (disableFlushing.isNull() || disableFlushing.toLower() == "false")
     {
-        Serial ser(mDevice);
+        Serial ser(device());
         ser.open(QIODevice::ReadWrite);
         ser.flushBuffer();
         ser.close();
@@ -413,9 +423,13 @@ bool Builder::uploadViaBootloader(const QString &hexFileName)
     return runCommand(command) == 0;
 }
 
-BackgroundBuilder::BackgroundBuilder(ILogger &logger, QObject *parent) : builder(logger, parent),
-                                                                         actions(NULL)
+BackgroundBuilder::BackgroundBuilder(QObject *parent) : builder(parent),
+                                                        actions(NULL)
 {
+    connect(&builder, SIGNAL(log(QString)), this, SIGNAL(log(QString)));
+    connect(&builder, SIGNAL(logCommand(QStringList)), this, SIGNAL(logCommand(QStringList)));
+    connect(&builder, SIGNAL(logError(QString)), this, SIGNAL(logError(QString)));
+    connect(&builder, SIGNAL(logImportant(QString)), this, SIGNAL(logImportant(QString)));
 }
 
 void BackgroundBuilder::setRelatedActions(QActionGroup *actions)
@@ -428,7 +442,7 @@ void BackgroundBuilder::backgroundBuild(const QString &code, bool upload)
     if (isRunning())
     {
         qWarning() << "BackgroundBuilder thread already running.";
-        emit buildFinished();
+        emit buildFinished(false);
         return;
     }
 
@@ -438,8 +452,8 @@ void BackgroundBuilder::backgroundBuild(const QString &code, bool upload)
 void BackgroundBuilder::run()
 {
     actions->setDisabled(true);
-    builder.build(code, upload);
+    bool res=builder.build(code, upload);
     actions->setDisabled(false);
 
-    emit buildFinished();
+    emit buildFinished(res);
 }

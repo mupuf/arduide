@@ -15,6 +15,8 @@
 #include <QScopedPointer>
 #include <QTime>
 
+class QTreeWidgetItem;
+
 class DebuggerPlugin : public QObject, public IDEPluginInterface
 {
     Q_OBJECT
@@ -29,10 +31,12 @@ public:
     int debugTime();
 
 public slots:
-    bool startDebugging();
+    void startDebugging();
     void stopDebugging();
 
 private slots:
+    void uploadCompleted(bool res);
+
     bool openSerial();
     void closeSerial();
 

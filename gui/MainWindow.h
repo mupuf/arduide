@@ -71,6 +71,7 @@ private slots:
     void openCommunityArduinoCC();
     void openCommunityArduinoForums();
     void pastebinUploadDone(QNetworkReply* reply);
+    void finishedBuilding();
 
 private:
     void setupActions();
@@ -105,6 +106,8 @@ signals:
     void tabContentChanged();
     void tabChanged(bool isBrowser);
     void editorDeleted(Editor* editor);
+    void buildFinished(bool result);
+    void uploadFinished(bool result);
 };
 
 #endif // MAINWINDOW_H
