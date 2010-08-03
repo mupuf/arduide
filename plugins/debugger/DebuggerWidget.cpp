@@ -140,7 +140,7 @@ void DebuggerWidget::onSendCommand()
 
 void DebuggerWidget::debugStarted(bool value)
 {
-    commandEdit->setEnabled(value);
+    //commandEdit->setEnabled(value);
     checkBreak->setEnabled(value);
 }
 

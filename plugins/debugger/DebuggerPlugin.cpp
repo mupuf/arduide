@@ -185,10 +185,14 @@ void DebuggerPlugin::sendCommand(QString cmd)
     if (func == "openShell")
     {
         data[0] = SHELL_REQUESTED;
+        widget->checkBreak->setChecked(true);
+        widget->commandEdit->setEnabled(true);
     }
     else if (func == "exit")
     {
         data.append(EXIT_SHELL);
+        widget->checkBreak->setChecked(false);
+        widget->commandEdit->setEnabled(false);
     }
     else if (func == "digitalRead")
     {
