@@ -8,5 +8,7 @@
 #define ANALOG_READ 	5
 #define ANALOG_WRITE 	6
 #define PIN_MODE		7
+#define VAR_READ		8
+#define VAR_WRITE		9
 
 #endif

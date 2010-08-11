@@ -14,7 +14,7 @@ void DebuggerWidget::addCmdLineCompleter()
     QStringList wordList;
     wordList << "openShell()" << "exit()" << "digitalRead(pin)" << "digitalWrite(pin, value)";
     wordList << "analogRead(pin)" << "analogWrite(pin, value)" << "pinMode(pin, mode)";
-    wordList << "help()";
+    wordList << "varWrite(frameName, varName, varValue)" << "help()";
 
     QCompleter *completer = new QCompleter(wordList, this);
     completer->setCaseSensitivity(Qt::CaseSensitive);

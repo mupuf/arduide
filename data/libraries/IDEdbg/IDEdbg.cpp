@@ -23,10 +23,30 @@ static unsigned char readValue()
 	return value;
 }
 
+static char* readString()
+{
+	char* ret;
+	unsigned char size = readValue();
+	
+	DbgSendTrace("Read string: size=%i", size);
+
+	ret = (char*)malloc(size*sizeof(char));
+	
+	for(int i=0; i<size; i++)
+	{
+		ret[i] = readValue();
+		DbgSendTrace("Read string: read ret[%i]=%c", i, ret[i]);
+	}
+	
+	return ret;
+}
+
 static void miniShell()
 {
+	static bool inMiniShell = false;
+	
 	// Stop if the user didn't ask for the minishell
-	if (Serial.available()==0)
+	if (inMiniShell || Serial.available()==0)
 	{
 		//DbgPrintf("<No commands>");
 		return;
@@ -41,6 +61,8 @@ static void miniShell()
 	}
 	else
 		DbgPrintf("<ret v=\"OK\" />");
+	
+	inMiniShell = true;
 
 	// Enter the miniShell
 	while(true)
@@ -81,6 +103,19 @@ static void miniShell()
 			pinMode(pin, mode==1?OUTPUT:INPUT);
 			DbgPrintf("<ret v=\"OK\"/>");
 		}
+		else if(cmd == VAR_WRITE)
+		{
+			DbgSendTrace("Will read string");
+			char* frameName=readString();
+			char* varName=readString();
+			char* value=readString();
+			DbgSendTrace("frame=%s, varName=%s, value=%s", frameName, varName, value);
+			free(frameName);
+			free(varName);
+			free(value);
+			
+			DbgPrintf("<ret v=\"OK\"/>");
+		}
 		else if(cmd == EXIT_SHELL)
 		{
 			DbgPrintf("<ret v=\"OK\"/>");
@@ -98,6 +133,8 @@ static void miniShell()
 			break;
 		}
 	}
+	
+	inMiniShell = false;
 }
 
 // Public

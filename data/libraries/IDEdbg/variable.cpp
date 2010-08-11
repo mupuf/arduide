@@ -58,6 +58,51 @@ variable* variable_create(int line, const char* name, variable_type type, int si
 	return var;
 }
 
+void variable_set_value(variable* var, void* data, size_t size)
+{
+	memcpy(var->data, data, size);
+}
+
+void variable_set_value(variable* var, char* data)
+{
+	if(!var)
+		return;
+	
+	switch(var->type)
+	{
+		case _unsigned_int:
+		case _int:
+		{
+			int i=atoi(data);
+			variable_set_value(var, &i, sizeof(int));
+			break;
+		}
+		case _unsigned_char:
+		case _char:
+		{
+			variable_set_value(var, data, sizeof(char));
+			break;
+		}
+		case _float:
+		case _double:
+		{
+			double d=atof(data);
+			variable_set_value(var, &d, sizeof(double));
+			break;
+		}
+		case _char_pointer:
+		{
+			variable_set_value(var, data, strlen(data));
+			break;
+		}
+		case _error:
+		case _void_pointer:
+		{
+			break;
+		}
+	}
+}
+
 void variable_free(variable* var)
 {
 	if(var)

@@ -164,6 +164,7 @@ void DebuggerPlugin::treeItemClicked(QTreeWidgetItem* item, int column)
 
 #include "data/libraries/IDEdbg/IDEdbgConstants.h"
 #include <QStringList>
+#include <QMessageBox>
 void DebuggerPlugin::sendCommand(QString cmd)
 {
     QRegExp func_re("\\s*(\\w+)\\((.*)\\).*");
@@ -320,6 +321,22 @@ void DebuggerPlugin::sendCommand(QString cmd)
         {
             widget->logError(tr("Invalid argument %1: '%2' should either be %3 or %4.").arg(2).arg(args[1], "INPUT", "OUTPUT"));
             return;
+        }
+    }
+    else if (func == "varWrite")
+    {
+        if (args.size()==3)
+        {
+            data.append(VAR_WRITE);
+            QMessageBox::information(NULL, tr("args[0] (size=%1)").arg(args[0].size()), args[0]);
+            data.append(QString::number((char)args[0].size()));
+            data.append(args[0]);
+            QMessageBox::information(NULL, "args[1]", args[1]);
+            data.append(QString::number((char)args[1].size()));
+            data.append(args[1]);
+            QMessageBox::information(NULL, "args[2]", args[2]);
+            data.append(QString::number((char)args[2].size()));
+            data.append(args[2]);
         }
     }
     else if (func == "help")

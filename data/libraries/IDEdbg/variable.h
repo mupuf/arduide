@@ -17,6 +17,9 @@
 	
 	variable* variable_create(int line, const char* name, variable_type type, int size, void* data);
 	
+	void variable_set_value(variable* var, void* data, size_t size);
+	void variable_set_value(variable* var, char* data);
+	
 	void variable_free(variable* var);
 	void variable_free(void* var);
 
