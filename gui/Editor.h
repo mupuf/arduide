@@ -8,6 +8,8 @@
 
 #include <Qsci/qsciscintilla.h>
 
+class QShortcut;
+
 class Editor : public QsciScintilla
 {
     Q_OBJECT
@@ -23,6 +25,9 @@ public:
     void setSelectionBackgroundColor(const QColor &col);
     const QColor &selectionBackgroundColor() { return mSelectionBackgroundColor; }
 
+    bool addCustomShortcut(const QKeySequence &key, QObject *receiver, const char *slot);
+    bool removeCustomShortcut(const QKeySequence &key);
+
 public slots:
     void save();
 
@@ -35,6 +40,14 @@ private:
         int line;
         int index;
     } selectionOrigin;
+
+    struct EditorShortcut
+    {
+        QShortcut *shortcut;
+        QObject *receiver;
+        const char *slot;
+    };
+    QList<EditorShortcut> mCustomShortcuts;
 
     QColor mCaretForegroundColor, mSelectionBackgroundColor;
 

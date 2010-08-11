@@ -54,15 +54,42 @@ void Editor::save()
 
 void Editor::setupShortcuts()
 {
-    QShortcut *shortcut;
-    shortcut = new QShortcut(QKeySequence("Ctrl+Up"), this);
-    connect(shortcut, SIGNAL(activated()), this, SLOT(goToPreviousParagraph()));
-    shortcut = new QShortcut(QKeySequence("Ctrl+Down"), this);
-    connect(shortcut, SIGNAL(activated()), this, SLOT(goToNextParagraph()));
-    shortcut = new QShortcut(QKeySequence("Ctrl+Shift+Up"), this);
-    connect(shortcut, SIGNAL(activated()), this, SLOT(selectTillPreviousParagraph()));
-    shortcut = new QShortcut(QKeySequence("Ctrl+Shift+Down"), this);
-    connect(shortcut, SIGNAL(activated()), this, SLOT(selectTillNextParagraph()));
+    addCustomShortcut(QKeySequence("Ctrl+Up"), this, SLOT(goToPreviousParagraph()));
+    addCustomShortcut(QKeySequence("Ctrl+Down"), this, SLOT(goToNextParagraph()));
+    addCustomShortcut(QKeySequence("Ctrl+Shift+Up"), this, SLOT(selectTillPreviousParagraph()));
+    addCustomShortcut(QKeySequence("Ctrl+Shift+Down"), this, SLOT(selectTillNextParagraph()));
+}
+
+bool Editor::addCustomShortcut(const QKeySequence &key, QObject *receiver, const char *slot)
+{
+    foreach (const EditorShortcut &sc, mCustomShortcuts)
+    {
+        if (sc.shortcut->key() == key)
+        {
+            // already exists
+            return false;
+        }
+    }
+    QShortcut *sc = new QShortcut(key, this);
+    connect(sc, SIGNAL(activated()), receiver, slot);
+    EditorShortcut es = { sc, receiver, slot };
+    mCustomShortcuts << es;
+    return true;
+}
+
+bool Editor::removeCustomShortcut(const QKeySequence &key)
+{
+    QList<EditorShortcut>::iterator it;
+    for (it = mCustomShortcuts.begin(); it != mCustomShortcuts.end(); it++)
+    {
+        if (it->shortcut->key() == key)
+        {
+            delete it->shortcut;
+            mCustomShortcuts.erase(it);
+            return true;
+        }
+    }
+    return false;
 }
 
 void Editor::findPreviousParagraph(int *pLine, int *pIndex)
