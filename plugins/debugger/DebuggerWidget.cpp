@@ -7,6 +7,19 @@
 #include "../../utils/Serial.h"
 
 #include <QLineEdit>
+#include <QCompleter>
+
+void DebuggerWidget::addCmdLineCompleter()
+{
+    QStringList wordList;
+    wordList << "openShell()" << "exit()" << "digitalRead(pin)" << "digitalWrite(pin, value)";
+    wordList << "analogRead(pin)" << "analogWrite(pin, value)" << "pinMode(pin, mode)";
+    wordList << "help()";
+
+    QCompleter *completer = new QCompleter(wordList, this);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+    commandEdit->setCompleter(completer);
+}
 
 DebuggerWidget::DebuggerWidget(QWidget *parent)
     : QWidget(parent),
@@ -19,10 +32,11 @@ DebuggerWidget::DebuggerWidget(QWidget *parent)
 
     connect(pushStartStop, SIGNAL(pressed()), this, SLOT(onStartStopPressed()));
     connect(checkBreak, SIGNAL(stateChanged(int)), this, SLOT(onBreakToggled(int)));
+    connect(pushClearLogs, SIGNAL(pressed()), debugLogs, SLOT(clear()));
+    connect(commandEdit, SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
 
-    // If the combo has a line edit
-    if(commandBox->lineEdit())
-	   connect(commandBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(onSendCommand()));
+    // Set the completer list
+    addCmdLineCompleter();
 }
 
 bool DebuggerWidget::isStarted()
@@ -32,7 +46,7 @@ bool DebuggerWidget::isStarted()
 
 bool DebuggerWidget::shouldBreakASAP()
 {
-	return _break;
+    return _break;
 }
 
 int DebuggerWidget::baudRate()
@@ -51,6 +65,17 @@ void DebuggerWidget::stopDebugging()
 {
     _started=false;
     onDebugStatusChanged();
+}
+
+void DebuggerWidget::clearLogs()
+{
+    debugLogs->clear();
+    treeFrames->clear();
+}
+
+void DebuggerWidget::logImportant(const QString& result)
+{
+    debugLogs->logImportant(result);
 }
 
 void DebuggerWidget::logResult(const QString& result)
@@ -74,10 +99,6 @@ void DebuggerWidget::onDebugStatusChanged()
     // Update the GUI
     pushStartStop->setText(_started?tr("Stop"):tr("Start"));
 
-    // Add some info in the logs
-    QString msg = _started?tr("Start debugging"):tr("Stop debugging");
-    debugLogs->logImportant(msg);
-
     // Emit the signal
     if(_started)
         emit debuggerStarted();
@@ -95,17 +116,17 @@ void DebuggerWidget::onStartStopPressed()
 
 void DebuggerWidget::onBreakToggled(int state)
 {
+    // Add some info in the logs
+    QString msg = state==Qt::Checked?tr("openShell() // Break ASAP"):tr("exit(): // Just log");
+    debugLogs->logCommand(msg);
+
     // Emit the signal
     emit shouldBreakOnTrace(state==Qt::Checked);
-
-    // Add some info in the logs
-    QString msg = state==Qt::Checked?tr("Break ASAP"):tr("Just log");
-    debugLogs->log(msg);
 }
 
 void DebuggerWidget::onSendCommand()
 {
-    QString cmd=commandBox->currentText();
+    QString cmd=commandEdit->text();
 
     // Add a line in the Log
     debugLogs->logCommand(cmd.split(' '));
@@ -114,8 +135,13 @@ void DebuggerWidget::onSendCommand()
     emit sendCommand(cmd);
 
     // Clear the line
-    if(commandBox->lineEdit())
-        commandBox->lineEdit()->clear();
+    commandEdit->clear();
+}
+
+void DebuggerWidget::debugStarted(bool value)
+{
+    commandEdit->setEnabled(value);
+    checkBreak->setEnabled(value);
 }
 
 void DebuggerWidget::updateBaudList()
@@ -124,7 +150,7 @@ void DebuggerWidget::updateBaudList()
     foreach(int rate, Serial::baudRates())
     {
         baudRateBox->addItem(QString::number(rate), rate);
-        if (rate == 9600)
+        if (rate == 19200)
             baudRateBox->setCurrentIndex(index);
         index++;
     }

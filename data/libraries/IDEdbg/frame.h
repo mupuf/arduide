@@ -5,11 +5,12 @@
 	
 	typedef struct
 	{
+		int line;
 		char* name;
 		linked_list* vars;
 	} frame;
 	
-	frame* frame_create(const char* name);
+	frame* frame_create(int l, const char* name);
 	
 	void frame_free(frame* frame);	
 	void frame_free(void* f);
@@ -18,5 +19,5 @@
 	
 	void frame_add_variable(frame* frame, variable* var);
 	
-	char* generateFrameTrace(frame* frame);
+	void generateFrameTrace(frame* frame);
 #endif

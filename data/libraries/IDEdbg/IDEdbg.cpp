@@ -6,143 +6,197 @@
 #include "linked_list.h"
 #include "variable.h"
 #include "frame.h"
-
-#define FRAME_END 0
-#define FRAME_TRACE 1
-#define FRAME_SEND_STATE 2
+#include "IDEdbg.h"
+#include "IDEdbgPrivate.h"
+#include "IDEdbgConstants.h"
 
 // Contains the list of the frames
-linked_list* frames;
+linked_list* frames = NULL;
 
-// Private
-char* IDEdbg_getFrames()
+static unsigned char readValue()
 {
-	int frameCount=linked_list_length(frames);
-	char** traces=(char**)malloc(frameCount*sizeof(char*));
-	
-	// Result string
-	int sizeRet=strlen("<frames>\n");
-	char* ret;
-	
-	// Get a string from each frame
-	linked_list* tmpFrame=linked_list_first_element(frames);
-	int i;
-	for(i=0; tmpFrame!=NULL && i<frameCount; ++i)
+	unsigned char value;
+	do
 	{
-		traces[i]=generateFrameTrace((frame*)tmpFrame->data);
-		sizeRet+=strlen(traces[i]);
-		tmpFrame=tmpFrame->next;
-	}
-	
-	// Add the needed space for the \n separator
-	sizeRet+=frameCount;
-	
-	// Add the final </frames>
-	sizeRet+=strlen("</frames>\n");
-	
-	// Add the final \0 char
-	++sizeRet;
-	
-	// Allocate the final string
-	ret=(char*)malloc(sizeRet*sizeof(char));
-	
-	// Copy the frame tag
-	int pos=snprintf(ret, sizeRet, "<frames>\n");
-	
-	// Create a single string that will contain all this
-	for(i=0; i<frameCount; ++i)
+		value = Serial.read();
+	} while(value == 255);
+	return value;
+}
+
+static void miniShell()
+{
+	// Stop if the user didn't ask for the minishell
+	if (Serial.available()==0)
 	{
-		pos+=snprintf(ret+pos, sizeRet-pos, "%s\n", traces[i]);
-		free(traces[i]);
+		//DbgPrintf("<No commands>");
+		return;
 	}
-	
-	// Copy the closing frames tag
-	pos+=snprintf(ret+pos, sizeRet-pos, "<\\frames>\n");
-	
-	// Free the each variable string
-	free(traces);
-	
-	return ret;
+
+	// If the command was not for a shell, exit
+	unsigned char cmd = readValue();
+	if(cmd != SHELL_REQUESTED)
+	{
+		DbgPrintf("<error>Unknown command %i</error>", cmd);
+		return;
+	}
+	else
+		DbgPrintf("<ret v=\"OK\" />");
+
+	// Enter the miniShell
+	while(true)
+	{
+		// Get the command
+		unsigned char cmd = readValue();
+		if(cmd == DIGITAL_READ)
+		{
+			unsigned char pin = readValue();
+			int pin_val = digitalRead(pin);
+			const char* ret = (pin_val==HIGH?"HIGH":"LOW");
+			DbgPrintf("<ret v=\"%s\"/>", ret);
+		}
+		else if(cmd == DIGITAL_WRITE)
+		{
+			unsigned char pin = readValue();
+			unsigned char value = readValue();
+			digitalWrite(pin, value==1?HIGH:LOW);
+			DbgPrintf("<ret v=\"OK\"/>");
+		}
+		else if(cmd == ANALOG_READ)
+		{
+			unsigned char pin = readValue();
+			int pin_val = analogRead(pin);
+			DbgPrintf("<ret v=\"%i\"/>", pin_val);
+		}
+		else if(cmd == ANALOG_WRITE)
+		{
+			unsigned char pin = readValue();
+			unsigned char value = readValue();
+			analogWrite(pin, value);
+			DbgPrintf("<ret v=\"OK\"/>");
+		}
+		else if(cmd == PIN_MODE)
+		{
+			unsigned char pin = readValue();
+			unsigned char mode = readValue();
+			pinMode(pin, mode==1?OUTPUT:INPUT);
+			DbgPrintf("<ret v=\"OK\"/>");
+		}
+		else if(cmd == EXIT_SHELL)
+		{
+			DbgPrintf("<ret v=\"OK\"/>");
+			break;
+		}
+		else
+		{
+			DbgPrintf("<error>Unknown command %i</error>", cmd);
+
+			//Empty the input buffer
+			while (Serial.available()>0)
+				Serial.read();
+
+			// Leave the minishell
+			break;
+		}
+	}
 }
 
 // Public
-void DbgInit()
+void DbgInit(int baud_rate)
 {
-	frames=NULL;
-	Serial.begin(9600); 
+	DbgFree();
+	Serial.begin(baud_rate);
 }
 
-void DbgNewFrame(const char* name)
+void _DbgNewFrame(int l, const char* name)
 {
 	// Create a new frame and add it as an element on the frames' list
-	frames=linked_list_element_push_front(frames, frame_create(name));
+	frames=linked_list_element_push_front(frames, frame_create(l, name));
 }
 
 void DbgCloseFrame()
 {
-	linked_list_remove_front(frames, frame_free);
+	frames=linked_list_remove_front(frames, frame_free);
 }
 
-void _DbgWatchVariable(const char* name, variable_type type, int size, void* data)
+void DbgFree()
 {
-	variable* var=variable_create(name, type, size, data);
+	while(frames)
+		DbgCloseFrame();
+}
+
+void _DbgWatchVariable(int l, const char* name, variable_type type, int size, void* data)
+{
+	variable* var=variable_create(l, name, type, size, data);
 	
 	frame_add_variable((frame*)linked_list_first_element(frames)->data, var);
 }
 
-void _DbgWatchVariable(const char* name, int* data)
+void _DbgWatchVariable(int l, const char* name, int* data)
 {
-	return _DbgWatchVariable(name, _int, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _int, sizeof(&data), (void*)data);
 }
 
-void _DbgWatchVariable(const char* name, unsigned int* data)
+void _DbgWatchVariable(int l, const char* name, unsigned int* data)
 {
-	return _DbgWatchVariable(name, _unsigned_int, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _unsigned_int, sizeof(&data), (void*)data);
 }
 
-void _DbgWatchVariable(const char* name, char* data)
+void _DbgWatchVariable(int l, const char* name, char* data)
 {
-	return _DbgWatchVariable(name, _char, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _char, sizeof(&data), (void*)data);
 }
 
-void _DbgWatchVariable(const char* name, unsigned char* data)
+void _DbgWatchVariable(int l, const char* name, unsigned char* data)
 {
-	return _DbgWatchVariable(name, _unsigned_char, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _unsigned_char, sizeof(&data), (void*)data);
 }
 
-void _DbgWatchVariable(const char* name, float* data)
+void _DbgWatchVariable(int l, const char* name, float* data)
 {
-	return _DbgWatchVariable(name, _float, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _float, sizeof(&data), (void*)data);
 }
 
-void _DbgWatchVariable(const char* name, double* data)
+void _DbgWatchVariable(int l, const char* name, double* data)
 {
-	return _DbgWatchVariable(name, _double, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _double, sizeof(&data), (void*)data);
 }
 
-void _DbgWatchVariable(const char* name, const char** data)
+void _DbgWatchVariable(int l, const char* name, const char** data)
 {
-	return _DbgWatchVariable(name, _char_pointer, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _char_pointer, sizeof(&data), (void*)data);
 }
 
-void _DbgWatchVariable(const char* name, char** data)
+void _DbgWatchVariable(int l, const char* name, char** data)
 {
-	return _DbgWatchVariable(name, (const char**)data);
+	return _DbgWatchVariable(l, name, (const char**)data);
 }
 
-void _DbgWatchVariable(const char* name, void* data)
+void _DbgWatchVariable(int l, const char* name, void* data)
 {
-	return _DbgWatchVariable(name, _void_pointer, sizeof(&data), (void*)data);
+	return _DbgWatchVariable(l, name, _void_pointer, sizeof(&data), (void*)data);
 }
 
-void DbgSendTrace(const char* format, ...)
+void DbgSendChar(char c)
 {
-	va_list list;
-	va_start(list, format);
-	
-	// Send the trace byte
-	Serial.print(FRAME_TRACE, BYTE);
-	
+	if(c == '<')
+		Serial.print("&lt;");
+	else if(c == '>')
+		Serial.print("&gt;");
+	else
+		Serial.print(c, BYTE);
+}
+
+void DbgSendString(const char* s)
+{
+	while(*s)
+	{
+		DbgSendChar(*s);
+		s++;
+	}
+}
+
+static void _DbgPrintf(const char* format, bool escapeFormat, va_list list)
+{
 	// Read all the format string
 	int i=0;
 	while(format[i])
@@ -160,50 +214,84 @@ void DbgSendTrace(const char* format, ...)
 			{
 				int value=va_arg(list, int);
 				Serial.print(value, DEC);
+				++i;
 			}
 			else if(format[i]=='x')
 			{
 				int value=va_arg(list, int);
+				Serial.print("0x");
 				Serial.print(value, HEX);
+				++i;
 			}
 			else if(format[i]=='c')
 			{
-				char value=va_arg(list, char);
-				Serial.print(value, BYTE);
+				int value=va_arg(list, int);
+				DbgSendChar(value);
+				++i;
 			}
 			else if(format[i]=='s')
 			{
 				char* value=va_arg(list, char*);
-				Serial.print(value);
+				DbgSendString(value);
+				++i;
 			}
 			else //if(format[i]=='%')
 			{
 				Serial.print(format[i], BYTE);
+				++i;
 			}
 		}
 		else
 		{
-			Serial.print(format[i], BYTE);
+            if (escapeFormat)
+                DbgSendChar(format[i]);
+            else
+                Serial.print(format[i], BYTE);
 			++i;
 		}
 	}
-	
-	// Send the end trace byte
-	Serial.print(FRAME_END, BYTE);
+}
+
+void DbgPrintf(const char* format, ...)
+{
+	va_list list;
+	va_start(list, format);
+
+	_DbgPrintf(format, false, list);
 
 	va_end(list);
 }
 
+void DbgSendTrace(const char* format, ...)
+{
+	va_list list;
+	va_start(list, format);
+
+	Serial.print("<trace>");
+	_DbgPrintf(format, true, list);
+	Serial.print("</trace>");
+
+	va_end(list);
+
+	miniShell();
+}
+
 void _DbgSendState(const char* filename, int line)
 {
-	char* data=IDEdbg_getFrames();
+    DbgPrintf("<frames l=\"%i\">", line);
+
+	int frameCount=linked_list_length(frames);
+	linked_list* tmpFrame=linked_list_first_element(frames);
 	
-	Serial.print(FRAME_SEND_STATE, BYTE);
-	printf("Send state at %s:%i\n%s", filename, line, data);
-	
-	// Send the end trace byte
-	Serial.print(FRAME_END, BYTE);
-	free(data);
+	for(int i=0; tmpFrame!=NULL && i<frameCount; ++i)
+	{
+		generateFrameTrace((frame*)tmpFrame->data);
+		tmpFrame=tmpFrame->next;
+	}
+
+	Serial.print("</frames>");
+
+	miniShell();
 }
 
 // Useless

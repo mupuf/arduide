@@ -46,7 +46,7 @@ bool Serial::open(OpenMode mode)
     if (! GetCommState(mSerial, &dcb))
         goto error;
     dcb.BaudRate = dwBaudRate;
-    if (! SetCommState(hComm, &dcb))
+    if (! SetCommState(mSerial, &dcb))
         goto error;
 
     setOpenMode(mode);
@@ -56,7 +56,7 @@ error:
     DWORD dwErr = ::GetLastError();
     LPSTR lpMsg;
     ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &lpMsg, 0, NULL);
+                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &lpMsg, 0, NULL);
     setErrorString(lpMsg);
     ::LocalFree(lpMsg);
     if (mSerial != INVALID_SERIAL_DESCRIPTOR)
@@ -69,11 +69,14 @@ error:
 
 void Serial::close()
 {
-    emit aboutToClose();
     if (isOpen())
-        ::closeHandle(mSerial);
-    setOpenMode(NotOpen);
-    setErrorString(QString());
+    {
+        emit aboutToClose();
+        ::CloseHandle(mSerial);
+        setOpenMode(NotOpen);
+        setErrorString(QString());
+        setInReadEventMode(false);
+    }
 }
 
 qint64 Serial::readData(char *data, qint64 maxSize)
@@ -87,7 +90,7 @@ error:
     DWORD dwErr = GetLastError();
     LPSTR lpMsg;
     ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &lpMsg, 0, NULL);
+                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &lpMsg, 0, NULL);
     setErrorString(lpMsg);
     ::LocalFree(lpMsg);
     return -1;
@@ -104,10 +107,15 @@ error:
     DWORD dwErr = GetLastError();
     LPSTR lpMsg;
     ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), &lpMsg, 0, NULL);
+                    NULL, dwErr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &lpMsg, 0, NULL);
     setErrorString(lpMsg);
     ::LocalFree(lpMsg);
     return -1;
+}
+
+bool Serial::waitForReadyRead (int msecs)
+{
+    return false;
 }
 
 bool Serial::setDTR(bool enable)

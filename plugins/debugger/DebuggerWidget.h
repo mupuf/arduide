@@ -12,8 +12,12 @@ class DebuggerWidget : public QWidget, Ui::DebuggerWidget
 {
     Q_OBJECT
 
+    friend class DebuggerPlugin;
+
     bool _break;
     bool _started;
+
+    void addCmdLineCompleter();
 
 public:
     DebuggerWidget(QWidget *parent = NULL);
@@ -27,6 +31,8 @@ public slots:
     void startDebugging();
     void stopDebugging();
 
+    void clearLogs();
+    void logImportant(const QString& result);
     void logResult(const QString& result);
     void logError(const QString& error);
 
@@ -38,6 +44,8 @@ private slots:
     void onStartStopPressed();
     void onBreakToggled(int);
     void onSendCommand();
+
+    void debugStarted(bool value);
 
     void updateBaudList();
 

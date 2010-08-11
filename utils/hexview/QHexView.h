@@ -29,10 +29,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // #include "Types.h"
 // #include "ByteStream.h"
 
+#include "IDEGlobal.h"
+
 class QMenu;
 // class CommentServerInterface;
 
-class QHexView : public QAbstractScrollArea {
+class IDE_EXPORT QHexView : public QAbstractScrollArea {
         Q_OBJECT
 
 public:

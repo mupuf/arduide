@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>649</width>
-    <height>272</height>
+    <width>785</width>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,9 +39,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="commandBox">
-             <property name="editable">
-              <bool>true</bool>
+            <widget class="QLineEdit" name="commandEdit">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -53,20 +53,25 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <widget class="QTreeWidget" name="treeWidget">
+            <widget class="QTreeWidget" name="treeFrames">
              <column>
               <property name="text">
-               <string>Frame #</string>
+               <string>Time(ms)</string>
               </property>
              </column>
              <column>
               <property name="text">
-               <string>Variable</string>
+               <string>Frame name</string>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Type</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Variable</string>
               </property>
              </column>
              <column>
@@ -136,6 +141,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QPushButton" name="pushStartStop">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>&amp;Start</string>
            </property>
@@ -143,12 +151,12 @@
          </item>
          <item>
           <widget class="QCheckBox" name="checkBreak">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>&amp;Break
 ASAP</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -164,6 +172,13 @@ ASAP</string>
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushClearLogs">
+           <property name="text">
+            <string>Clear logs</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+#include <sys/poll.h>
 
 #include <QDebug>
 
@@ -80,11 +81,14 @@ error:
 
 void Serial::close()
 {
-    emit aboutToClose();
     if (isOpen())
+    {
+        emit aboutToClose();
         ::close(mSerial);
-    setOpenMode(NotOpen);
-    setErrorString(QString());
+        setOpenMode(NotOpen);
+        setErrorString(QString());
+        setInReadEventMode(false);
+    }
 }
 
 qint64 Serial::readData(char *data, qint64 maxSize)
@@ -112,6 +116,17 @@ qint64 Serial::writeData(const char *data, qint64 maxSize)
 error:
    setErrorString(QString::fromLocal8Bit(strerror(errno)));
    return -1;
+}
+
+bool Serial::waitForReadyRead (int msecs)
+{
+    struct pollfd pfd;
+    pfd.fd = serialDescriptor();
+    pfd.events |= POLLIN;
+
+    int rv = poll(&pfd, 1, msecs);
+
+    return rv > 0;
 }
 
 bool Serial::setDTR(bool enable)

@@ -8,9 +8,11 @@
 
 #include <Qsci/qsciscintilla.h>
 
+#include "IDEGlobal.h"
+
 class QShortcut;
 
-class Editor : public QsciScintilla
+class IDE_EXPORT Editor : public QsciScintilla
 {
     Q_OBJECT
 
@@ -30,6 +32,7 @@ public:
 
 public slots:
     void save();
+    void showContextualHelp();
 
 private:
     void setupShortcuts();
@@ -60,6 +63,9 @@ private slots:
 
     void goToPreviousParagraph();
     void goToNextParagraph();
+
+signals:
+    void helpRequested(QString);
 };
 
 #endif // EDITOR_H

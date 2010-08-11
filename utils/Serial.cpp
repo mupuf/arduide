@@ -10,11 +10,21 @@
 
 #include "Compat.h"
 
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+const Serial::descriptor Serial::INVALID_SERIAL_DESCRIPTOR = INVALID_HANDLE_VALUE;
+#endif
+
 Serial::Serial(const QString &port, int baudRate)
     : mPort(port),
       mBaudRate(baudRate),
-      mSerial(INVALID_SERIAL_DESCRIPTOR)
+      mSerial(INVALID_SERIAL_DESCRIPTOR),
+      watcher(NULL)
 {
+}
+
+Serial::~Serial()
+{
+    setInReadEventMode(false);
 }
 
 const QList<int> &Serial::baudRates()
@@ -38,6 +48,18 @@ bool Serial::isOpen() const
     return mSerial != INVALID_SERIAL_DESCRIPTOR;
 }
 
+QByteArray Serial::readAll()
+{
+    QByteArray ret;
+    char buf[16];
+    qint64 size;
+
+    while ((size = readData(buf, 16)) > 0)
+        ret.append(buf, size);
+
+    return ret;
+}
+
 bool Serial::flushBuffer()
 {
     if (! isOpen())
@@ -52,4 +74,29 @@ bool Serial::flushBuffer()
     if (! setDTR(true))
       return false;
     return true;
+}
+
+bool Serial::isInReadEventMode()
+{
+    return watcher!=NULL;
+}
+
+void Serial::setInReadEventMode(bool value)
+{
+    if (value && watcher==NULL)
+    {
+        watcher = new SerialWatcher(this, this);
+        watcher->start();
+    }
+    else if (!value)
+    {
+        if (watcher)
+            delete watcher;
+        watcher = NULL;
+    }
+}
+
+void Serial::onNewDataArrived(QByteArray data)
+{
+    emit dataArrived(data);
 }

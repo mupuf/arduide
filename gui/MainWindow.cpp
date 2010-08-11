@@ -13,6 +13,9 @@
 #include <QCloseEvent>
 #include <QWebSecurityOrigin>
 #include <QDebug>
+#include <QDesktopServices>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "EditorFactory.h"
 #include "LexerArduino.h"
@@ -26,6 +29,7 @@
 #include "../env/Settings.h"
 #include "../env/ProjectHistory.h"
 #include "IDEApplication.h"
+
 
 #include "ui_AboutDialog.h"
 
@@ -46,6 +50,10 @@ void MainWindow::initialize()
     createBoardChooser();
 
     setupActions();
+
+    tabHasChanged();
+
+    restoreState(ideApp->settings()->mainWindowState());
 }
 
 void MainWindow::setupActions()
@@ -55,19 +63,26 @@ void MainWindow::setupActions()
     buildActions->addAction(ui.action_Upload);
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabHasChanged()));
     connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newProject()));
     connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui.action_Close, SIGNAL(triggered()), this, SLOT(closeTab()));
+    connect(ui.actionUpPastebin, SIGNAL(triggered()), this, SLOT(uploadToPastebin()));
+    connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(undo()));
+    connect(ui.actionRedo, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui.action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
     connect(ui.action_Cut, SIGNAL(triggered()), this, SLOT(cut()));
     connect(ui.action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
     connect(ui.action_Build, SIGNAL(triggered()), this, SLOT(build()));
     connect(ui.action_Upload, SIGNAL(triggered()), this, SLOT(upload()));
-    connect(ui.actionToggle_dock, SIGNAL(triggered()), this, SLOT(toggleDock()));
+    connect(ui.action_Utilities, SIGNAL(triggered()), this, SLOT(toggleDock()));
     connect(ui.actionGo_to_the_next_tab, SIGNAL(triggered()), this, SLOT(nextTab()));
     connect(ui.actionGo_to_the_previous_tab, SIGNAL(triggered()), this, SLOT(previousTab()));
     connect(ui.action_Configure_the_IDE, SIGNAL(triggered()), this, SLOT(configure()));
+    connect(ui.action_Contextual_help, SIGNAL(triggered()), this, SLOT(contextualHelp()));
+    connect(ui.actionCommunityArduinoCC, SIGNAL(triggered()), this, SLOT(openCommunityArduinoCC()));
+    connect(ui.actionCommunityArduinoForums, SIGNAL(triggered()), this, SLOT(openCommunityArduinoForums()));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -75,10 +90,15 @@ void MainWindow::setupActions()
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
     connect(browser, SIGNAL(openProjectRequested()), this, SLOT(open()));
     connect(browser, SIGNAL(openProjectRequested(const QString &)), this, SLOT(open(const QString &)));
+    connect(browser, SIGNAL(newPageLoaded(QUrl)), this, SLOT(tabContentHasChanged()));
+    connect(ui.action_Prev, SIGNAL(triggered()), browser, SLOT(back()));
+    connect(ui.action_Next, SIGNAL(triggered()), browser, SLOT(forward()));
 
     connect(ideApp->projectHistory(), SIGNAL(historyUpdated(QString)), browser, SLOT(refresh()));
 
     connect(ideApp->settings(), SIGNAL(fontChanged(const QFont &)), this, SLOT(setFont(const QFont &)));
+
+    connect(&pastebin, SIGNAL(finished(QNetworkReply*)), this, SLOT(pastebinUploadDone(QNetworkReply*)));
 }
 
 void MainWindow::createBrowserAndTabs()
@@ -212,6 +232,8 @@ void MainWindow::closeTab(int index)
             {
                 names.removeOne(tabWidget->tabText(index));
                 tabWidget->removeTab(index);
+
+                emit editorDeleted(editor);
             }
         }
     }
@@ -245,6 +267,93 @@ void MainWindow::configureEditors()
         Q_ASSERT(lexer != NULL);
         settings->loadLexerProperties(lexer);
     }
+}
+
+void MainWindow::tabContentHasChanged()
+{
+    bool undoAvail = false;
+    bool redoAvail = false;
+    bool previousAvail = false;
+    bool forwardAvail = false;
+    bool contextualHelpAvail = false;
+
+    Editor *e = currentEditor();
+    if (e)
+    {
+        undoAvail = e->isUndoAvailable();
+        redoAvail = e->isRedoAvailable();
+        contextualHelpAvail = true;
+    }
+    else
+    {
+        previousAvail = browser->canGoBack();
+        forwardAvail = browser->canGoForward();
+    }
+
+    ui.actionUndo->setEnabled(undoAvail);
+    ui.actionRedo->setEnabled(redoAvail);
+    ui.action_Prev->setEnabled(previousAvail);
+    ui.action_Next->setEnabled(forwardAvail);
+    ui.action_Contextual_help->setEnabled(contextualHelpAvail);
+}
+
+void MainWindow::tabHasChanged()
+{
+    tabContentChanged();
+
+    Editor *e = currentEditor();
+    emit tabChanged(e==NULL);
+}
+
+void MainWindow::contextualHelp()
+{
+    Editor *e = currentEditor();
+    if (e && e->hasFocus())
+    {
+        e->showContextualHelp();
+    }
+    else
+    {
+        // TODO: Show the IDE manual
+    }
+}
+
+bool MainWindow::docHelpRequested(QString word)
+{
+    if (browser->docHelpRequested(word))
+    {
+        tabWidget->setCurrentIndex(0);
+        return true;
+    }
+
+    return false;
+}
+
+void MainWindow::openCommunityArduinoCC()
+{
+    QDesktopServices::openUrl(QUrl("http://www.arduino.cc"));
+}
+
+void MainWindow::openCommunityArduinoForums()
+{
+    QDesktopServices::openUrl(QUrl("http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl"));
+}
+
+void MainWindow::pastebinUploadDone(QNetworkReply* reply)
+{
+    QString result = reply->readAll();
+    QUrl url(result);
+
+    if (url.isValid())
+        QDesktopServices::openUrl(url);
+    else
+        QMessageBox::warning(this, tr("Pastebin error"), tr("The pastebin upload failed with code:\n%1").arg(result));
+}
+
+void MainWindow::finishedBuilding()
+{
+
+    emit buildFinished(true);
 }
 
 void MainWindow::open(const QString &_fileName)
@@ -296,22 +405,61 @@ void MainWindow::save()
     }
 }
 
+void MainWindow::uploadToPastebin()
+{
+    Editor *e = currentEditor();
+    if (e)
+    {
+        QNetworkRequest request(QUrl("http://pastebin.com/api_public.php"));
+        request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+
+        QByteArray data;
+        QUrl params;
+        params.addQueryItem("paste_code",e->text());
+        params.addQueryItem("paste_format","c");
+        data.append(params.encodedQuery());
+
+        pastebin.post(request,data);
+    }
+}
+
+void MainWindow::undo()
+{
+    Editor *e = currentEditor();
+    if (e) e->undo();
+}
+
+void MainWindow::redo()
+{
+    Editor *e = currentEditor();
+    if (e) e->redo();
+}
+
 void MainWindow::copy()
 {
     Editor *e = currentEditor();
-    if (e) e->copy();
+    if (e)
+        e->copy();
+    else
+        browser->triggerPageAction(QWebPage::Copy);
 }
 
 void MainWindow::cut()
 {
     Editor *e = currentEditor();
-    if (e) e->cut();
+    if (e)
+       e->cut();
+    else
+       browser->triggerPageAction(QWebPage::Cut);
 }
 
 void MainWindow::paste()
 {
     Editor *e = currentEditor();
-    if (e) e->paste();
+    if (e)
+       e->paste();
+    else
+       browser->triggerPageAction(QWebPage::Paste);
 }
 
 void MainWindow::setDevice(const QString &device)
@@ -344,55 +492,52 @@ void MainWindow::closeEvent(QCloseEvent *event)
         }
     }
 
+    ideApp->settings()->saveMainWindowState(saveState());
+
     event->accept();
 }
 
-bool MainWindow::build()
+void MainWindow::build()
 {
     Editor *editor = currentEditor();
     if (editor)
     {
-        buildActions->setEnabled(false);
-
-        const Board *board = Board::boardInfo(ideApp->settings()->board());
         ui.dockWidget->show();
         ui.outputView->clear();
 
-        Builder builder(*ui.outputView);
-        builder.setBoard(board);
-        bool ret = builder.build(editor->text());
-
-        buildActions->setEnabled(true);
-
-        return ret;
+        BackgroundBuilder *builder = new BackgroundBuilder(ui.outputView);
+        builder->setRelatedActions(buildActions);
+        connect(builder, SIGNAL(buildFinished(bool)), builder, SLOT(deleteLater()));
+        connect(builder, SIGNAL(buildFinished(bool)), this, SIGNAL(buildFinished(bool)));
+        connect(builder, SIGNAL(log(QString)), ui.outputView, SLOT(log(QString)));
+        connect(builder, SIGNAL(logError(QString)), ui.outputView, SLOT(logError(QString)));
+        connect(builder, SIGNAL(logImportant(QString)), ui.outputView, SLOT(logImportant(QString)));
+        connect(builder, SIGNAL(logCommand(QStringList)), ui.outputView, SLOT(logCommand(QStringList)));
+        builder->backgroundBuild(editor->text());
     }
-    else
-        return false;
 }
 
-bool MainWindow::upload()
+void MainWindow::upload()
 {
     Editor *editor = currentEditor();
     if (editor)
     {
         buildActions->setEnabled(false);
 
-        const Board *board = Board::boardInfo(ideApp->settings()->board());
         QString device = ideApp->settings()->devicePort();
         ui.dockWidget->show();
         ui.outputView->clear();
 
-        Builder builder(*ui.outputView);
-        builder.setBoard(board);
-        builder.setDevice(device);
-	   bool ret=builder.build(editor->text(), true);
-
-        buildActions->setEnabled(true);
-
-	   return ret;
+        BackgroundBuilder *builder = new BackgroundBuilder(ui.outputView);
+        builder->setRelatedActions(buildActions);
+        connect(builder, SIGNAL(buildFinished(bool)), builder, SLOT(deleteLater()));
+        connect(builder, SIGNAL(buildFinished(bool)), this, SIGNAL(uploadFinished(bool)));
+        connect(builder, SIGNAL(log(QString)), ui.outputView, SLOT(log(QString)));
+        connect(builder, SIGNAL(logError(QString)), ui.outputView, SLOT(logError(QString)));
+        connect(builder, SIGNAL(logImportant(QString)), ui.outputView, SLOT(logImportant(QString)));
+        connect(builder, SIGNAL(logCommand(QStringList)), ui.outputView, SLOT(logCommand(QStringList)));
+        builder->backgroundBuild(editor->text(), true);
     }
-    else
-	    return false;
 }
 
 void MainWindow::toggleDock()
@@ -419,6 +564,7 @@ void MainWindow::about()
     QDialog *dialog = new QDialog(this);
     Ui::AboutDialog ui;
     ui.setupUi(dialog);
+    dialog->setWindowTitle(dialog->windowTitle().arg(PROJECT_NAME));
     ui.nameLabel->setText(ui.nameLabel->text().arg(PROJECT_NAME));
     ui.urlLabel->setText(ui.urlLabel->text().arg(PROJECT_URL));
     ui.authorsLabel->setText(ui.authorsLabel->text().arg(PROJECT_AUTHORS));

@@ -192,3 +192,25 @@ void Editor::setSelectionBackgroundColor(const QColor &col)
     mSelectionBackgroundColor = col;
     QsciScintilla::setSelectionBackgroundColor(col);
 }
+
+void Editor::showContextualHelp()
+{
+    int line, index;
+    getCursorPosition(&line, &index);
+
+    QString line_s = text(line);
+
+    int start = line_s.lastIndexOf(QRegExp("\\W"), index)+1;
+    if (start > index)
+            start = line_s.lastIndexOf(QRegExp("\\W"), index-1)+1;
+    if (start > 0 && line_s[start-1] == '.')
+        start = line_s.lastIndexOf(QRegExp("\\W"), start-2)+1;
+
+    int end = line_s.indexOf(QRegExp("\\W"), index);
+
+    if (start<end)
+    {
+        QString word = line_s.mid(start, end-start);
+        ideApp->mainWindow()->docHelpRequested(word);
+    }
+}

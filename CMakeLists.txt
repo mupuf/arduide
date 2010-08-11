@@ -6,6 +6,7 @@ include_directories(BEFORE "${CMAKE_BINARY_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}")
 include_directories(BEFORE "${CMAKE_SOURCE_DIR}/utils/qxt")
 
+PROJECT(arduide)
 set(PROJECT_NAME "Arduino IDE")
 set(PROJECT_SHORT_NAME "ArduIDE")
 set(PROJECT_URL "http://mupuf.org/project/arduide/")
@@ -32,6 +33,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -Wall)
 endif()
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+endif(NOT CMAKE_BUILD_TYPE)
+
 # Data path
 option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everything in the same folder." OFF)
 
@@ -56,7 +61,9 @@ endif()
 # OS-dependent
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(Win32_LIBRARIES wsock32)
-  set(GUI_TYPE WIN32)
+  if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
+    set(GUI_TYPE WIN32)
+  endif()
   add_definitions(-D_WIN32_WINNT=0x501) # Windows XP target
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   find_library(CoreFoundation_LIBRARY CoreFoundation)
@@ -80,7 +87,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(USE_DBUS ON)
     add_definitions(-DUSE_DBUS)
   endif()
-  
+
   # add grantlee's default directory on Linux systems
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee")
 endif()
@@ -94,7 +101,7 @@ include(FindQt4)
 find_package(Qt4 COMPONENTS ${Qt4_COMPONENTS} REQUIRED)
 include(${QT_USE_FILE})
 
-set(Qt4_LINK_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTWEBKIT_LIBRARY})
+set(Qt4_LINK_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTNETWORK_LIBRARY} ${QT_QTWEBKIT_LIBRARY})
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(Qt4_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} ${QT_QTDBUS_LIBRARY})
 endif()
@@ -213,11 +220,11 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
     install(TARGETS arduino-ide DESTINATION "${arduino_DATA_PATH}")
 
     # in non-fhs mode we must also install the plugins in the application directory
-    install(DIRECTORY "${Grantlee_PLUGIN_PATH}/"
-      DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
-      PATTERN "*.so"
-      PATTERN "*.dylib"
-      PATTERN "*.dll")
+  #   install(DIRECTORY "${Grantlee_PLUGIN_PATH}/"
+  #     DESTINATION "${arduino_DATA_PATH}/grantlee" FILES_MATCHING
+  #     PATTERN "*.so"
+  #     PATTERN "*.dylib"
+  #     PATTERN "*.dll")
   endif()
 endif()
 

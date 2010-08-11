@@ -10,6 +10,9 @@
 
 #include <QComboBox>
 #include <QToolButton>
+#include <QNetworkAccessManager>
+
+#include "IDEGlobal.h"
 
 class QUrl;
 class Browser;
@@ -20,7 +23,9 @@ class DeviceChooser;
 class BoardChooser;
 class ConfigDialog;
 
-class MainWindow : public QMainWindow
+class QNetworkReply;
+
+class IDE_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -31,6 +36,8 @@ public:
     // widget getters
     QTabWidget *utilityTabWidget() { return ui.utilityTabWidget; }
 
+    Editor *currentEditor();
+
 public slots:
     void setFont(const QFont &font);
     void closeTab(int index = -1);
@@ -39,19 +46,32 @@ public slots:
     void newProject(const QString &code = QString(), const QString &name = QString(), Editor **pEditor = NULL);
     void open(const QString &fileName = QString());
     void save();
+    void uploadToPastebin();
     void chooseDevice();
     void chooseBoard();
+    void undo();
+    void redo();
     void copy();
     void cut();
     void paste();
-    bool build();
-    bool upload();
+    void build();
+    void upload();
     void toggleDock();
     void setDevice(const QString &device);
     void setBoard(const QString &board);
     void configure();
     void about();
     void configureEditors();
+    void tabContentHasChanged();
+    void tabHasChanged();
+    void contextualHelp();
+    bool docHelpRequested(QString);
+
+private slots:
+    void openCommunityArduinoCC();
+    void openCommunityArduinoForums();
+    void pastebinUploadDone(QNetworkReply* reply);
+    void finishedBuilding();
 
 private:
     void setupActions();
@@ -73,13 +93,21 @@ private:
 
     ConfigDialog *configDialog;
 
-    Editor *currentEditor();
     QList<Editor *> editors();
 
     Ui::MainWindow ui;
 
+    QNetworkAccessManager pastebin;
+
 protected:
     void closeEvent(QCloseEvent *event);
+
+signals:
+    void tabContentChanged();
+    void tabChanged(bool isBrowser);
+    void editorDeleted(Editor* editor);
+    void buildFinished(bool result);
+    void uploadFinished(bool result);
 };
 
 #endif // MAINWINDOW_H
