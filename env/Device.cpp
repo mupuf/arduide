@@ -105,14 +105,13 @@ DeviceList Device::listDevices()
     udev_enumerate_scan_devices(enumerate);
     udev_list_entry *list_entry = udev_enumerate_get_list_entry(enumerate);
     udev_list_entry *list_entry_current;
-    udev_device *device, *parent_device;
     const char *devnode, *devname;
     serial_struct serial;
     bool is_serial;
     int fd;
     udev_list_entry_foreach(list_entry_current, list_entry)
     {
-        device = udev_device_new_from_syspath(udev, udev_list_entry_get_name(list_entry_current));
+        udev_device *device = udev_device_new_from_syspath(udev, udev_list_entry_get_name(list_entry_current));
         devnode = udev_device_get_devnode(device);
         is_serial = false;
         fd = open(devnode, O_RDONLY | O_NONBLOCK);
@@ -132,7 +131,7 @@ DeviceList Device::listDevices()
         {
             devname = NULL;
             // get the name of the parent device, use it as the device description
-            for (parent_device = device; parent_device != NULL && devname == NULL; parent_device = udev_device_get_parent(parent_device))
+            for (udev_device *parent_device = device; parent_device != NULL && devname == NULL; parent_device = udev_device_get_parent(parent_device))
             {
                 devname = udev_device_get_sysattr_value(parent_device, "name");
                 if (! devname)
@@ -142,8 +141,8 @@ DeviceList Device::listDevices()
                 devname = "unknown";
             l << Device(devname, devnode);
         }
+        udev_device_unref(device);
     }
-    udev_device_unref(device);
     udev_enumerate_unref(enumerate);
     udev_unref(udev);
 #elif defined(UDE_DBUS)
