@@ -460,7 +460,7 @@ void DebuggerPlugin::parseTrace(QString trace)
 
 void DebuggerPlugin::parseState(QString state)
 {
-    QTreeWidgetItem* topNode, *currentFrame;
+    QTreeWidgetItem *topNode = NULL, *currentFrame = NULL;
     bool hasLine;
 
     int arrivalTime = debugTime();
@@ -481,6 +481,14 @@ void DebuggerPlugin::parseState(QString state)
         }
         else if (xml.name()=="frame")
         {
+            if (topNode == NULL)
+            {
+                qWarning("debugger: invalid xml (no top node)");
+                delete currentFrame; currentFrame = NULL;
+                delete topNode; topNode = NULL;
+                break;
+            }
+
             QString frame_name = xml.attributes().value("id").toString();
             int sourceLine = xml.attributes().value("l").toString().toInt(&hasLine);
             currentFrame = new QTreeWidgetItem(topNode);
@@ -490,6 +498,14 @@ void DebuggerPlugin::parseState(QString state)
         }
         else if (xml.name()=="var")
         {
+            if (currentFrame == NULL)
+            {
+                qWarning("debugger: invalid xml (no frame)");
+                delete currentFrame; currentFrame = NULL;
+                delete topNode; topNode = NULL;
+                break;
+            }
+
             QString name = xml.attributes().value("id").toString();
             QString type = xml.attributes().value("t").toString();
             QString value = xml.attributes().value("v").toString();
@@ -504,10 +520,13 @@ void DebuggerPlugin::parseState(QString state)
         }
     }
 
-    // Add the new top node
-    widget->treeFrames->insertTopLevelItem(0, topNode);
+    if (topNode != NULL)
+    {
+        // Add the new top node
+        widget->treeFrames->insertTopLevelItem(0, topNode);
 
-    widget->logResult(tr("%1ms: New state received").arg(arrivalTime));
+        widget->logResult(tr("%1ms: New state received").arg(arrivalTime));
+    }
 }
 
 void DebuggerPlugin::parseRet(QString ret)
