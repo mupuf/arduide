@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-#define CONSOLE 1
+#define CONSOLE 0
 #if CONSOLE
     if (! AllocConsole())
         return 1;
