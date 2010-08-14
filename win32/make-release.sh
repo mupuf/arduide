@@ -44,6 +44,3 @@ done
 install -m644 /usr/local/i486-mingw32/qscintilla/bin/qscintilla2.dll "${release_dir}/"
 install -m644 /usr/local/i486-mingw32/grantlee/bin/libgrantlee_core.dll "${release_dir}/"
 install -m644 /usr/local/i486-mingw32/grantlee/bin/libgrantlee_gui.dll "${release_dir}/"
-
-install -m644 /usr/i486-mingw32/lib/libgcc_s_sjlj-1.dll "${release_dir}/"
-install -m644 /usr/i486-mingw32/lib/libstdc++-6.dll "${release_dir}/"
