@@ -237,6 +237,9 @@ bool FirstTimeWizard::validateCurrentPage()
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
             tarCommand = QDir(ideApp->settings()->arduinoPath()).filePath(QString("bin/unzip.exe"));
             tarArgs << "-d" << destinationPath << archive.fileName();
+            qDebug("tarCommand='%s'", qPrintable(tarCommand));
+            qDebug("destinationPath='%s'", qPrintable(destinationPath));
+            qDebug("archive.fileName()='%s'", qPrintable(archive.fileName()));
 #elif defined(Q_OS_DARWIN) // MacOSX
     #warn TODO: platform not supported yet
 #else // Linux, other Unix
