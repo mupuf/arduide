@@ -73,21 +73,23 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
-#pragma message("TODO: platform not supported yet")
+    #pragma message("TODO: platform not supported yet")
     mDownloadOs = "Windows";
+    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".zip" ;
 #elif defined(Q_OS_DARWIN) // MacOSX
-#warn TODO: platform not supported yet
+    #warn TODO: platform not supported yet
     mDownloadOs = "MacOSX";
+    //mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".dmg" ;
 #else // Linux, other Unix
-#if defined(__x86_64__) // 64-bit Unix
-    mDownloadOs = "64-bit Linux";
-    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64-2.tgz" ;
-#elif defined(__i386__) // 32-bit Unix
-    mDownloadOs = "32-bit Linux";
-    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
-#else // other
-#error unsupported architecture
-#endif
+    #if defined(__x86_64__) // 64-bit Unix
+        mDownloadOs = "64-bit Linux";
+        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64-2.tgz" ;
+    #elif defined(__i386__) // 32-bit Unix
+        mDownloadOs = "32-bit Linux";
+        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
+    #else // other
+        #error unsupported architecture
+    #endif
 #endif
 
     downloadLabel->setText(downloadLabel->text().arg(ARDUINO_SDK_VERSION).arg(mDownloadOs));
@@ -229,11 +231,20 @@ bool FirstTimeWizard::validateCurrentPage()
             archive.seek(0);
 
             // call tar to extract
-            QString tarCommand = "tar";
-            QStringList tarArgs = QStringList()
+            QString tarCommand;
+            QStringList tarArgs = QStringList();
+
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
+            tarCommand = QDir(ideApp->settings()->arduinoPath()).filePath(QString("bin/unzip.exe"));
+            tarArgs << "-d" << destinationPath << archive.fileName();
+#elif defined(Q_OS_DARWIN) // MacOSX
+    #warn TODO: platform not supported yet
+#else // Linux, other Unix
+            tarCommand = "tar";
+            tarArgs = QStringList()
                 << "-x" << "-z" << "-f" << archive.fileName()
                 << "-C" << destinationPath;
-
+#endif
             QFutureWatcher<int> tarWatcher;
             QxtSignalWaiter tarWaiter(&tarWatcher, SIGNAL(finished()));
             QFuture<int> tarFuture = QtConcurrent::run(&QProcess::execute, tarCommand, tarArgs);
