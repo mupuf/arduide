@@ -17,6 +17,7 @@
 #include <QFutureWatcher>
 #include <QProcess>
 #include <qxtsignalwaiter.h>
+#include <qxttemporarydir.h>
 #include <QDebug>
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
@@ -73,7 +74,6 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
-    #pragma message("TODO: platform not supported yet")
     mDownloadOs = "Windows";
     mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".zip" ;
 #elif defined(Q_OS_DARWIN) // MacOSX
@@ -231,29 +231,29 @@ bool FirstTimeWizard::validateCurrentPage()
             archive.seek(0);
 
             // call tar to extract
-            QString tarCommand;
-            QStringList tarArgs = QStringList();
+            QString extractCommand;
+            QStringList extractArgs = QStringList();
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
-            tarCommand = QDir(ideApp->settings()->arduinoPath()).filePath(QString("bin/unzip.exe"));
-            tarArgs << "-d" << destinationPath << archive.fileName();
-            QMessageBox::information(NULL, "poulpe", "tarCommand='%1'".arg(tarCommand));
-            QMessageBox::information(NULL, "poulpe", "destinationPath='%1'".arg(destinationPath));
-            QMessageBox::information(NULL, "poulpe", "archive.fileName()='%1'".arg(archive.fileName()));
+            QxtTemporaryDir unzipDir(QDir::tempPath() + "/unzip");
+            QString unzipFileName = unzipDir.dir().filePath("unzip.exe");
+            QFile::copy(":/windows/unzip.exe", unzipFileName);
+            extractCommand = unzipFileName;
+            extractArgs << "-d" << destinationPath << archive.fileName();
 #elif defined(Q_OS_DARWIN) // MacOSX
     #warn TODO: platform not supported yet
 #else // Linux, other Unix
-            tarCommand = "tar";
-            tarArgs = QStringList()
+            extractCommand = "tar";
+            extractArgs = QStringList()
                 << "-x" << "-z" << "-f" << archive.fileName()
                 << "-C" << destinationPath;
 #endif
-            QFutureWatcher<int> tarWatcher;
-            QxtSignalWaiter tarWaiter(&tarWatcher, SIGNAL(finished()));
-            QFuture<int> tarFuture = QtConcurrent::run(&QProcess::execute, tarCommand, tarArgs);
-            tarWatcher.setFuture(tarFuture);
-            tarWaiter.wait();
-            extractSuccess = tarFuture.result() == 0;
+            QFutureWatcher<int> extractWatcher;
+            QxtSignalWaiter extractWaiter(&extractWatcher, SIGNAL(finished()));
+            QFuture<int> extractFuture = QtConcurrent::run(&QProcess::execute, extractCommand, extractArgs);
+            extractWatcher.setFuture(extractFuture);
+            extractWaiter.wait();
+            extractSuccess = extractFuture.result() == 0;
         }
 
         if (! extractSuccess)

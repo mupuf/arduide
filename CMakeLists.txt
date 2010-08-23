@@ -188,8 +188,15 @@ file(GLOB arduino_MOCS
   "gui/*.h"
   "env/*.h")
 
-file(GLOB arduino_QRCS
-  "resources/*.qrc")
+set(arduino_QRCS
+  "resources/css.qrc"
+  "resources/images.qrc"
+  "resources/js.qrc"
+  "resources/templates.qrc")
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(arduino_QRCS ${arduino_QRCS} "resources/windows.qrc")
+endif()
 
 qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
