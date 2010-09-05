@@ -141,7 +141,7 @@ void MainWindow::previousTab()
 
 void MainWindow::createDeviceChooser()
 {
-    deviceAction = ui.deviceToolBar->addAction(QIcon(":/images/atmega168_icon.svg"), tr("Device"));
+    deviceAction = ui.deviceToolBar->addAction(QIcon(":/images/atmega168_icon.png"), tr("Device"));
     deviceChooser = new DeviceChooser(this);
     connect(deviceAction, SIGNAL(triggered()), this, SLOT(chooseDevice()));
     connect(deviceChooser, SIGNAL(deviceChosen(const QString &)), SLOT(setDevice(const QString &)));
@@ -158,7 +158,7 @@ void MainWindow::chooseDevice()
 
 void MainWindow::createBoardChooser()
 {
-    boardAction = ui.deviceToolBar->addAction(QIcon(":/images/arduino_diecimila.svg"), tr("Board"));
+    boardAction = ui.deviceToolBar->addAction(QIcon(":/images/arduino_diecimila.png"), tr("Board"));
     boardChooser = new BoardChooser(this);
     connect(boardAction, SIGNAL(triggered()), this, SLOT(chooseBoard()));
     connect(boardChooser, SIGNAL(boardChosen(const QString &)), SLOT(setBoard(const QString &)));
