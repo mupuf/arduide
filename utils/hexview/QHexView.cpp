@@ -54,7 +54,13 @@ QHexView::QHexView(QWidget *parent) : QAbstractScrollArea(parent),
         setShowAddressSeparator(true);
 
         // default to a simple monospace font
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+        setFont(QFont("Lucida Console", 8));
+#elif defined(Q_OS_DARWIN)
+        setFont(QFont("Monaco", 8));
+#else
         setFont(QFont("Monospace", 8));
+#endif
 }
 
 //------------------------------------------------------------------------------

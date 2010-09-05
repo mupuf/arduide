@@ -71,9 +71,14 @@ void Settings::loadLexerProperties(LexerArduino *lexer)
     if (! lexer->readSettings(mSettings))
     {
         // set some default settings and save
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
+        QFont editorFont("Lucida Console", 9);
+#elif defined(Q_OS_DARWIN)
+        QFont editorFont("Monaco", 9);
+#else
         QFont editorFont("Monospace", 9);
+#endif
         editorFont.setStyleHint(QFont::TypeWriter);
-        editorFont.setWeight(QFont::Bold);
         lexer->setDefaultFont(editorFont);
         lexer->setFont(editorFont);
         lexer->setDefaultColor(Qt::white);

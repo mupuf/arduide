@@ -30,7 +30,7 @@ add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
 
 # Compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -Wall)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -188,8 +188,15 @@ file(GLOB arduino_MOCS
   "gui/*.h"
   "env/*.h")
 
-file(GLOB arduino_QRCS
-  "resources/*.qrc")
+set(arduino_QRCS
+  "resources/css.qrc"
+  "resources/images.qrc"
+  "resources/js.qrc"
+  "resources/templates.qrc")
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(arduino_QRCS ${arduino_QRCS} "resources/windows.qrc")
+endif()
 
 qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})

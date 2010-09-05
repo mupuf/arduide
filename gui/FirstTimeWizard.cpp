@@ -17,6 +17,7 @@
 #include <QFutureWatcher>
 #include <QProcess>
 #include <qxtsignalwaiter.h>
+#include <qxttemporarydir.h>
 #include <QDebug>
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
@@ -73,21 +74,22 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
-#pragma message("TODO: platform not supported yet")
     mDownloadOs = "Windows";
+    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".zip" ;
 #elif defined(Q_OS_DARWIN) // MacOSX
-#warn TODO: platform not supported yet
+    #warn TODO: platform not supported yet
     mDownloadOs = "MacOSX";
+    //mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".dmg" ;
 #else // Linux, other Unix
-#if defined(__x86_64__) // 64-bit Unix
-    mDownloadOs = "64-bit Linux";
-    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64-2.tgz" ;
-#elif defined(__i386__) // 32-bit Unix
-    mDownloadOs = "32-bit Linux";
-    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
-#else // other
-#error unsupported architecture
-#endif
+    #if defined(__x86_64__) // 64-bit Unix
+        mDownloadOs = "64-bit Linux";
+        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64-2.tgz" ;
+    #elif defined(__i386__) // 32-bit Unix
+        mDownloadOs = "32-bit Linux";
+        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
+    #else // other
+        #error unsupported architecture
+    #endif
 #endif
 
     downloadLabel->setText(downloadLabel->text().arg(ARDUINO_SDK_VERSION).arg(mDownloadOs));
@@ -229,17 +231,29 @@ bool FirstTimeWizard::validateCurrentPage()
             archive.seek(0);
 
             // call tar to extract
-            QString tarCommand = "tar";
-            QStringList tarArgs = QStringList()
+            QString extractCommand;
+            QStringList extractArgs = QStringList();
+
+#if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
+            QxtTemporaryDir unzipDir(QDir::tempPath() + "/unzip");
+            QString unzipFileName = unzipDir.dir().filePath("unzip.exe");
+            QFile::copy(":/windows/unzip.exe", unzipFileName);
+            extractCommand = unzipFileName;
+            extractArgs << "-d" << destinationPath << archive.fileName();
+#elif defined(Q_OS_DARWIN) // MacOSX
+    #warn TODO: platform not supported yet
+#else // Linux, other Unix
+            extractCommand = "tar";
+            extractArgs = QStringList()
                 << "-x" << "-z" << "-f" << archive.fileName()
                 << "-C" << destinationPath;
-
-            QFutureWatcher<int> tarWatcher;
-            QxtSignalWaiter tarWaiter(&tarWatcher, SIGNAL(finished()));
-            QFuture<int> tarFuture = QtConcurrent::run(&QProcess::execute, tarCommand, tarArgs);
-            tarWatcher.setFuture(tarFuture);
-            tarWaiter.wait();
-            extractSuccess = tarFuture.result() == 0;
+#endif
+            QFutureWatcher<int> extractWatcher;
+            QxtSignalWaiter extractWaiter(&extractWatcher, SIGNAL(finished()));
+            QFuture<int> extractFuture = QtConcurrent::run(&QProcess::execute, extractCommand, extractArgs);
+            extractWatcher.setFuture(extractFuture);
+            extractWaiter.wait();
+            extractSuccess = extractFuture.result() == 0;
         }
 
         if (! extractSuccess)

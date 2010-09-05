@@ -6,6 +6,7 @@ Updates the qrc files according to the contents of the subdirectories.
 """
 
 import os
+import ntpath
 import sys
 from xml.etree import ElementTree
 
@@ -19,7 +20,11 @@ def make_qrc(qrc, path):
     for root, dirs, files in os.walk(path):
         for f in files:
             builder.start('file', {})
-            builder.data(os.path.relpath(os.path.join(root, f), RESOURCE_PATH))
+            data = os.path.relpath(os.path.join(root, f), RESOURCE_PATH)
+            if os.path == ntpath:
+                # on windows, replace separators by forward slashes
+                data = data.replace('\\', '/')
+            builder.data(data)
             builder.end('file')
     builder.end('qresource')
     builder.end('RCC')
