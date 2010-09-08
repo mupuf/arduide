@@ -26,6 +26,7 @@ IDEApplication::IDEApplication(int argc, char **argv)
     setOrganizationName(PROJECT_ORGANIZATION);
     setApplicationName(PROJECT_NAME);
     setApplicationVersion(PROJECT_VERSION);
+    setWindowIcon(QIcon(":/images/arduino.png"));
 
     // fix the data path
     mDataPath = QDir(DATA_PATH).absolutePath();
