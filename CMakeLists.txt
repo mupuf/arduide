@@ -128,10 +128,15 @@ else()
 endif()
 
 # Resources
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_COMPILER_IS_GNUCXX)
-  add_custom_command(OUTPUT icon.o
-    COMMAND "${CMAKE_RC_COMPILER}" "${CMAKE_SOURCE_DIR}/win32/icon.rc" "${CMAKE_BINARY_DIR}/icon.o")
-  set(RESOURCE_OBJS icon.o)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/icon.obj"
+      COMMAND "${CMAKE_RC_COMPILER}" -O coff -i "${CMAKE_SOURCE_DIR}/win32/icon.rc" -o "${CMAKE_BINARY_DIR}/icon.obj"
+      DEPENDS "${CMAKE_SOURCE_DIR}/win32/icon.rc")
+    set(rc_SOURCES "${CMAKE_BINARY_DIR}/icon.obj")
+  else()
+    set(rc_SOURCES win32/icon.rc)
+  endif()
 endif()
 
 if(QScintilla_LIBRARY)
@@ -219,10 +224,11 @@ add_executable(arduino-ide
   ${arduino_MOC_SOURCES}
   ${utils_SOURCES}
   ${utils_OS_SOURCES}
-  ${utils_MOC_SOURCES})
+  ${utils_MOC_SOURCES}
+  ${rc_SOURCES})
 set_target_properties(arduino-ide PROPERTIES
   ENABLE_EXPORTS ON)
-target_link_libraries(arduino-ide ${arduino_LINK_LIBRARIES} ${RESOURCE_OBJS})
+target_link_libraries(arduino-ide ${arduino_LINK_LIBRARIES})
 
 # Plugins
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
