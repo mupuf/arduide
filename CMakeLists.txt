@@ -127,6 +127,13 @@ else()
   find_library(QScintilla_LIBRARY qscintilla2 HINTS ${QT_LIBRARY_DIR})
 endif()
 
+# Resources
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows" AND CMAKE_COMPILER_IS_GNUCXX)
+  add_custom_command(OUTPUT icon.o
+    COMMAND "${CMAKE_RC_COMPILER}" "${CMAKE_SOURCE_DIR}/win32/icon.rc" "${CMAKE_BINARY_DIR}/icon.o")
+  set(RESOURCE_OBJS icon.o)
+endif()
+
 if(QScintilla_LIBRARY)
   message(STATUS "QScintilla library: ${QScintilla_LIBRARY}")
   get_filename_component(QScintilla_LIBRARY_PATH "${QScintilla_LIBRARY}" PATH)
@@ -215,7 +222,7 @@ add_executable(arduino-ide
   ${utils_MOC_SOURCES})
 set_target_properties(arduino-ide PROPERTIES
   ENABLE_EXPORTS ON)
-target_link_libraries(arduino-ide ${arduino_LINK_LIBRARIES})
+target_link_libraries(arduino-ide ${arduino_LINK_LIBRARIES} ${RESOURCE_OBJS})
 
 # Plugins
 if(CMAKE_BUILD_TYPE STREQUAL Debug)

@@ -30,7 +30,6 @@
 #include "../env/ProjectHistory.h"
 #include "IDEApplication.h"
 
-
 #include "ui_AboutDialog.h"
 
 MainWindow::MainWindow()
