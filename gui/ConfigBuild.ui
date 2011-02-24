@@ -6,14 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>134</width>
-    <height>29</height>
+    <width>191</width>
+    <height>54</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QCheckBox" name="filterDevicesBox">
+     <property name="text">
+      <string>Filter devices list</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QCheckBox" name="verboseBox">
      <property name="text">

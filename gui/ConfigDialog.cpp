@@ -71,6 +71,7 @@ void ConfigWidget::resetPage(int index)
         break;
     case BuildIndex:
         uiBuild.verboseBox->setChecked(settings->verboseUpload());
+        uiBuild.filterDevicesBox->setChecked(settings->filterSerialDevices());
         break;
     }
 }
@@ -123,6 +124,7 @@ void ConfigWidget::setupUi()
     connect(uiPaths.arduinoPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
     connect(uiPaths.sketchbookPathEdit, SIGNAL(textChanged(const QString &)), this, SLOT(fieldChange()));
     connect(uiBuild.verboseBox, SIGNAL(stateChanged(int)), this, SLOT(fieldChange()));
+    connect(uiBuild.filterDevicesBox, SIGNAL(stateChanged(int)), this, SLOT(fieldChange()));
 
     connect(uiEditor.fontChooseButton, SIGNAL(clicked()), this, SLOT(chooseFont()));
     connect(uiEditor.colorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setColorAtIndex(int)));
@@ -242,6 +244,8 @@ bool ConfigWidget::saveConfig()
         }
         else if (field == uiBuild.verboseBox)
             settings->setVerboseUpload(uiBuild.verboseBox->isChecked());
+        else if (field == uiBuild.filterDevicesBox)
+            settings->setFilterDevices(uiBuild.filterDevicesBox->isChecked());
     }
     mChangedFields.clear();
 

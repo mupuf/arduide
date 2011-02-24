@@ -56,6 +56,16 @@ void Settings::setBoard(const QString &board)
     mSettings.setValue("board", board);
 }
 
+bool Settings::filterSerialDevices() const
+{
+    return mSettings.value("filterSerialDevices", true).toBool();
+}
+
+void Settings::setFilterDevices(bool value)
+{
+    mSettings.setValue("filterSerialDevices", value);
+}
+
 bool Settings::verboseUpload() const
 {
     return mSettings.value("verboseUpload", false).toBool();

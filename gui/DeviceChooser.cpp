@@ -28,7 +28,7 @@ void DeviceChooser::refresh()
     clear();
 
     QAction *action;
-    foreach (const Device &dev, Device::listDevices())
+    foreach (const Device &dev, Device::listDevices(ideApp->settings()->filterSerialDevices()))
     {
         QString name = QString("%0: %1").arg(dev.port()).arg(dev.description());
         const QString &port = dev.port();

@@ -28,6 +28,8 @@ public:
     void setDevicePort(const QString &port);
     QString board() const;
     void setBoard(const QString &board);
+    bool filterSerialDevices() const;
+    void setFilterDevices(bool value);
     bool verboseUpload() const;
     void setVerboseUpload(bool verbose);
 

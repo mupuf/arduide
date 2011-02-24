@@ -19,7 +19,7 @@ public:
     const QString &description() const { return mDescription; }
     const QString &port() const { return mPort; }
 
-    static DeviceList listDevices();
+    static DeviceList listDevices(bool filterDevices=true);
 
 private:
     QString mDescription;

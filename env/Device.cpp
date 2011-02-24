@@ -31,7 +31,7 @@ Device::Device(const QString &description, const QString &port)
     mPort = port;
 }
 
-DeviceList Device::listDevices()
+DeviceList Device::listDevices(bool filterDevices)
 {
     DeviceList l;
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
@@ -127,7 +127,7 @@ DeviceList Device::listDevices()
             close(fd);
         }
 
-        if (is_serial)
+        if (is_serial || !filterDevices)
         {
             devname = NULL;
             // get the name of the parent device, use it as the device description

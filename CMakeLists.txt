@@ -25,7 +25,7 @@ add_definitions(-DPROJECT_LICENSE="${PROJECT_LICENSE}")
 add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
 # Compatible version of the Arduino SDK
-set(ARDUINO_SDK_VERSION "0018")
+set(ARDUINO_SDK_VERSION "0022")
 add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
 
 # Compiler flags
