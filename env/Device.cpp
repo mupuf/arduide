@@ -36,7 +36,9 @@ DeviceList Device::listDevices(bool filterDevices)
     DeviceList l;
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
     HKEY key;
-    LONG res = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Hardware\\DeviceMap\\SerialComm", 0, KEY_READ, &key);
+    LONG res = RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+                             "Hardware\\DeviceMap\\SerialComm",
+                             0, KEY_READ, &key);
     DWORD index = 0;
     CHAR valueName[256];
     CHAR valueData[256];
@@ -48,7 +50,9 @@ DeviceList Device::listDevices(bool filterDevices)
         {
             valueNameSize = 256;
             valueDataSize = 256;
-            res = RegEnumValueA(key, index, valueName, &valueNameSize, NULL, &valueType, (BYTE *) valueData, &valueDataSize);
+            res = RegEnumValueA(key, index, valueName,
+                                &valueNameSize, NULL, &valueType,
+                                (BYTE *) valueData, &valueDataSize);
             if (res == ERROR_SUCCESS && valueType == REG_SZ)
                 l << Device(valueName, valueData);
             index++;
@@ -66,37 +70,50 @@ DeviceList Device::listDevices(bool filterDevices)
     kernResult = IOMasterPort(MACH_PORT_NULL, &masterPort);
     if (kernResult == KERN_SUCCESS)
     {
-	classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue);
-	if (classesToMatch != NULL)
-	{
-	    CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey), CFSTR(kIOSerialBSDRS232Type));
-	    kernResult = IOServiceGetMatchingServices(masterPort, classesToMatch, &serialPortIterator);
-	    if (kernResult == KERN_SUCCESS)
-	    {
-		while (serialPort = IOIteratorNext(serialPortIterator))
-		{
-		    deviceFilePathAsCFString = IORegistryEntryCreateCFProperty(serialPort, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, 0);
-		    if (deviceFilePathAsCFString)
-		    {
-			Boolean result = CFStringGetCString((CFStringRef) deviceFilePathAsCFString, deviceFilePath, MAXPATHLEN, kCFStringEncodingASCII);
-			CFRelease(deviceFilePathAsCFString);
-			if (result)
-			    l.append(Device(QObject::tr("Serial callout"), deviceFilePath));
-		    }
+        classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue);
+        if (classesToMatch != NULL)
+        {
+            CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey),
+                                 CFSTR(kIOSerialBSDRS232Type));
+            kernResult = IOServiceGetMatchingServices(masterPort,
+                                                      classesToMatch,
+                                                      &serialPortIterator);
+            if (kernResult == KERN_SUCCESS)
+            {
+                while (serialPort = IOIteratorNext(serialPortIterator))
+                {
+                    deviceFilePathAsCFString = IORegistryEntryCreateCFProperty(serialPort,
+                                                                               CFSTR(kIOCalloutDeviceKey),
+                                                                               kCFAllocatorDefault, 0);
+                    if (deviceFilePathAsCFString)
+                    {
+                        Boolean result = CFStringGetCString((CFStringRef) deviceFilePathAsCFString,
+                                                            deviceFilePath, MAXPATHLEN,
+                                                            kCFStringEncodingASCII);
+                        CFRelease(deviceFilePathAsCFString);
+                        if (result)
+                            l.append(Device(QObject::tr("Serial callout"),
+                                            deviceFilePath));
+                    }
 
-		    deviceFilePathAsCFString = IORegistryEntryCreateCFProperty(serialPort, CFSTR(kIODialinDeviceKey), kCFAllocatorDefault, 0);
-		    if (deviceFilePathAsCFString)
-		    {
-			Boolean result = CFStringGetCString((CFStringRef) deviceFilePathAsCFString, deviceFilePath, MAXPATHLEN, kCFStringEncodingASCII);
-			CFRelease(deviceFilePathAsCFString);
-			if (result)
-			    l.append(Device(QObject::tr("Serial dialin"), deviceFilePath));
-		    }
-		    IOObjectRelease(serialPort);
-		}
-		IOObjectRelease(serialPortIterator);
-	    }
-	}
+                    deviceFilePathAsCFString = IORegistryEntryCreateCFProperty(serialPort,
+                                                                               CFSTR(kIODialinDeviceKey),
+                                                                               kCFAllocatorDefault, 0);
+                    if (deviceFilePathAsCFString)
+                    {
+                        Boolean result = CFStringGetCString((CFStringRef) deviceFilePathAsCFString,
+                                                            deviceFilePath, MAXPATHLEN,
+                                                            kCFStringEncodingASCII);
+                        CFRelease(deviceFilePathAsCFString);
+                        if (result)
+                            l.append(Device(QObject::tr("Serial dialin"),
+                                            deviceFilePath));
+                    }
+                    IOObjectRelease(serialPort);
+                }
+                IOObjectRelease(serialPortIterator);
+            }
+        }
     }
 #elif defined(USE_LIBUDEV)
     udev *udev = udev_new();
@@ -108,22 +125,34 @@ DeviceList Device::listDevices(bool filterDevices)
     const char *devnode, *devname;
     serial_struct serial;
     bool is_serial;
+    bool is_modem;
     int fd;
     udev_list_entry_foreach(list_entry_current, list_entry)
     {
-        udev_device *device = udev_device_new_from_syspath(udev, udev_list_entry_get_name(list_entry_current));
+        udev_device *device = udev_device_new_from_syspath(udev,
+                                                           udev_list_entry_get_name(list_entry_current));
         devnode = udev_device_get_devnode(device);
         is_serial = false;
+        is_modem = false;
         fd = open(devnode, O_RDONLY | O_NONBLOCK);
         if (fd >= 0)
         {
-            // get serial properties from descriptor
-            if (ioctl(fd, TIOCGSERIAL, &serial) != -1 && serial.type == 0)
+            // dummy read check (detect non-existing RS232 ports)
+            if (read(fd, NULL, 0) == 0)
             {
-                // dummy read check (detect non-existing RS232 ports)
-                if (read(fd, NULL, 0) == 0)
+                // get serial properties from descriptor
+                if (ioctl(fd, TIOCGSERIAL, &serial) != -1 && serial.type == 0)
+                {
                     is_serial = true;
+                    is_modem = false;
+                }
+                else if (strncmp(devnode, "/dev/ttyACM", 11) == 0)
+                {
+                    is_serial = true;
+                    is_modem = true;
+                }
             }
+
             close(fd);
         }
 
@@ -131,14 +160,21 @@ DeviceList Device::listDevices(bool filterDevices)
         {
             devname = NULL;
             // get the name of the parent device, use it as the device description
-            for (udev_device *parent_device = device; parent_device != NULL && devname == NULL; parent_device = udev_device_get_parent(parent_device))
+            for (udev_device *parent_device = device;
+                 parent_device != NULL &&devname == NULL;
+                 parent_device = udev_device_get_parent(parent_device))
             {
                 devname = udev_device_get_sysattr_value(parent_device, "name");
                 if (! devname)
                     devname = udev_device_get_sysattr_value(parent_device, "interface");
             }
             if (devname == NULL)
-                devname = "unknown";
+            {
+                if (is_modem)
+                    devname = "Serial Port";
+                else
+                    devname = "unknown";
+            }
             l << Device(devname, devnode);
         }
         udev_device_unref(device);
@@ -146,15 +182,20 @@ DeviceList Device::listDevices(bool filterDevices)
     udev_enumerate_unref(enumerate);
     udev_unref(udev);
 #elif defined(UDE_DBUS)
-    QDBusInterface manager("org.freedesktop.Hal", "/org/freedesktop/Hal/Manager", "org.freedesktop.Hal.Manager", QDBusConnection::systemBus());
+    QDBusInterface manager("org.freedesktop.Hal", "/org/freedesktop/Hal/Manager",
+                           "org.freedesktop.Hal.Manager", QDBusConnection::systemBus());
     QVariantList devices = manager.call("FindDeviceByCapability", "serial").arguments();
     if (devices.size() == 1)
     {
         foreach (const QString &key, devices[0].toStringList())
         {
-            QDBusInterface device("org.freedesktop.Hal", key, "org.freedesktop.Hal.Device", QDBusConnection::systemBus());
-            QVariantList description = device.call("GetPropertyString", "info.product").arguments();
-            QVariantList port = device.call("GetPropertyString", "serial.device").arguments();
+            QDBusInterface device("org.freedesktop.Hal", key,
+                                  "org.freedesktop.Hal.Device",
+                                  QDBusConnection::systemBus());
+            QVariantList description = device.call("GetPropertyString",
+                                                   "info.product").arguments();
+            QVariantList port = device.call("GetPropertyString",
+                                            "serial.device").arguments();
             if (port.size() == 1 && description.size() == 1)
                 l.append(Device(description[0].toString(), port[0].toString()));
         }
