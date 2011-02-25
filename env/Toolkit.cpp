@@ -66,7 +66,18 @@ QString Toolkit::keywordsFileName()
 
 bool Toolkit::isValidArduinoPath(const QString &path)
 {
-    return QFileInfo(QDir(path).filePath("hardware/arduino/boards.txt")).isReadable();
+    if(QFileInfo(QDir(path).filePath("hardware/arduino/boards.txt")).isReadable())
+    {
+        QFile file(QDir(path).filePath("revisions.txt"));
+        if(!file.open(QFile::ReadOnly))
+            return false;
+
+        QByteArray arduinoVersion = file.readLine();
+        QList<QByteArray> list = arduinoVersion.split(' ');
+        return list.size() >= 2 && list.at(1) == ARDUINO_SDK_VERSION;
+    }
+
+    return false;
 }
 
 QString Toolkit::avrPath()
