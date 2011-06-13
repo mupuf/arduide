@@ -21,7 +21,7 @@ class QPluginLoader;
 class IDE_EXPORT IDEApplication : public QApplication
 {
 public:
-    IDEApplication(int argc, char **argv);
+    IDEApplication(int& argc, char **argv);
 
     const QString &dataPath() { return mDataPath; }
     MainWindow *mainWindow() { return mMainWindow; }

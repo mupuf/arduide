@@ -20,7 +20,7 @@ void IDEApplication::registerMetaTypes()
     qRegisterMetaType<QTextCharFormat>("QTextCharFormat");
 }
 
-IDEApplication::IDEApplication(int argc, char **argv)
+IDEApplication::IDEApplication(int& argc, char **argv)
     : QApplication(argc, argv)
 {
     setOrganizationName(PROJECT_ORGANIZATION);
