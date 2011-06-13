@@ -181,7 +181,7 @@ DeviceList Device::listDevices(bool filterDevices)
     }
     udev_enumerate_unref(enumerate);
     udev_unref(udev);
-#elif defined(UDE_DBUS)
+#elif defined(USE_DBUS)
     QDBusInterface manager("org.freedesktop.Hal", "/org/freedesktop/Hal/Manager",
                            "org.freedesktop.Hal.Manager", QDBusConnection::systemBus());
     QVariantList devices = manager.call("FindDeviceByCapability", "serial").arguments();
