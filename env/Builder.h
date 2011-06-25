@@ -35,6 +35,7 @@ private:
     };
     bool archive(const QString &fileName, const QStringList &objects);
     bool link(const QString &fileName, const QStringList &objects, const QStringList &ldflags);
+    bool size(const QString &fileName, const QStringList &sizeflags);
     bool extractEEPROM(const QString &input, const QString &output);
     bool extractHEX(const QString &input, const QString &output);
     bool uploadViaBootloader(const QString &hexFileName);

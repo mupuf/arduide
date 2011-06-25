@@ -29,13 +29,15 @@ public:
         AvrGcc,
         AvrGxx,
         AvrAr,
-        AvrObjcopy
+        AvrObjcopy,
+        AvrSize
     };
     static QString avrTool(AVRTool tool);
     static QStringList avrCFlags(const Board *board);
     static QStringList avrCxxFlags(const Board *board);
     static QStringList avrSFlags(const Board *board);
     static QStringList avrLdFlags(const Board *board);
+    static QStringList avrSizeFlags(const Board *board);
     static QString corePath(const Board *board);
     static QStringList IDELibraries();
     static QStringList userLibraries();

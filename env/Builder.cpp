@@ -130,6 +130,7 @@ bool Builder::build(const QString &code, bool upload)
     QStringList cxxflags = Toolkit::avrCxxFlags(board());
     QStringList sflags = Toolkit::avrSFlags(board());
     QStringList ldflags = Toolkit::avrLdFlags(board());
+    QStringList sizeflags = Toolkit::avrSizeFlags(board());
     QStringList includePaths;
 
     // compile the core
@@ -209,6 +210,13 @@ bool Builder::build(const QString &code, bool upload)
         return false;
     }
 
+    // display size of the .elf file
+    emit logImportant(tr("Sizing..."));
+    if (! size(elfFileName, QStringList() << sizeflags))
+    {
+        emit logError(tr("Sizing failed."));
+        return false;
+    }
     // extract EEPROM
     QString eepFileName = QDir(buildPath).filePath("sketch.eep");
     if (! extractEEPROM(elfFileName, eepFileName))
@@ -321,6 +329,16 @@ bool Builder::link(const QString &fileName, const QStringList &objects, const QS
         << objects
         << QString("-L%0").arg(mBuildDir->path())
         << "-lm";
+    return runCommand(command) == 0;
+}
+
+bool Builder::size(const QString &fileName, const QStringList &sizeflags)
+{
+    QStringList command;
+    command
+        << Toolkit::avrTool(Toolkit::AvrSize)
+        << sizeflags
+        << fileName;
     return runCommand(command) == 0;
 }
 

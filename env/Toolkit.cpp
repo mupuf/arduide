@@ -107,6 +107,9 @@ QString Toolkit::avrTool(Toolkit::AVRTool tool)
     case AvrObjcopy:
         toolName = "avr-objcopy";
         break;
+    case AvrSize:
+        toolName = "avr-size";
+        break;
     default:
         return QString();
     }
@@ -158,6 +161,14 @@ QStringList Toolkit::avrLdFlags(const Board *board)
         << "-Wl,--gc-sections"
         << QString("-mmcu=%0").arg(board->attribute("build.mcu"));
     return ldflags;
+}
+
+QStringList Toolkit::avrSizeFlags(const Board *board)
+{
+    QStringList sizeflags;
+    sizeflags
+        << "-t";
+    return sizeflags;
 }
 
 QString Toolkit::corePath(const Board *board)
