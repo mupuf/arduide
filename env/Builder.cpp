@@ -215,7 +215,6 @@ bool Builder::build(const QString &code, bool upload)
     if (! size(elfFileName, QStringList() << sizeflags))
     {
         emit logError(tr("Sizing failed."));
-        return false;
     }
     // extract EEPROM
     QString eepFileName = QDir(buildPath).filePath("sketch.eep");
