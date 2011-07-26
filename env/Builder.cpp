@@ -70,6 +70,12 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
                     emit logError(tr("Failed to create build directory."));
                     return false;
                 }
+                foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.h" << "*.hpp", QDir::Files))
+                {
+                    QString path=QDir(utilityPath).filePath(source);
+                    if (! compileDependencies(objects, readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags))
+                        return false;
+                }
                 foreach (const QString &source, QDir(libPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
                 {
                     QString path=QDir(libPath).filePath(source);
@@ -81,7 +87,7 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
                     return false;
             }
 
-            if (utilityPathExists && !includePaths.contains(libPath))
+            if (utilityPathExists && !includePaths.contains(utilityPath))
             {
                 // Add the path of the utility we are compiling to the global includePaths
                 includePaths << utilityPath;
@@ -91,6 +97,12 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
                 {
                     emit logError(tr("Failed to create build directory."));
                     return false;
+                }
+                foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.h" << "*.hpp", QDir::Files))
+                {
+                    QString path=QDir(utilityPath).filePath(source);
+                    if (! compileDependencies(objects, readAllFile(path), includePaths, buildPath, cflags, cxxflags, sflags))
+                        return false;
                 }
                 foreach (const QString &source, QDir(utilityPath).entryList(QStringList() << "*.S" << "*.c" << "*.cpp", QDir::Files))
                 {
