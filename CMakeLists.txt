@@ -40,6 +40,8 @@ endif(NOT CMAKE_BUILD_TYPE)
 # Data path
 option(USE_FHS_PATHS "Use the standard UNIX paths instead of installing everything in the same folder." OFF)
 
+option (UPDATE_TRANSLATIONS "Update source translation translations/*.ts files (WARNING: make clean will delete the source .ts files! Danger!)")
+
 # arduino_DATA_PATH is where the files are installed
 # the DATA_PATH define is where the files are found at runtime
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -204,6 +206,11 @@ file(GLOB arduino_MOCS
   "gui/*.h"
   "env/*.h")
 
+set(arduino_TS
+	"translations/template_arduide_xx.ts"
+	"translations/arduide_fr.ts"
+	"translations/arduide_es.ts")
+
 set(arduino_QRCS
   "resources/css.qrc"
   "resources/images.qrc"
@@ -218,6 +225,24 @@ qt4_wrap_ui(arduino_UI_SOURCES ${arduino_UIS})
 qt4_wrap_cpp(arduino_MOC_SOURCES ${arduino_MOCS})
 qt4_add_resources(arduino_QRC_SOURCES ${arduino_QRCS})
 
+if (UPDATE_TRANSLATIONS)
+  set (FILES_TO_TRANSLATE ${arduino_SOURCES}
+  ${arduino_UI_SOURCES}
+  ${arduino_QRC_SOURCES}
+  ${arduino_MOC_SOURCES}
+  ${utils_SOURCES}
+  ${utils_OS_SOURCES}
+  ${utils_MOC_SOURCES}
+  ${rc_SOURCES})
+  qt4_create_translation(QM_FILES ${FILES_TO_TRANSLATE} ${arduino_TS})
+else (UPDATE_TRANSLATIONS)
+  qt4_add_translation(QM_FILES ${arduino_TS})
+endif (UPDATE_TRANSLATIONS) 
+add_custom_target (translations_target DEPENDS ${QM_FILES})
+
+install(FILES ${QM_FILES} DESTINATION
+${CMAKE_INSTALL_PREFIX}/translations)
+
 set(arduino_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
 
 add_executable(arduino-ide
@@ -229,7 +254,8 @@ add_executable(arduino-ide
   ${utils_SOURCES}
   ${utils_OS_SOURCES}
   ${utils_MOC_SOURCES}
-  ${rc_SOURCES})
+  ${rc_SOURCES}
+  ${arduino_QM})
 set_target_properties(arduino-ide PROPERTIES
   ENABLE_EXPORTS ON)
 target_link_libraries(arduino-ide ${arduino_LINK_LIBRARIES})
@@ -249,6 +275,20 @@ else()
 endif()
 add_subdirectory(plugins)
 
+# Translations
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  set(arduino_TRANSLATION_PATH "${CMAKE_BINARY_DIR}")
+  add_definitions(-DTRANSLATION_PATH="${arduino_TRANSLATION_PATH}")
+else()
+  if(USE_FHS_PATHS)
+    set(arduino_TRANSLATION_PATH "${CMAKE_INSTALL_PREFIX}/share/arduino-ide/translations")
+    add_definitions(-DTRANSLATION_PATH="${arduino_TRANSLATION_PATH}")
+  else()
+    set(arduino_TRANSLATION_PATH "/translations")
+    add_definitions(-DTRANSLATION_PATH="translations")
+  endif()
+endif()
+
 # Install
 if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${arduino_DATA_PATH}")
@@ -265,6 +305,8 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
   #     PATTERN "*.dll")
   endif()
 endif()
+
+install(FILES ${arduino_QM} DESTINATION "${arduino_TRANSLATION_PATH}")
 
 ### Packages
 set(CPACK_SET_DESTDIR ON)
@@ -326,4 +368,7 @@ message("* Compilation type: CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
 message(" Debug: makes the application directly runnable from the build tree, for developers")
 message("  - Note that you can't install in Debug mode.")
 message(" Release/Other: you must install the application before you can run it")
+message("* Update translations: UPDATE_TRANSLATIONS=${UPDATE_TRANSLATIONS}")
+message("    WARNING: Do not run \"make clean\" when in update translation mode!")
+message("    Run \"make translations_target\" to re-generate translations")
 message("")

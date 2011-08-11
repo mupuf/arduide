@@ -8,6 +8,7 @@
 #define IDEAPPLICATION_H
 
 #include <QApplication>
+#include <QTranslator>
 #include <grantlee_core.h>
 
 #include "gui/MainWindow.h"
@@ -35,6 +36,7 @@ private:
     void initializeGui();
     void initializeSettings();
     void initializePlugins();
+    void initializeTranslator();
 
     QString mDataPath;
     MainWindow *mMainWindow;
@@ -42,6 +44,7 @@ private:
     QPluginLoader *mPluginLoader;
     ProjectHistory *mProjectHistory;
     Settings *mSettings;
+    QTranslator mTranslator;
 };
 
 #define ideApp (static_cast<IDEApplication *>(qApp))

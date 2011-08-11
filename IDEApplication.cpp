@@ -28,6 +28,9 @@ IDEApplication::IDEApplication(int& argc, char **argv)
     setApplicationVersion(PROJECT_VERSION);
     setWindowIcon(QIcon(":/images/arduino.png"));
 
+    // translation support
+    initializeTranslator();
+
     // fix the data path
     mDataPath = QDir(DATA_PATH).absolutePath();
 
@@ -103,4 +106,14 @@ void IDEApplication::initializePlugins()
         else
             qDebug() << mPluginLoader->errorString();
     }
+}
+
+
+void IDEApplication::initializeTranslator()
+{
+    if(! mTranslator.load("arduide_" + QLocale::system().name(), TRANSLATION_PATH))
+     {
+      qDebug() << "loading translator failed.";
+     }
+    installTranslator(&mTranslator);
 }
