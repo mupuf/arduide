@@ -36,6 +36,8 @@ find grantlee -type f -name '*.dll' -print | while read plugin; do
 done
 
 cp -dpr "${base_dir}/data" "${release_dir}/data"
+
+mkdir "${release_dir}/translations"
 cp -dpr ${build_dir}/*.qm "${release_dir}/translations"
 
 for dll in mingwm10.dll libgcc_s_dw2-1.dll QtCore4.dll QtGui4.dll QtNetwork4.dll QtWebKit4.dll QtScript4.dll QtXmlPatterns4.dll phonon4.dll; do
