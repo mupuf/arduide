@@ -234,13 +234,13 @@ if (UPDATE_TRANSLATIONS)
   ${utils_OS_SOURCES}
   ${utils_MOC_SOURCES}
   ${rc_SOURCES})
-  qt4_create_translation(QM_FILES ${FILES_TO_TRANSLATE} ${arduino_TS})
+  qt4_create_translation(arduino_QM ${FILES_TO_TRANSLATE} ${arduino_TS})
 else (UPDATE_TRANSLATIONS)
-  qt4_add_translation(QM_FILES ${arduino_TS})
-endif (UPDATE_TRANSLATIONS) 
-add_custom_target (translations_target DEPENDS ${QM_FILES})
+  qt4_add_translation(arduino_QM ${arduino_TS})
+endif (UPDATE_TRANSLATIONS)
+add_custom_target (translations_target DEPENDS ${arduino_QM})
 
-install(FILES ${QM_FILES} DESTINATION
+install(FILES ${arduino_QM} DESTINATION
 ${CMAKE_INSTALL_PREFIX}/translations)
 
 set(arduino_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
