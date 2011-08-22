@@ -39,6 +39,7 @@ MainWindow::MainWindow()
     ui.actionAbout->setText(ui.actionAbout->text().arg(PROJECT_NAME));
 
     ui.dockWidget->hide();
+    ui.dockSearchReplace->hide();
 }
 
 void MainWindow::initialize()
@@ -53,6 +54,7 @@ void MainWindow::initialize()
     tabHasChanged();
 
     restoreState(ideApp->settings()->mainWindowState());
+    showSearchBox(false);
 }
 
 void MainWindow::setupActions()
@@ -72,6 +74,7 @@ void MainWindow::setupActions()
     connect(ui.actionRedo, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui.action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
     connect(ui.action_Cut, SIGNAL(triggered()), this, SLOT(cut()));
+    connect(ui.action_Search, SIGNAL(triggered(bool)), this, SLOT(showSearchBox(bool)));
     connect(ui.action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
     connect(ui.action_Build, SIGNAL(triggered()), this, SLOT(build()));
     connect(ui.action_Upload, SIGNAL(triggered()), this, SLOT(upload()));
@@ -84,6 +87,12 @@ void MainWindow::setupActions()
     connect(ui.actionCommunityArduinoForums, SIGNAL(triggered()), this, SLOT(openCommunityArduinoForums()));
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+    connect(ui.lineSearch, SIGNAL(returnPressed()), this, SLOT(search()));
+    connect(ui.lineReplace, SIGNAL(returnPressed()), this, SLOT(search()));
+    connect(ui.pushSearch, SIGNAL(clicked()), this, SLOT(search()));
+    connect(ui.pushReplace, SIGNAL(clicked()), this, SLOT(replace()));
+    connect(ui.pushReplaceAll, SIGNAL(clicked()), this, SLOT(replaceAll()));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
@@ -102,7 +111,7 @@ void MainWindow::setupActions()
 
 void MainWindow::createBrowserAndTabs()
 {
-    tabWidget = new QTabWidget;
+    tabWidget = ui.tabWidget;
     tabWidget->setTabsClosable(true);
     tabWidget->setMovable(true);
     tabWidget->addAction(ui.actionGo_to_the_next_tab);
@@ -353,6 +362,80 @@ void MainWindow::finishedBuilding()
 {
 
     emit buildFinished(true);
+}
+
+void MainWindow::showSearchBox(bool show)
+{
+     ui.dockSearchReplace->setVisible(show);
+     if (show)
+     {
+          ui.lineSearch->setFocus();
+     }
+}
+
+bool MainWindow::search()
+{
+     QString searchText = ui.lineSearch->text();
+     bool re = ui.checkRegExp->isChecked();
+     bool wo = ui.checkWordOnly->isChecked();
+     bool cs = ui.checkCaseSensitive->isChecked();
+
+     Editor *e = currentEditor();
+     if (!e) {
+          int flags = QWebPage::FindWrapsAroundDocument;
+          if (cs)
+               flags |= QWebPage::FindCaseSensitively;
+          browser->findText(searchText, (QWebPage::FindFlags)flags);
+          return false;
+     }
+
+     bool found = e->findFirst(searchText, re, cs, wo, true);
+     if (!found)
+          QMessageBox::warning(this,
+                               tr("Arduide - No occurence found"),
+                               tr("No occurence of '%1' found").arg(searchText));
+     return found;
+}
+
+bool MainWindow::replace()
+{
+     QString replaceText = ui.lineReplace->text();
+
+     Editor *e = currentEditor();
+     if (!e)
+          return false;
+     bool found = search();
+     if (found)
+          e->replace(replaceText);
+
+     return found;
+}
+
+bool MainWindow::replaceAll()
+{
+     QString replaceText = ui.lineReplace->text();
+
+     Editor *e = currentEditor();
+     if (!e)
+          return false;
+
+     bool found = search();
+     if (found)
+     {
+          int count = 0;
+          do
+          {
+               e->replace(replaceText);
+               count++;
+          } while (e->findNext());
+
+          QMessageBox::information(this, tr("Arduide - Replace All"),
+                                   tr("The Replace All feature replaced %1 occurences").arg(count));
+
+          return true;
+     }
+     else
+          return false;
 }
 
 void MainWindow::open(const QString &_fileName)
