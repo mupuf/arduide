@@ -624,7 +624,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="439"/>
+        <location filename="../build/ui_MainWindow.h" line="450"/>
         <source>Arduino IDE</source>
         <translation>IDE Arduino</translation>
     </message>
@@ -633,281 +633,291 @@
         <translation type="obsolete">Rechercher/Remplacer</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="490"/>
+        <location filename="../build/ui_MainWindow.h" line="501"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="491"/>
+        <location filename="../build/ui_MainWindow.h" line="503"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="492"/>
+        <location filename="../build/ui_MainWindow.h" line="504"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edition</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="493"/>
+        <location filename="../build/ui_MainWindow.h" line="505"/>
         <source>&amp;Settings</source>
         <translation>&amp;Configuration</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="494"/>
+        <location filename="../build/ui_MainWindow.h" line="506"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="495"/>
+        <location filename="../build/ui_MainWindow.h" line="507"/>
         <source>Community</source>
         <translation>Communauté</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="496"/>
+        <location filename="../build/ui_MainWindow.h" line="508"/>
         <source>&amp;View</source>
         <translation>&amp;Vue</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="497"/>
+        <location filename="../build/ui_MainWindow.h" line="510"/>
         <source>Edition</source>
         <translation>Edition</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="498"/>
+        <location filename="../build/ui_MainWindow.h" line="511"/>
         <source>Hardware</source>
         <translation>Hardware</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="499"/>
+        <location filename="../build/ui_MainWindow.h" line="512"/>
         <source>Build tools</source>
         <translation>Outils de Construction</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="500"/>
+        <location filename="../build/ui_MainWindow.h" line="513"/>
         <source>Utility dock</source>
         <translation>Utility dock</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="501"/>
+        <location filename="../build/ui_MainWindow.h" line="514"/>
         <source>Output</source>
         <translation>Sortie</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="440"/>
+        <location filename="../build/ui_MainWindow.h" line="451"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quitter</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="441"/>
+        <location filename="../build/ui_MainWindow.h" line="452"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="442"/>
+        <location filename="../build/ui_MainWindow.h" line="453"/>
         <source>&amp;New</source>
         <translation>&amp;Nouveau</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="443"/>
+        <location filename="../build/ui_MainWindow.h" line="454"/>
         <source>Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="444"/>
+        <location filename="../build/ui_MainWindow.h" line="455"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copier</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="445"/>
+        <location filename="../build/ui_MainWindow.h" line="456"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="446"/>
+        <location filename="../build/ui_MainWindow.h" line="457"/>
         <source>&amp;Paste</source>
         <translation>&amp;Coller</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="447"/>
+        <location filename="../build/ui_MainWindow.h" line="458"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="448"/>
+        <location filename="../build/ui_MainWindow.h" line="459"/>
         <source>&amp;Cut</source>
         <translation>&amp;Couper</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="449"/>
+        <location filename="../build/ui_MainWindow.h" line="460"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="450"/>
+        <location filename="../build/ui_MainWindow.h" line="461"/>
         <source>&amp;Save</source>
         <translation>&amp;Sauver</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="451"/>
+        <location filename="../build/ui_MainWindow.h" line="462"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="452"/>
+        <location filename="../build/ui_MainWindow.h" line="463"/>
         <source>&amp;Open</source>
         <translation>&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="453"/>
+        <location filename="../build/ui_MainWindow.h" line="464"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="454"/>
+        <location filename="../build/ui_MainWindow.h" line="465"/>
         <source>&amp;Close</source>
         <translation>&amp;Fermer</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="455"/>
+        <location filename="../build/ui_MainWindow.h" line="466"/>
         <source>Ctrl+W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="456"/>
+        <location filename="../build/ui_MainWindow.h" line="467"/>
         <source>&amp;Build (verify)</source>
         <translation>&amp;Construire(Verifier)</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="457"/>
+        <location filename="../build/ui_MainWindow.h" line="468"/>
         <source>Ctrl+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="458"/>
+        <location filename="../build/ui_MainWindow.h" line="469"/>
         <source>&amp;Utilities</source>
         <translation>&amp;Outils</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="460"/>
+        <location filename="../build/ui_MainWindow.h" line="471"/>
         <source>Utilities</source>
         <translation>Outils</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="462"/>
+        <location filename="../build/ui_MainWindow.h" line="473"/>
         <source>Ctrl+G</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="463"/>
+        <location filename="../build/ui_MainWindow.h" line="474"/>
         <source>&amp;Upload</source>
         <translation>&amp;Envoyer</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="464"/>
+        <location filename="../build/ui_MainWindow.h" line="475"/>
         <source>Ctrl+U</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="465"/>
+        <location filename="../build/ui_MainWindow.h" line="476"/>
         <source>Go to the next tab</source>
         <translation>Onglet suivant</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="466"/>
+        <location filename="../build/ui_MainWindow.h" line="477"/>
         <source>Ctrl+PgDown</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="467"/>
+        <location filename="../build/ui_MainWindow.h" line="478"/>
         <source>Go to the previous tab</source>
         <translation>Onglet Précédent</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="468"/>
+        <location filename="../build/ui_MainWindow.h" line="479"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="469"/>
+        <location filename="../build/ui_MainWindow.h" line="480"/>
         <source>&amp;Configure the IDE</source>
         <translation>&amp;Configurer l&apos;IDE</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="470"/>
+        <location filename="../build/ui_MainWindow.h" line="481"/>
         <source>&amp;About %0</source>
         <translation>&amp;A Propos %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="471"/>
+        <location filename="../build/ui_MainWindow.h" line="482"/>
         <source>About &amp;Qt</source>
         <translation>A Propos de &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="472"/>
+        <location filename="../build/ui_MainWindow.h" line="483"/>
         <source>Undo</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="473"/>
+        <location filename="../build/ui_MainWindow.h" line="484"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="474"/>
+        <location filename="../build/ui_MainWindow.h" line="485"/>
         <source>Redo</source>
         <translation>Refaire</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="475"/>
+        <location filename="../build/ui_MainWindow.h" line="486"/>
         <source>Ctrl+Shift+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="476"/>
-        <location filename="../build/ui_MainWindow.h" line="478"/>
+        <location filename="../build/ui_MainWindow.h" line="487"/>
+        <location filename="../build/ui_MainWindow.h" line="489"/>
         <source>Previous</source>
         <translation>Précédent</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="480"/>
-        <location filename="../build/ui_MainWindow.h" line="482"/>
+        <location filename="../build/ui_MainWindow.h" line="491"/>
+        <location filename="../build/ui_MainWindow.h" line="493"/>
         <source>Next</source>
         <translation>Suivant</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="484"/>
+        <location filename="../build/ui_MainWindow.h" line="495"/>
         <source>Contextual help</source>
         <translation>Aide Contextuelle</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="485"/>
+        <location filename="../build/ui_MainWindow.h" line="496"/>
         <source>F1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="486"/>
+        <location filename="../build/ui_MainWindow.h" line="497"/>
         <source>The official arduino website</source>
         <translation>Site Officiel Arduino</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="487"/>
+        <location filename="../build/ui_MainWindow.h" line="498"/>
         <source>The arduino forums</source>
         <translation>Forum Arduino</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="488"/>
+        <location filename="../build/ui_MainWindow.h" line="499"/>
         <source>Upload to pastebin</source>
         <translation>Envoyer sur pastebin</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="489"/>
-        <location filename="../build/ui_MainWindow.h" line="502"/>
+        <location filename="../build/ui_MainWindow.h" line="500"/>
+        <location filename="../build/ui_MainWindow.h" line="515"/>
         <source>Find/Replace</source>
         <translation>Rechercher/Remplacer</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="503"/>
-        <location filename="../build/ui_MainWindow.h" line="505"/>
+        <location filename="../build/ui_MainWindow.h" line="502"/>
+        <source>Refresh</source>
+        <translation>Rafraîchir</translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="509"/>
+        <source>Libraries</source>
+        <translation>Bibliothèques</translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="516"/>
+        <location filename="../build/ui_MainWindow.h" line="518"/>
         <source>Find</source>
         <translation>Rechercher</translation>
     </message>
@@ -916,115 +926,140 @@
         <translation type="obsolete">Chercher</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="504"/>
-        <location filename="../build/ui_MainWindow.h" line="506"/>
+        <location filename="../build/ui_MainWindow.h" line="517"/>
+        <location filename="../build/ui_MainWindow.h" line="519"/>
         <source>Replace</source>
         <translation>Remplacer</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="507"/>
+        <location filename="../build/ui_MainWindow.h" line="520"/>
         <source>Replace All</source>
         <translation>Tout remplacer</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="508"/>
+        <location filename="../build/ui_MainWindow.h" line="521"/>
         <source>Reg. Exp.</source>
         <translation>Exp. Reg.</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="509"/>
+        <location filename="../build/ui_MainWindow.h" line="522"/>
         <source>Word only</source>
         <translation>Mot seulement</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="510"/>
+        <location filename="../build/ui_MainWindow.h" line="523"/>
         <source>Case sensitive</source>
         <translation>Sensible à la casse</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="126"/>
+        <location filename="../gui/MainWindow.cpp" line="132"/>
         <source>Browser</source>
         <translation>Browser</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="155"/>
+        <location filename="../gui/MainWindow.cpp" line="161"/>
         <source>Device</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="172"/>
+        <location filename="../gui/MainWindow.cpp" line="178"/>
         <source>Board</source>
         <translation>Carte</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="238"/>
+        <location filename="../gui/MainWindow.cpp" line="244"/>
         <source>Close project</source>
         <translation>Fermer le projet</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="239"/>
+        <location filename="../gui/MainWindow.cpp" line="245"/>
         <source>This project has unsaved changes.&lt;br /&gt;Are you sure you want to close it?</source>
         <translation>Le projet a des modifications non sauvegardées&lt;br /&gt;Etes vous sûr de voulair fermer ?</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="361"/>
+        <location filename="../gui/MainWindow.cpp" line="357"/>
+        <location filename="../gui/MainWindow.cpp" line="377"/>
+        <source>Arduino Libraries</source>
+        <translation>Bibliothèques Arduino</translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="367"/>
+        <source>ArduIDE Libraries</source>
+        <translation>Bibliothèques ArduIDE</translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="386"/>
+        <source>Install new libraries?</source>
+        <translation>Installation de nouvelles bibliothèques ?</translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="411"/>
         <source>Pastebin error</source>
         <translation>Erreur pastebin</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="361"/>
+        <location filename="../gui/MainWindow.cpp" line="411"/>
         <source>The pastebin upload failed with code:
 %1</source>
         <translation>L&apos;envoi sur pastebin à échoué avec le code:
 %1</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="399"/>
+        <location filename="../gui/MainWindow.cpp" line="449"/>
         <source>Arduide - No occurence found</source>
         <translation>Arduide - Aucune occurence</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="400"/>
+        <location filename="../gui/MainWindow.cpp" line="450"/>
         <source>No occurence of &apos;%1&apos; found</source>
         <translation>Aucune occurence de &apos;%1&apos; trouvée</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="436"/>
+        <location filename="../gui/MainWindow.cpp" line="486"/>
         <source>Arduide - Replace All</source>
         <translation>Arduide - Tout remplacer</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="437"/>
+        <location filename="../gui/MainWindow.cpp" line="487"/>
         <source>The Replace All feature replaced %1 occurences</source>
         <translation>La fonction de remplacement à remplacé %1 occurences</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="451"/>
+        <location filename="../gui/MainWindow.cpp" line="523"/>
+        <source>To install a new library, just extract it in this directory.
+
+More information at http://arduino.cc/en/Guide/Environment#libraries</source>
+        <translation>Pour installer une nouvelle bibliothèque, veuillez l&apos;extraire dans ce répertoire.
+
+Plus d&apos;informations à l&apos;adresse http://arduino.cc/en/Guide/Environment#libraries</translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="537"/>
         <source>Open project</source>
         <translation>Ouvrir projet</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="451"/>
+        <location filename="../gui/MainWindow.cpp" line="537"/>
         <source>Arduino sketches (*.pde)</source>
         <translation>Sketches Arduino (*.pde)</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="459"/>
+        <location filename="../gui/MainWindow.cpp" line="545"/>
         <source>Open error</source>
         <translation>Erreur d&apos;ouverture</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="459"/>
+        <location filename="../gui/MainWindow.cpp" line="545"/>
         <source>The file could not be opened for reading.</source>
         <translation>Le fichier ne peut pas être ouvert.</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="572"/>
+        <location filename="../gui/MainWindow.cpp" line="658"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="573"/>
+        <location filename="../gui/MainWindow.cpp" line="659"/>
         <source>Some projects in your workspace have unsaved changes.&lt;br /&gt;Are you sure you want to quit?</source>
         <translation>Certains projets ont des changements non sauvegardés.&lt;br /&gt;Etes vous sûr de vouloir quitter ?</translation>
     </message>

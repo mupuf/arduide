@@ -66,6 +66,7 @@ public slots:
     void tabHasChanged();
     void contextualHelp();
     bool docHelpRequested(QString);
+    void refreshLibrariesMenu();
 
 private slots:
     void openCommunityArduinoCC();
@@ -76,6 +77,8 @@ private slots:
     bool find();
     bool replace();
     bool replaceAll();
+    void importLib();
+    void createAndOpenUserLibDir();
 
 private:
     void setupActions();
@@ -101,6 +104,10 @@ private:
     Ui::MainWindow ui;
 
     QNetworkAccessManager pastebin;
+
+    QMenu menu_lib_arduino;
+    QMenu menu_lib_ide;
+    QMenu menu_lib_user;
 
 protected:
     void closeEvent(QCloseEvent *event);

@@ -28,6 +28,7 @@
 #include "../env/Builder.h"
 #include "../env/Settings.h"
 #include "../env/ProjectHistory.h"
+#include "../env/Toolkit.h"
 #include "IDEApplication.h"
 
 #include "ui_AboutDialog.h"
@@ -52,6 +53,8 @@ void MainWindow::initialize()
     setupActions();
 
     tabHasChanged();
+
+    refreshLibrariesMenu();
 
     restoreState(ideApp->settings()->mainWindowState());
     showFindBox(false);
@@ -97,6 +100,9 @@ void MainWindow::setupActions()
     connect(this, SIGNAL(tabChanged(bool)), ui.pushReplaceAll, SLOT(setEnabled(bool)));
     connect(this, SIGNAL(tabChanged(bool)), ui.checkRegExp, SLOT(setEnabled(bool)));
     connect(this, SIGNAL(tabChanged(bool)), ui.checkWordOnly, SLOT(setEnabled(bool)));
+
+    connect(this, SIGNAL(tabChanged(bool)), ui.menu_Libraries, SLOT(setEnabled(bool)));
+    connect(ui.action_Lib_Refresh, SIGNAL(triggered()), this, SLOT(refreshLibrariesMenu()));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
@@ -340,6 +346,50 @@ bool MainWindow::docHelpRequested(QString word)
     return false;
 }
 
+void MainWindow::refreshLibrariesMenu()
+{
+    QAction *action;
+
+    QStringList arduino = Toolkit::arduinoLibraries();
+    QStringList ide = Toolkit::IDELibraries();
+    QStringList user = Toolkit::userLibraries();
+
+    menu_lib_arduino.setTitle(tr("Arduino Libraries"));
+    menu_lib_arduino.clear();
+    foreach (QString lib, arduino)
+    {
+        action = menu_lib_arduino.addAction(lib);;
+        action->setData(lib);
+        connect(action, SIGNAL(triggered()), this, SLOT(importLib()));
+    }
+    ui.menu_Libraries->insertMenu(ui.action_Lib_Refresh, &menu_lib_arduino);
+
+    menu_lib_ide.setTitle(tr("ArduIDE Libraries"));
+    menu_lib_ide.clear();
+    foreach (QString lib, ide)
+    {
+        action = menu_lib_ide.addAction(lib);;
+        action->setData(lib);
+        connect(action, SIGNAL(triggered()), this, SLOT(importLib()));
+    }
+    ui.menu_Libraries->insertMenu(ui.action_Lib_Refresh, &menu_lib_ide);
+
+    menu_lib_user.setTitle(tr("Arduino Libraries"));
+    menu_lib_user.clear();
+    foreach (QString lib, user)
+    {
+        action = menu_lib_user.addAction(lib);
+        action->setData(lib);
+        connect(action, SIGNAL(triggered()), this, SLOT(importLib()));
+    }
+    menu_lib_user.addSeparator();
+    action = menu_lib_user.addAction(tr("Install new libraries?"));
+    connect(action, SIGNAL(triggered()), this, SLOT(createAndOpenUserLibDir()));
+    ui.menu_Libraries->insertMenu(ui.action_Lib_Refresh, &menu_lib_user);
+
+    ui.menu_Libraries->insertSeparator(ui.action_Lib_Refresh);
+}
+
 void MainWindow::openCommunityArduinoCC()
 {
     QDesktopServices::openUrl(QUrl("http://www.arduino.cc"));
@@ -440,6 +490,42 @@ bool MainWindow::replaceAll()
      }
      else
           return false;
+}
+
+void MainWindow::importLib()
+{
+    QAction *action = dynamic_cast<QAction*>(sender());
+    if (action)
+    {
+        QString libName = action->data().toString();
+
+        Editor *e = currentEditor();
+        if (!e)
+             return;
+
+        e->insertAt(QString("#include <%1.h>\n").arg(libName), 0, 0);
+    }
+}
+
+void MainWindow::createAndOpenUserLibDir()
+{
+    QString userLib = Toolkit::userLibraryPath();
+    QDir userLibDir(userLib);
+
+    if (!userLibDir.exists())
+        userLibDir.mkdir(userLib);
+
+    /* create a readme file to explain what to do */
+    QFile readme(userLib+"/README");
+    if (readme.open(QIODevice::WriteOnly))
+    {
+        QTextStream ts(&readme);
+        ts << tr("To install a new library, just extract it in this directory.\r\n\r\n"
+                 "More information at http://arduino.cc/en/Guide/Environment#libraries");
+        readme.close();
+    }
+
+    QDesktopServices::openUrl(QUrl(userLib, QUrl::TolerantMode));
 }
 
 void MainWindow::open(const QString &_fileName)

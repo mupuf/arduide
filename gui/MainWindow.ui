@@ -100,8 +100,15 @@
     </property>
     <addaction name="action_Utilities"/>
    </widget>
+   <widget class="QMenu" name="menu_Libraries">
+    <property name="title">
+     <string>Libraries</string>
+    </property>
+    <addaction name="action_Lib_Refresh"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_Libraries"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Settings"/>
    <addaction name="menu_Help"/>
@@ -626,6 +633,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="action_Lib_Refresh">
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/view-refresh.png</normaloff>:/images/16x16/view-refresh.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh</string>
    </property>
   </action>
  </widget>
