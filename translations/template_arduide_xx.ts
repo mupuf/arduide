@@ -621,335 +621,398 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="315"/>
+        <location filename="../build/ui_MainWindow.h" line="440"/>
         <source>Arduino IDE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="316"/>
+        <location filename="../build/ui_MainWindow.h" line="441"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="317"/>
+        <location filename="../build/ui_MainWindow.h" line="442"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="318"/>
+        <location filename="../build/ui_MainWindow.h" line="443"/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="319"/>
+        <location filename="../build/ui_MainWindow.h" line="444"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="320"/>
+        <location filename="../build/ui_MainWindow.h" line="445"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="321"/>
+        <location filename="../build/ui_MainWindow.h" line="446"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="322"/>
+        <location filename="../build/ui_MainWindow.h" line="447"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="323"/>
+        <location filename="../build/ui_MainWindow.h" line="448"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="324"/>
+        <location filename="../build/ui_MainWindow.h" line="449"/>
         <source>&amp;Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="325"/>
+        <location filename="../build/ui_MainWindow.h" line="450"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="326"/>
+        <location filename="../build/ui_MainWindow.h" line="451"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="327"/>
+        <location filename="../build/ui_MainWindow.h" line="452"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="328"/>
+        <location filename="../build/ui_MainWindow.h" line="453"/>
         <source>&amp;Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="329"/>
+        <location filename="../build/ui_MainWindow.h" line="454"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="330"/>
+        <location filename="../build/ui_MainWindow.h" line="455"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="331"/>
+        <location filename="../build/ui_MainWindow.h" line="456"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="332"/>
+        <location filename="../build/ui_MainWindow.h" line="457"/>
         <source>&amp;Build (verify)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="333"/>
+        <location filename="../build/ui_MainWindow.h" line="458"/>
         <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="334"/>
+        <location filename="../build/ui_MainWindow.h" line="459"/>
         <source>&amp;Utilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="336"/>
+        <location filename="../build/ui_MainWindow.h" line="461"/>
         <source>Utilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="338"/>
+        <location filename="../build/ui_MainWindow.h" line="463"/>
         <source>Ctrl+G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="339"/>
+        <location filename="../build/ui_MainWindow.h" line="464"/>
         <source>&amp;Upload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="340"/>
+        <location filename="../build/ui_MainWindow.h" line="465"/>
         <source>Ctrl+U</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="341"/>
+        <location filename="../build/ui_MainWindow.h" line="466"/>
         <source>Go to the next tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="342"/>
+        <location filename="../build/ui_MainWindow.h" line="467"/>
         <source>Ctrl+PgDown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="343"/>
+        <location filename="../build/ui_MainWindow.h" line="468"/>
         <source>Go to the previous tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="344"/>
+        <location filename="../build/ui_MainWindow.h" line="469"/>
         <source>Ctrl+PgUp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="345"/>
+        <location filename="../build/ui_MainWindow.h" line="470"/>
         <source>&amp;Configure the IDE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="346"/>
+        <location filename="../build/ui_MainWindow.h" line="471"/>
         <source>&amp;About %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="347"/>
+        <location filename="../build/ui_MainWindow.h" line="472"/>
         <source>About &amp;Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="348"/>
+        <location filename="../build/ui_MainWindow.h" line="473"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="349"/>
+        <location filename="../build/ui_MainWindow.h" line="474"/>
         <source>Ctrl+Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="350"/>
+        <location filename="../build/ui_MainWindow.h" line="475"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="351"/>
+        <location filename="../build/ui_MainWindow.h" line="476"/>
         <source>Ctrl+Shift+Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="352"/>
-        <location filename="../build/ui_MainWindow.h" line="354"/>
+        <location filename="../build/ui_MainWindow.h" line="477"/>
+        <location filename="../build/ui_MainWindow.h" line="479"/>
         <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="356"/>
-        <location filename="../build/ui_MainWindow.h" line="358"/>
+        <location filename="../build/ui_MainWindow.h" line="481"/>
+        <location filename="../build/ui_MainWindow.h" line="483"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="360"/>
+        <location filename="../build/ui_MainWindow.h" line="485"/>
         <source>Contextual help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="361"/>
+        <location filename="../build/ui_MainWindow.h" line="486"/>
         <source>F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="362"/>
+        <location filename="../build/ui_MainWindow.h" line="487"/>
         <source>The official arduino website</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="363"/>
+        <location filename="../build/ui_MainWindow.h" line="488"/>
         <source>The arduino forums</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="364"/>
+        <location filename="../build/ui_MainWindow.h" line="489"/>
         <source>Upload to pastebin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="365"/>
+        <location filename="../build/ui_MainWindow.h" line="490"/>
+        <location filename="../build/ui_MainWindow.h" line="503"/>
+        <source>Search and Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="491"/>
+        <source>Ctrl+F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="492"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="366"/>
+        <location filename="../build/ui_MainWindow.h" line="493"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="367"/>
+        <location filename="../build/ui_MainWindow.h" line="494"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="368"/>
+        <location filename="../build/ui_MainWindow.h" line="495"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="369"/>
+        <location filename="../build/ui_MainWindow.h" line="496"/>
         <source>Community</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="370"/>
+        <location filename="../build/ui_MainWindow.h" line="497"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="371"/>
+        <location filename="../build/ui_MainWindow.h" line="498"/>
         <source>Edition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="372"/>
+        <location filename="../build/ui_MainWindow.h" line="499"/>
         <source>Hardware</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="373"/>
+        <location filename="../build/ui_MainWindow.h" line="500"/>
         <source>Build tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="374"/>
+        <location filename="../build/ui_MainWindow.h" line="501"/>
         <source>Utility dock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="375"/>
+        <location filename="../build/ui_MainWindow.h" line="502"/>
         <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="114"/>
+        <location filename="../build/ui_MainWindow.h" line="504"/>
+        <location filename="../build/ui_MainWindow.h" line="506"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="505"/>
+        <location filename="../build/ui_MainWindow.h" line="507"/>
+        <source>Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="508"/>
+        <source>Replace All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="509"/>
+        <source>Reg. Exp.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="510"/>
+        <source>Word only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_MainWindow.h" line="511"/>
+        <source>Case sensitive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="126"/>
         <source>Browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="143"/>
+        <location filename="../gui/MainWindow.cpp" line="155"/>
         <source>Device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="160"/>
+        <location filename="../gui/MainWindow.cpp" line="172"/>
         <source>Board</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="226"/>
+        <location filename="../gui/MainWindow.cpp" line="238"/>
         <source>Close project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="227"/>
+        <location filename="../gui/MainWindow.cpp" line="239"/>
         <source>This project has unsaved changes.&lt;br /&gt;Are you sure you want to close it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="349"/>
+        <location filename="../gui/MainWindow.cpp" line="361"/>
         <source>Pastebin error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="349"/>
+        <location filename="../gui/MainWindow.cpp" line="361"/>
         <source>The pastebin upload failed with code:
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="364"/>
+        <location filename="../gui/MainWindow.cpp" line="399"/>
+        <source>Arduide - No occurence found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="400"/>
+        <source>No occurence of &apos;%1&apos; found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="436"/>
+        <source>Arduide - Replace All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="437"/>
+        <source>The Replace All feature replaced %1 occurences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/MainWindow.cpp" line="451"/>
         <source>Open project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="364"/>
+        <location filename="../gui/MainWindow.cpp" line="451"/>
         <source>Arduino sketches (*.pde)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="372"/>
+        <location filename="../gui/MainWindow.cpp" line="459"/>
         <source>Open error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="372"/>
+        <location filename="../gui/MainWindow.cpp" line="459"/>
         <source>The file could not be opened for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="485"/>
+        <location filename="../gui/MainWindow.cpp" line="572"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="486"/>
+        <location filename="../gui/MainWindow.cpp" line="573"/>
         <source>Some projects in your workspace have unsaved changes.&lt;br /&gt;Are you sure you want to quit?</source>
         <translation type="unfinished"></translation>
     </message>
