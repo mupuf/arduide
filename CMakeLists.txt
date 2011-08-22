@@ -24,7 +24,7 @@ add_definitions(-DPROJECT_ORGANIZATION="${PROJECT_ORGANIZATION}")
 add_definitions(-DPROJECT_LICENSE="${PROJECT_LICENSE}")
 add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
-# Compatible version of the Arduino SDK
+# Compatible version of the Arduino SDK (don't forget to update Toolkit.h)
 set(ARDUINO_SDK_VERSION "0022")
 add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
 
@@ -207,9 +207,9 @@ file(GLOB arduino_MOCS
   "env/*.h")
 
 set(arduino_TS
-	"translations/template_arduide_xx.ts"
-	"translations/arduide_fr.ts"
-	"translations/arduide_es.ts")
+    "translations/template_arduide_xx.ts"
+    "translations/arduide_fr.ts"
+    "translations/arduide_es.ts")
 
 set(arduino_QRCS
   "resources/css.qrc"

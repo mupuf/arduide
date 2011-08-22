@@ -55,7 +55,7 @@ public:
     static QString userLibraryPath();
 
 private:
-    static const int ARDUINO_REVISION = 18;
+    static const int ARDUINO_REVISION = 22;
 };
 
 #endif // TOOLKIT_H
