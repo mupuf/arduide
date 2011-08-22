@@ -146,7 +146,7 @@ void Settings::loadEditorSettings(Editor *editor)
 {
     static const QColor defaultCaretForegroundColor(Qt::white);
     static const int defaultTabWidth = 4;
-    static const QColor defaultEditorSelectionBackgroundColor(0x4d4d4d);
+    static const QColor defaultEditorSelectionBackgroundColor(0x000090);
 
     QVariant v;
     v = mSettings.value("editorCaretForegroundColor");
