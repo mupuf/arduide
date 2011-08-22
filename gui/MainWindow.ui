@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>997</width>
-    <height>758</height>
+    <width>991</width>
+    <height>752</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>997</width>
+     <width>991</width>
      <height>20</height>
     </rect>
    </property>
@@ -224,17 +224,17 @@
    <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
    <property name="maximumSize">
     <size>
      <width>524287</width>
-     <height>100</height>
+     <height>90</height>
     </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
     <string>Search and Replace</string>
@@ -616,6 +616,10 @@
   <action name="action_Search">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/images.qrc">
+     <normaloff>:/images/16x16/edit-find-replace.png</normaloff>:/images/16x16/edit-find-replace.png</iconset>
    </property>
    <property name="text">
     <string>Search and Replace</string>

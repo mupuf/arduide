@@ -376,9 +376,9 @@ void DebuggerPlugin::shouldBreakOnTrace(bool value)
         sendCommand("exit()");
 }
 
-void DebuggerPlugin::mainWindowTabChanged(bool isBrowser)
+void DebuggerPlugin::mainWindowTabChanged(bool isEditor)
 {
-    widget->pushStartStop->setEnabled(!isBrowser);
+    widget->pushStartStop->setEnabled(isEditor);
 
     bool widgetEnabled = debuggedEditor==NULL || debuggedEditor==mApp->mainWindow()->currentEditor();
     widget->setEnabled(widgetEnabled);

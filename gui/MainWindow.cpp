@@ -63,8 +63,8 @@ void MainWindow::setupActions()
     buildActions->addAction(ui.action_Build);
     buildActions->addAction(ui.action_Upload);
 
-    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabHasChanged()));
+    connect(ui.tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+    connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabHasChanged()));
     connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newProject()));
     connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
@@ -93,6 +93,10 @@ void MainWindow::setupActions()
     connect(ui.pushSearch, SIGNAL(clicked()), this, SLOT(search()));
     connect(ui.pushReplace, SIGNAL(clicked()), this, SLOT(replace()));
     connect(ui.pushReplaceAll, SIGNAL(clicked()), this, SLOT(replaceAll()));
+    connect(this, SIGNAL(tabChanged(bool)), ui.pushReplace, SLOT(setEnabled(bool)));
+    connect(this, SIGNAL(tabChanged(bool)), ui.pushReplaceAll, SLOT(setEnabled(bool)));
+    connect(this, SIGNAL(tabChanged(bool)), ui.checkRegExp, SLOT(setEnabled(bool)));
+    connect(this, SIGNAL(tabChanged(bool)), ui.checkWordOnly, SLOT(setEnabled(bool)));
 
     connect(browser, SIGNAL(newProjectRequested()), this, SLOT(newProject()));
     connect(browser, SIGNAL(newProjectRequested(const QString &, const QString &)), this, SLOT(newProject(const QString &, const QString &)));
@@ -111,39 +115,38 @@ void MainWindow::setupActions()
 
 void MainWindow::createBrowserAndTabs()
 {
-    tabWidget = ui.tabWidget;
-    tabWidget->setTabsClosable(true);
-    tabWidget->setMovable(true);
-    tabWidget->addAction(ui.actionGo_to_the_next_tab);
-    tabWidget->addAction(ui.actionGo_to_the_previous_tab);
+    ui.tabWidget->setTabsClosable(true);
+    ui.tabWidget->setMovable(true);
+    ui.tabWidget->addAction(ui.actionGo_to_the_next_tab);
+    ui.tabWidget->addAction(ui.actionGo_to_the_previous_tab);
 
     QWebSecurityOrigin::addLocalScheme("ide");
     QWebSecurityOrigin::addLocalScheme("qrc");
     browser = new Browser;
-    tabWidget->addTab(browser, tr("Browser"));
-    setCentralWidget(tabWidget);
+    ui.tabWidget->addTab(browser, tr("Browser"));
+    setCentralWidget(ui.tabWidget);
     browser->quickstart();
 }
 
 void MainWindow::nextTab()
 {
-    int index = tabWidget->currentIndex();
-    int count = tabWidget->count();
+    int index = ui.tabWidget->currentIndex();
+    int count = ui.tabWidget->count();
     if (index != -1)
     {
         index = (index + 1) % count;
-        tabWidget->setCurrentIndex(index);
+        ui.tabWidget->setCurrentIndex(index);
     }
 }
 
 void MainWindow::previousTab()
 {
-    int index = tabWidget->currentIndex();
-    int count = tabWidget->count();
+    int index = ui.tabWidget->currentIndex();
+    int count = ui.tabWidget->count();
     if (index != -1)
     {
         index--;
-        tabWidget->setCurrentIndex((index < 0) ? (count - 1) : index);
+        ui.tabWidget->setCurrentIndex((index < 0) ? (count - 1) : index);
     }
 }
 
@@ -189,8 +192,8 @@ void MainWindow::newProject(const QString &code, const QString &name, Editor **p
     else
         editor = EditorFactory::createEditor();
 
-    int tab = tabWidget->addTab(editor, (name.isNull()) ? createUniqueName("New project") : name);
-    tabWidget->setCurrentIndex(tab);
+    int tab = ui.tabWidget->addTab(editor, (name.isNull()) ? createUniqueName("New project") : name);
+    ui.tabWidget->setCurrentIndex(tab);
 
     if (pEditor)
         *pEditor = editor;
@@ -221,9 +224,9 @@ QString MainWindow::createUniqueName(const QString &name)
 void MainWindow::closeTab(int index)
 {
     if (index == -1)
-        index = tabWidget->currentIndex();
+        index = ui.tabWidget->currentIndex();
 
-    QWidget *w = tabWidget->widget(index);
+    QWidget *w = ui.tabWidget->widget(index);
     if (w != browser)
     {
         Editor *editor = dynamic_cast<Editor *>(w);
@@ -238,8 +241,8 @@ void MainWindow::closeTab(int index)
                     QMessageBox::Yes) == QMessageBox::Yes);
             if (close)
             {
-                names.removeOne(tabWidget->tabText(index));
-                tabWidget->removeTab(index);
+                names.removeOne(ui.tabWidget->tabText(index));
+                ui.tabWidget->removeTab(index);
 
                 emit editorDeleted(editor);
             }
@@ -249,16 +252,16 @@ void MainWindow::closeTab(int index)
 
 Editor *MainWindow::currentEditor()
 {
-    return qobject_cast<Editor *>(tabWidget->currentWidget());
+    return qobject_cast<Editor *>(ui.tabWidget->currentWidget());
 }
 
 QList<Editor *> MainWindow::editors()
 {
     QList<Editor *> editors;
     Editor *editor;
-    for (int i = 0; i < tabWidget->count(); i++)
+    for (int i = 0; i < ui.tabWidget->count(); i++)
     {
-        editor = qobject_cast<Editor *>(tabWidget->widget(i));
+        editor = qobject_cast<Editor *>(ui.tabWidget->widget(i));
         if (editor != NULL)
             editors << editor;
     }
@@ -310,7 +313,7 @@ void MainWindow::tabHasChanged()
     tabContentChanged();
 
     Editor *e = currentEditor();
-    emit tabChanged(e==NULL);
+    emit tabChanged(e!=NULL);
 }
 
 void MainWindow::contextualHelp()
@@ -330,7 +333,7 @@ bool MainWindow::docHelpRequested(QString word)
 {
     if (browser->docHelpRequested(word))
     {
-        tabWidget->setCurrentIndex(0);
+        ui.tabWidget->setCurrentIndex(0);
         return true;
     }
 
@@ -369,7 +372,8 @@ void MainWindow::showSearchBox(bool show)
      ui.dockSearchReplace->setVisible(show);
      if (show)
      {
-          ui.lineSearch->setFocus();
+         ui.dockSearchReplace->resize(ui.dockSearchReplace->size().width(), 10);
+         ui.lineSearch->setFocus();
      }
 }
 
@@ -477,9 +481,9 @@ void MainWindow::save()
         if (fileName != e->fileName())
         {
             // the file name changed, update the tab text
-            index = tabWidget->currentIndex();
-            names.removeOne(tabWidget->tabText(index));
-            tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
+            index = ui.tabWidget->currentIndex();
+            names.removeOne(ui.tabWidget->tabText(index));
+            ui.tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
         }
 
         // update the history
@@ -558,9 +562,9 @@ void MainWindow::setBoard(const QString &board)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    for (int i = 0; i < tabWidget->count(); i++)
+    for (int i = 0; i < ui.tabWidget->count(); i++)
     {
-        Editor *editor = dynamic_cast<Editor *>(tabWidget->widget(i));
+        Editor *editor = dynamic_cast<Editor *>(ui.tabWidget->widget(i));
         if (editor && editor->isModified())
         {
             bool close = QMessageBox::question(

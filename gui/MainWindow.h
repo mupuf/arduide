@@ -86,7 +86,6 @@ private:
     QStringList names;
     QString createUniqueName(const QString &name);
 
-    QTabWidget* tabWidget;
     Browser *browser;
     QAction *deviceAction;
     DeviceChooser *deviceChooser;
