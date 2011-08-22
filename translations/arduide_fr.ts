@@ -974,7 +974,7 @@
     <message>
         <location filename="../gui/MainWindow.cpp" line="245"/>
         <source>This project has unsaved changes.&lt;br /&gt;Are you sure you want to close it?</source>
-        <translation>Le projet a des modifications non sauvegardées&lt;br /&gt;Etes vous sûr de voulair fermer ?</translation>
+        <translation>Le projet a des modifications non sauvegardées&lt;br /&gt;Etes vous sûr de vouloir fermer ?</translation>
     </message>
     <message>
         <location filename="../gui/MainWindow.cpp" line="357"/>
