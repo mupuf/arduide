@@ -72,8 +72,8 @@ private slots:
     void openCommunityArduinoForums();
     void pastebinUploadDone(QNetworkReply* reply);
     void finishedBuilding();
-    void showSearchBox(bool show);
-    bool search();
+    void showFindBox(bool show);
+    bool find();
     bool replace();
     bool replaceAll();
 

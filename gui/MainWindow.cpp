@@ -39,7 +39,7 @@ MainWindow::MainWindow()
     ui.actionAbout->setText(ui.actionAbout->text().arg(PROJECT_NAME));
 
     ui.dockWidget->hide();
-    ui.dockSearchReplace->hide();
+    ui.dockFindReplace->hide();
 }
 
 void MainWindow::initialize()
@@ -54,7 +54,7 @@ void MainWindow::initialize()
     tabHasChanged();
 
     restoreState(ideApp->settings()->mainWindowState());
-    showSearchBox(false);
+    showFindBox(false);
 }
 
 void MainWindow::setupActions()
@@ -74,7 +74,7 @@ void MainWindow::setupActions()
     connect(ui.actionRedo, SIGNAL(triggered()), this, SLOT(redo()));
     connect(ui.action_Copy, SIGNAL(triggered()), this, SLOT(copy()));
     connect(ui.action_Cut, SIGNAL(triggered()), this, SLOT(cut()));
-    connect(ui.action_Search, SIGNAL(triggered(bool)), this, SLOT(showSearchBox(bool)));
+    connect(ui.action_Find, SIGNAL(triggered(bool)), this, SLOT(showFindBox(bool)));
     connect(ui.action_Paste, SIGNAL(triggered()), this, SLOT(paste()));
     connect(ui.action_Build, SIGNAL(triggered()), this, SLOT(build()));
     connect(ui.action_Upload, SIGNAL(triggered()), this, SLOT(upload()));
@@ -88,9 +88,9 @@ void MainWindow::setupActions()
     connect(ui.actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    connect(ui.lineSearch, SIGNAL(returnPressed()), this, SLOT(search()));
-    connect(ui.lineReplace, SIGNAL(returnPressed()), this, SLOT(search()));
-    connect(ui.pushSearch, SIGNAL(clicked()), this, SLOT(search()));
+    connect(ui.lineFind, SIGNAL(returnPressed()), this, SLOT(find()));
+    connect(ui.lineReplace, SIGNAL(returnPressed()), this, SLOT(find()));
+    connect(ui.pushFind, SIGNAL(clicked()), this, SLOT(find()));
     connect(ui.pushReplace, SIGNAL(clicked()), this, SLOT(replace()));
     connect(ui.pushReplaceAll, SIGNAL(clicked()), this, SLOT(replaceAll()));
     connect(this, SIGNAL(tabChanged(bool)), ui.pushReplace, SLOT(setEnabled(bool)));
@@ -367,19 +367,19 @@ void MainWindow::finishedBuilding()
     emit buildFinished(true);
 }
 
-void MainWindow::showSearchBox(bool show)
+void MainWindow::showFindBox(bool show)
 {
-     ui.dockSearchReplace->setVisible(show);
+     ui.dockFindReplace->setVisible(show);
      if (show)
      {
-         ui.dockSearchReplace->resize(ui.dockSearchReplace->size().width(), 10);
-         ui.lineSearch->setFocus();
+         ui.dockFindReplace->resize(ui.dockFindReplace->size().width(), 10);
+         ui.lineFind->setFocus();
      }
 }
 
-bool MainWindow::search()
+bool MainWindow::find()
 {
-     QString searchText = ui.lineSearch->text();
+     QString findText = ui.lineFind->text();
      bool re = ui.checkRegExp->isChecked();
      bool wo = ui.checkWordOnly->isChecked();
      bool cs = ui.checkCaseSensitive->isChecked();
@@ -389,15 +389,15 @@ bool MainWindow::search()
           int flags = QWebPage::FindWrapsAroundDocument;
           if (cs)
                flags |= QWebPage::FindCaseSensitively;
-          browser->findText(searchText, (QWebPage::FindFlags)flags);
+          browser->findText(findText, (QWebPage::FindFlags)flags);
           return false;
      }
 
-     bool found = e->findFirst(searchText, re, cs, wo, true);
+     bool found = e->findFirst(findText, re, cs, wo, true);
      if (!found)
           QMessageBox::warning(this,
                                tr("Arduide - No occurence found"),
-                               tr("No occurence of '%1' found").arg(searchText));
+                               tr("No occurence of '%1' found").arg(findText));
      return found;
 }
 
@@ -408,7 +408,7 @@ bool MainWindow::replace()
      Editor *e = currentEditor();
      if (!e)
           return false;
-     bool found = search();
+     bool found = find();
      if (found)
           e->replace(replaceText);
 
@@ -423,7 +423,7 @@ bool MainWindow::replaceAll()
      if (!e)
           return false;
 
-     bool found = search();
+     bool found = find();
      if (found)
      {
           int count = 0;

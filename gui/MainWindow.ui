@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>991</width>
-    <height>752</height>
+    <width>989</width>
+    <height>750</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>991</width>
+     <width>989</width>
      <height>20</height>
     </rect>
    </property>
@@ -63,7 +63,7 @@
     <addaction name="action_Cut"/>
     <addaction name="action_Paste"/>
     <addaction name="separator"/>
-    <addaction name="action_Search"/>
+    <addaction name="action_Find"/>
    </widget>
    <widget class="QMenu" name="menu_Settings">
     <property name="title">
@@ -220,7 +220,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockSearchReplace">
+  <widget class="QDockWidget" name="dockFindReplace">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -237,7 +237,7 @@
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>Search and Replace</string>
+    <string>Find/Replace</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>4</number>
@@ -253,9 +253,9 @@
         <enum>QLayout::SetMinimumSize</enum>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="labelSearch">
+        <widget class="QLabel" name="labelFind">
          <property name="text">
-          <string>Search</string>
+          <string>Find</string>
          </property>
         </widget>
        </item>
@@ -267,7 +267,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="lineSearch">
+        <widget class="QLineEdit" name="lineFind">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -287,9 +287,9 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QPushButton" name="pushSearch">
+        <widget class="QPushButton" name="pushFind">
          <property name="text">
-          <string>Search</string>
+          <string>Find</string>
          </property>
          <property name="default">
           <bool>true</bool>
@@ -613,7 +613,7 @@
     <string>Upload to pastebin</string>
    </property>
   </action>
-  <action name="action_Search">
+  <action name="action_Find">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -622,7 +622,7 @@
      <normaloff>:/images/16x16/edit-find-replace.png</normaloff>:/images/16x16/edit-find-replace.png</iconset>
    </property>
    <property name="text">
-    <string>Search and Replace</string>
+    <string>Find/Replace</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
