@@ -1,7 +1,7 @@
 #ifndef IDEDBGPRIVATE_H
 #define IDEDBGPRIVATE_H
-    // Private
-    char* IDEdbg_getFrames();
+	// Private
+	char* IDEdbg_getFrames();
 
-    void DbgPrintf(const char* format, ...);
+	void DbgPrintf(const char* format, ...);
 #endif

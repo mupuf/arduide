@@ -49,12 +49,12 @@ variable* variable_create(int line, const char* name, variable_type type, int si
 {
 	variable* var = (variable*)malloc(sizeof(variable));
 
-    var->line=line;
+	var->line=line;
 	var->name=strdup(name);
 	var->type=type;
 	var->size=size;
 	var->data=data;
-	
+
 	return var;
 }
 
@@ -67,7 +67,7 @@ void variable_set_value(variable* var, char* data)
 {
 	if(!var)
 		return;
-	
+
 	switch(var->type)
 	{
 		case _unsigned_int:
@@ -120,7 +120,7 @@ void print_variable(variable* var)
 {
 	if(var==NULL)
 		return;
-	
+
 	const char* s_type=variable_type_to_string(var->type);
 
 	DbgPrintf("<var l=\"%i\" id=\"%s\" t=\"%s\"  v=\"",
