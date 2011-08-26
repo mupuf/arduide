@@ -423,6 +423,8 @@ void MainWindow::showFindBox(bool show)
      if (show)
      {
          ui.dockFindReplace->resize(ui.dockFindReplace->size().width(), 10);
+         ui.lineFind->clear();
+         ui.lineReplace->clear();
          ui.lineFind->setFocus();
      }
 }
