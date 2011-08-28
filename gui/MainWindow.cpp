@@ -37,8 +37,9 @@ MainWindow::MainWindow()
     : QMainWindow(), configDialog(NULL)
 {
     ui.setupUi(this);
-    ui.actionAbout->setText(ui.actionAbout->text().arg(PROJECT_NAME));
+    setWindowTitle(windowTitle().arg(PROJECT_NAME, PROJECT_VERSION));
 
+    ui.actionAbout->setText(ui.actionAbout->text().arg(PROJECT_NAME));
     ui.dockWidget->hide();
     ui.dockFindReplace->hide();
 }
@@ -740,6 +741,7 @@ void MainWindow::about()
     ui.setupUi(dialog);
     dialog->setWindowTitle(dialog->windowTitle().arg(PROJECT_NAME));
     ui.nameLabel->setText(ui.nameLabel->text().arg(PROJECT_NAME));
+    ui.versionLabel->setText(ui.versionLabel->text().arg(PROJECT_VERSION));
     ui.urlLabel->setText(ui.urlLabel->text().arg(PROJECT_URL));
     ui.authorsLabel->setText(ui.authorsLabel->text().arg(PROJECT_AUTHORS));
     ui.licenseLabel->setText(ui.licenseLabel->text().arg(PROJECT_LICENSE));

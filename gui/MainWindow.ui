@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>989</width>
-    <height>750</height>
+    <width>987</width>
+    <height>748</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Arduino IDE</string>
+   <string>%0 - %1</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>989</width>
+     <width>987</width>
      <height>20</height>
     </rect>
    </property>

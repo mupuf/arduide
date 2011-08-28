@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>488</width>
-    <height>235</height>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,6 +53,13 @@ font-size: 24px;
     <widget class="QLabel" name="licenseLabel">
      <property name="text">
       <string>License: %0</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="versionLabel">
+     <property name="text">
+      <string>Version: %0</string>
      </property>
     </widget>
    </item>
