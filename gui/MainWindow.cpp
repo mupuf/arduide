@@ -590,8 +590,10 @@ void MainWindow::uploadToPastebin()
 
         QByteArray data;
         QUrl params;
+        params.addQueryItem("paste_name",QFileInfo(e->fileName()).fileName());
         params.addQueryItem("paste_code",e->text());
-        params.addQueryItem("paste_format","c");
+        params.addQueryItem("paste_private", "1");
+        params.addQueryItem("paste_format","cpp");
         data.append(params.encodedQuery());
 
         pastebin.post(request,data);
