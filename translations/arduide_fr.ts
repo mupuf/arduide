@@ -1040,8 +1040,8 @@ Plus d&apos;informations à l&apos;adresse http://arduino.cc/en/Guide/Environmen
     </message>
     <message>
         <location filename="../gui/MainWindow.cpp" line="537"/>
-        <source>Arduino sketches (*.pde)</source>
-        <translation>Sketches Arduino (*.pde)</translation>
+        <source>Arduino sketches (*.ino *.pde)</source>
+        <translation>Sketches Arduino (*.ino *.pde)</translation>
     </message>
     <message>
         <location filename="../gui/MainWindow.cpp" line="545"/>

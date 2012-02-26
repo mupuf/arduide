@@ -37,7 +37,7 @@ void Editor::save()
             return;
         }
         QDir dir(dirName);
-        mFileName = dir.filePath(dir.dirName() + ".pde");
+        mFileName = dir.filePath(dir.dirName() + ".ino");
     }
 
     QFile f(mFileName);

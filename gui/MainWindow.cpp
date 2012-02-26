@@ -537,7 +537,7 @@ void MainWindow::open(const QString &_fileName)
 
     if (fileName.isEmpty())
     {
-        fileName = QFileDialog::getOpenFileName(this, tr("Open project"), ideApp->settings()->sketchPath(), tr("Arduino sketches (*.pde)"));
+        fileName = QFileDialog::getOpenFileName(this, tr("Open project"), ideApp->settings()->sketchPath(), tr("Arduino sketches (*.ino *.pde)"));
         if (fileName.isEmpty())
             return;
     }

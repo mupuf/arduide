@@ -1029,8 +1029,8 @@ More information at http://arduino.cc/en/Guide/Environment#libraries</source>
     </message>
     <message>
         <location filename="../gui/MainWindow.cpp" line="537"/>
-        <source>Arduino sketches (*.pde)</source>
-        <translation>Arduino skeče (*.pde)</translation>
+        <source>Arduino sketches (*.ino *.pde)</source>
+        <translation>Arduino skeče (*.ino *.pde)</translation>
     </message>
     <message>
         <location filename="../gui/MainWindow.cpp" line="545"/>

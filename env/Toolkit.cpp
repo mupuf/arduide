@@ -19,8 +19,11 @@ QStringList Toolkit::findSketchesInDirectory(const QString &directory)
     QDir dir(directory);
     foreach (const QString &sketch, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name))
     {
-        static const QString format = "%0/%0.pde";
-        if (dir.exists(format.arg(sketch)))
+        static const QString format1 = "%0/%0.pde";
+        static const QString format2 = "%0/%0.ino";
+        if (dir.exists(format1.arg(sketch)))
+            sketches.append(sketch);
+        else if (dir.exists(format2.arg(sketch)))
             sketches.append(sketch);
     }
     return sketches;
@@ -40,7 +43,7 @@ QStringList Toolkit::findExamples(const QString &category)
 
 QString Toolkit::exampleFileName(const QString &category, const QString &example)
 {
-    static const QString format = "%0/examples/%1/%2/%2.pde";
+    static const QString format = "%0/examples/%1/%2/%2.ino";
     return format.arg(ideApp->settings()->arduinoPath()).arg(category).arg(example);
 }
 
@@ -251,7 +254,7 @@ QStringList Toolkit::findLibraryExamples(const QString &library)
 
 QString Toolkit::libraryExampleFileName(const QString &library, const QString &example)
 {
-    static const QString format = "%0/examples/%1/%1.pde";
+    static const QString format = "%0/examples/%1/%1.ino";
     return format.arg(libraryPath(library)).arg(example);
 }
 

@@ -169,7 +169,9 @@ void Browser::handleIdeLink(const QUrl &url, bool updateHistory)
     else if (url.host() == "open-sketch")
     {
         QString sketchName = url.path().section("/", 1);
-        QString fileName = QDir(ideApp->settings()->sketchPath()).filePath(QString("%0/%0.pde").arg(sketchName));
+        QString fileName = QDir(ideApp->settings()->sketchPath()).filePath(QString("%0/%0.ino").arg(sketchName));
+        if (!QFileInfo(fileName).exists())
+            fileName = QDir(ideApp->settings()->sketchPath()).filePath(QString("%0/%0.pde").arg(sketchName));
         emit openProjectRequested(fileName);
     }
     else if (url.host() == "open-documentation")
