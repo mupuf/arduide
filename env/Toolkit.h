@@ -52,10 +52,6 @@ public:
     static QString libraryExampleFileName(const QString &library, const QString &example);
     static QString avrdudePath();
     static QStringList avrdudeFlags(const Board *board);
-
-
-private:
-    static const int ARDUINO_REVISION = 22;
 };
 
 #endif // TOOLKIT_H

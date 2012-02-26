@@ -83,7 +83,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 #else // Linux, other Unix
     #if defined(__x86_64__) // 64-bit Unix
         mDownloadOs = "64-bit Linux";
-        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64-2.tgz" ;
+        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64.tgz" ;
     #elif defined(__i386__) // 32-bit Unix
         mDownloadOs = "32-bit Linux";
         mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
@@ -115,9 +115,9 @@ void FirstTimeWizard::chooseArduinoPath()
     path = QFileDialog::getExistingDirectory(this);
 #else
     path = QFileDialog::getOpenFileName(this,
-					QString(),
-					QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation),
-					tr("Applications (*.app)"));
+                    QString(),
+                    QDesktopServices::storageLocation(QDesktopServices::ApplicationsLocation),
+                    tr("Applications (*.app)"));
 #endif
 
     if (! path.isEmpty())

@@ -132,7 +132,7 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << "-fdata-sections"
         << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
         << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
-        << QString("-DARDUINO=%0").arg(ARDUINO_REVISION);
+        << QString("-DARDUINO=%0").arg(ARDUINO_SDK_VERSION);
     return cflags;
 }
 
@@ -149,7 +149,7 @@ QStringList Toolkit::avrSFlags(const Board *board)
         << "-assembler-with-cpp"
         << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
         << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
-        << QString("-DARDUINO=%0").arg(ARDUINO_REVISION);
+        << QString("-DARDUINO=%0").arg(ARDUINO_SDK_VERSION);
     return sflags;
 }
 

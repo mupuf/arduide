@@ -26,7 +26,7 @@ add_definitions(-DPROJECT_LICENSE="${PROJECT_LICENSE}")
 add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
 # Compatible version of the Arduino SDK (don't forget to update Toolkit.h)
-set(ARDUINO_SDK_VERSION "0022")
+set(ARDUINO_SDK_VERSION "0023")
 add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
 
 # Compiler flags
