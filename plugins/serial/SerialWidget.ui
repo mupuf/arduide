@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>398</width>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,6 +49,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="closeButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>&amp;Close</string>
               </property>
@@ -76,6 +79,9 @@
             </item>
             <item>
              <widget class="QSpinBox" name="readCountBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="minimum">
                <number>1</number>
               </property>
@@ -90,7 +96,20 @@
            </layout>
           </item>
           <item>
+           <widget class="QCheckBox" name="checkContinuousRead">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Continuous read</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="readButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>&amp;Read</string>
             </property>
@@ -98,6 +117,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="writeButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>&amp;Write...</string>
             </property>

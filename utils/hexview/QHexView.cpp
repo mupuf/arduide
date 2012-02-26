@@ -443,6 +443,29 @@ void QHexView::scrollTo(unsigned int offset) {
 }
 
 //------------------------------------------------------------------------------
+// Name: scrollToBottom()
+// Desc: scrolls view to the bottom of the view
+//------------------------------------------------------------------------------
+void QHexView::scrollToBottom() {
+        unsigned int offset = m_Data->length();
+        const int bpr = bytesPerRow();
+        m_Origin = offset % bpr;
+        address_t address = offset / bpr;
+
+        if (address > verticalScrollBar()->pageStep())
+            address -= verticalScrollBar()->pageStep();
+
+        updateScrollbars();
+
+        if(m_Origin != 0) {
+                ++address;
+        }
+
+        verticalScrollBar()->setValue(address);
+        repaint();
+}
+
+//------------------------------------------------------------------------------
 // Name: setShowAddress(bool show)
 // Desc: sets if we are to display the address column
 //------------------------------------------------------------------------------

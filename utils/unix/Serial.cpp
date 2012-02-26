@@ -94,13 +94,10 @@ void Serial::close()
 qint64 Serial::readData(char *data, qint64 maxSize)
 {
     ssize_t n = ::read(mSerial, data, maxSize);
-    qDebug() << n;
-    if (n < 0)
-        goto error;
-    else
+    //qDebug() << n;
+    if (n > 0)
         return n;
 
-error:
    setErrorString(QString::fromLocal8Bit(strerror(errno)));
    return -1;
 }

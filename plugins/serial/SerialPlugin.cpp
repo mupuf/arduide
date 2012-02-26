@@ -22,6 +22,8 @@ bool SerialPlugin::setup(IDEApplication *app)
     connect(widget, SIGNAL(closeRequested()), this, SLOT(close()));
     connect(widget, SIGNAL(readRequested()), this, SLOT(read()));
     connect(widget, SIGNAL(writeRequested(const QByteArray &)), this, SLOT(write(const QByteArray &)));
+    connect(widget, SIGNAL(readModeChangeRequested(bool)), this, SLOT(changeReadMode(bool)));
+    connect(this, SIGNAL(currentStateChanged(bool)), widget, SLOT(serialOpenEvent(bool)));
 
     return true;
 }
@@ -48,6 +50,7 @@ void SerialPlugin::open()
     }
 
     widget->setStatus(tr("Serial port opened successfully."));
+    emit currentStateChanged(true);
 }
 
 void SerialPlugin::close()
@@ -56,6 +59,7 @@ void SerialPlugin::close()
         mSerial->close();
 
     widget->setStatus(tr("Serial port closed."));
+    emit currentStateChanged(false);
 }
 
 void SerialPlugin::read()
@@ -93,6 +97,26 @@ void SerialPlugin::write(const QByteArray &data)
     }
     else
         widget->writeDialog()->setStatus(tr("Unable to write, the port is not opened."));
+}
+
+void SerialPlugin::changeReadMode(bool mode)
+{
+    if (!mSerial.data())
+        return;
+
+    mSerial->setInReadEventMode(mode);
+    if (mode)
+        connect(mSerial.data(), SIGNAL(dataArrived(QByteArray)), this, SLOT(continuousRead(QByteArray)));
+    else
+        disconnect(mSerial.data(), SIGNAL(dataArrived(QByteArray)), this, SLOT(continuousRead(QByteArray)));
+}
+
+void SerialPlugin::continuousRead(const QByteArray &data)
+{
+    QSharedPointer<QByteArray> currentData = widget->data();
+    currentData->append(data);
+
+    widget->setData(currentData);
 }
 
 Q_EXPORT_PLUGIN2(serial, SerialPlugin)

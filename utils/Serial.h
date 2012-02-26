@@ -91,8 +91,12 @@ private:
         {
             while (serial && watch)
             {
-                if (serial->waitForReadyRead(300) && watch)
-                    serial->onNewDataArrived(serial->readAll());
+                msleep(10);
+                if (serial->waitForReadyRead(300) && watch) {
+                    QByteArray data = serial->readAll();
+                    if (data.length() > 0)
+                        serial->onNewDataArrived(data);
+                }
             }
         }
 

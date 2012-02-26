@@ -36,6 +36,7 @@ SerialWidget::SerialWidget(QWidget *parent)
     connect(readButton, SIGNAL(clicked()), this, SIGNAL(readRequested()));
     connect(writeButton, SIGNAL(clicked(bool)), this, SLOT(setWriteDialogVisible(bool)));
     connect(mDialog, SIGNAL(writeRequested(const QByteArray &)), this, SIGNAL(writeRequested(const QByteArray &)));
+    connect(checkContinuousRead, SIGNAL(toggled(bool)), this, SLOT(checkReadMode_clicked(bool)));
 }
 
 void SerialWidget::setStatus(const QString &text)
@@ -53,14 +54,52 @@ int SerialWidget::readCount()
     return readCountBox->value();
 }
 
+const QSharedPointer<QByteArray> SerialWidget::data() const
+{
+    return hexView->data();
+}
+
 void SerialWidget::setData(const QSharedPointer<QByteArray> &data)
 {
     hexView->setData(data);
+    hexView->scrollToBottom();
 }
 
 void SerialWidget::setWriteDialogVisible(bool visible)
 {
     mDialog->setVisible(visible);
+}
+
+void SerialWidget::checkReadMode_clicked(bool value)
+{
+    /* update the GUI */
+    serialOpenEvent(true);
+
+    /* clear the current buffer */
+    if (value)
+    {
+        QSharedPointer<QByteArray> sp(new QByteArray(""));
+        setData(sp);
+    }
+
+    emit readModeChangeRequested(value);
+}
+
+void SerialWidget::serialOpenEvent(bool opened)
+{
+    bool open_and_not_continuous;
+
+    if (!opened)
+        checkContinuousRead->setChecked(false);
+
+    open_and_not_continuous= opened && checkContinuousRead->checkState() != Qt::Checked;
+
+    openButton->setEnabled(!opened);
+    closeButton->setEnabled(opened);
+    writeButton->setEnabled(opened);
+    checkContinuousRead->setEnabled(opened);
+    readButton->setEnabled(open_and_not_continuous);
+    readCountBox->setEnabled(open_and_not_continuous);
 }
 
 bool SerialWidget::eventFilter(QObject *obj, QEvent *event)

@@ -100,6 +100,7 @@ public:
         void setData(const QSharedPointer<C> &d);
         void setAddressOffset(address_t offset);
         void scrollTo(unsigned int offset);
+        void scrollToBottom();
 
         address_t selectedBytesAddress() const;
         unsigned int selectedBytesSize() const;
