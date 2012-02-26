@@ -43,8 +43,18 @@ QStringList Toolkit::findExamples(const QString &category)
 
 QString Toolkit::exampleFileName(const QString &category, const QString &example)
 {
-    static const QString format = "%0/examples/%1/%2/%2.ino";
-    return format.arg(ideApp->settings()->arduinoPath()).arg(category).arg(example);
+    QList<QString> extensions;
+    static const QString format = "%0/examples/%1/%2/%2.%3";
+
+    extensions << "ino" << "pde";
+
+    foreach(const QString ext, extensions)
+    {
+        QString path = format.arg(ideApp->settings()->arduinoPath()).arg(category).arg(example).arg(ext);
+        if (QFileInfo(path).exists())
+            return path;
+    }
+    return QString();
 }
 
 QString Toolkit::referencePath()
@@ -67,20 +77,28 @@ QString Toolkit::keywordsFileName()
     return QDir(ideApp->settings()->arduinoPath()).filePath("lib/keywords.txt");
 }
 
-bool Toolkit::isValidArduinoPath(const QString &path)
+QString Toolkit::toolkitVersion(const QString &path)
 {
     if(QFileInfo(QDir(path).filePath("hardware/arduino/boards.txt")).isReadable())
     {
         QFile file(QDir(path).filePath("revisions.txt"));
         if(!file.open(QFile::ReadOnly))
-            return false;
+            return QString();
 
         QByteArray arduinoVersion = file.readLine();
         QList<QByteArray> list = arduinoVersion.split(' ');
-        return list.size() >= 2 && list.at(1) == ARDUINO_SDK_VERSION;
+        if (list.size() >= 2)
+            return  list.at(1).trimmed();
     }
 
-    return false;
+    return QString();
+}
+
+bool Toolkit::isValidArduinoPath(const QString &path)
+{
+    QString version = toolkitVersion(path);
+
+    return version == "1.0" || version == "0023";
 }
 
 QString Toolkit::avrPath()
@@ -136,6 +154,12 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
         << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
         << QString("-DARDUINO=%0").arg(ARDUINO_SDK_VERSION);
+
+    QString arduinoPinDirName = QString("arduino/variants/%0").arg(board->attribute("build.variant"));
+    QString arduinoPinDirPath = QDir(hardwarePath()).filePath(arduinoPinDirName);
+    if (QDir(arduinoPinDirPath).exists())
+        cflags << QString("-I%0").arg(arduinoPinDirPath);
+
     return cflags;
 }
 
@@ -254,8 +278,18 @@ QStringList Toolkit::findLibraryExamples(const QString &library)
 
 QString Toolkit::libraryExampleFileName(const QString &library, const QString &example)
 {
-    static const QString format = "%0/examples/%1/%1.ino";
-    return format.arg(libraryPath(library)).arg(example);
+    QList<QString> extensions;
+    static const QString format = "%0/examples/%1/%1.%2";
+
+    extensions << "ino" << "pde";
+
+    foreach(const QString ext, extensions)
+    {
+        QString path = format.arg(libraryPath(library)).arg(example).arg(ext);
+        if (QFileInfo(path).exists())
+            return path;
+    }
+    return QString();
 }
 
 QString Toolkit::avrdudePath()

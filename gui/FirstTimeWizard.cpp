@@ -31,6 +31,8 @@
 FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     : QWizard(parent)
 {
+    QString url;
+
     setupUi(this);
 
     // paths to search for an existing installation
@@ -68,14 +70,23 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
         }
     }
 
-    sketchbookPathEdit->setText(QDir(QDir::homePath()).filePath("sketchbook"));
+    QString sketchBookPath = ideApp->settings()->sketchPath();
+    if (sketchBookPath.isEmpty())
+        sketchBookPath = QDir(QDir::homePath()).filePath("sketchbook");
+
+    sketchbookPathEdit->setText(sketchBookPath);
     projectLabel->setText(projectLabel->text().arg(PROJECT_NAME).arg(PROJECT_AUTHORS));
     urlLabel->setText(urlLabel->text().arg(PROJECT_URL));
+
+    url = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION;
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
     mDownloadOs = "Windows";
-    mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".zip" ;
+    if (QString(ARDUINO_SDK_VERSION) == "1.0")
+        url += "-windows.zip";
+    else
+        url += ".zip";
 #elif defined(Q_OS_DARWIN) // MacOSX
     #warn TODO: platform not supported yet
     mDownloadOs = "MacOSX";
@@ -83,14 +94,22 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 #else // Linux, other Unix
     #if defined(__x86_64__) // 64-bit Unix
         mDownloadOs = "64-bit Linux";
-        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION "-64.tgz" ;
+        if (QString(ARDUINO_SDK_VERSION) == "1.0")
+            url += "-linux64.tgz";
+        else
+            url += "-64.tgz";
     #elif defined(__i386__) // 32-bit Unix
         mDownloadOs = "32-bit Linux";
-        mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".tgz";
+        if (QString(ARDUINO_SDK_VERSION) == "1.0")
+            mDownloadUrl += "-linux.tgz";
+        else
+            mDownloadUrl += ".tgz";
     #else // other
         #error unsupported architecture
     #endif
 #endif
+
+    mDownloadUrl = url;
 
     downloadLabel->setText(downloadLabel->text().arg(ARDUINO_SDK_VERSION).arg(mDownloadOs));
 

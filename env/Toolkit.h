@@ -21,6 +21,7 @@ public:
     static QString hardwarePath();
     static QString boardsFileName();
     static QString keywordsFileName();
+    static QString toolkitVersion(const QString &path);
     static bool isValidArduinoPath(const QString &path);
     static QString avrPath();
 

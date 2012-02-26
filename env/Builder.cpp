@@ -171,7 +171,12 @@ bool Builder::build(const QString &code, bool upload)
     objects.clear();
 
     // compile the libraries
-    cxxflags << "-include" << "WProgram.h";
+    QString path = Toolkit::hardwarePath()+"/arduino/cores/arduino/Arduino.h";
+    if (QFileInfo(path).exists())
+        cxxflags << "-include" << "Arduino.h";
+    else
+        cxxflags << "-include" << "WProgram.h";
+
     success = compileDependencies(objects, code, includePaths, buildPath, cflags, cxxflags, sflags);
     if (! success)
     {
