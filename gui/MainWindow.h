@@ -67,6 +67,7 @@ public slots:
     void contextualHelp();
     bool docHelpRequested(QString);
     void refreshLibrariesMenu();
+    void refreshTitle();
 
 private slots:
     void openCommunityArduinoCC();

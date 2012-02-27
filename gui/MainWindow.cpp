@@ -37,7 +37,7 @@ MainWindow::MainWindow()
     : QMainWindow(), configDialog(NULL)
 {
     ui.setupUi(this);
-    setWindowTitle(windowTitle().arg(PROJECT_NAME, PROJECT_VERSION));
+    refreshTitle();
 
     ui.actionAbout->setText(ui.actionAbout->text().arg(PROJECT_NAME));
     ui.dockWidget->hide();
@@ -46,6 +46,8 @@ MainWindow::MainWindow()
 
 void MainWindow::initialize()
 {
+    refreshTitle();
+
     createBrowserAndTabs();
 
     createDeviceChooser();
@@ -389,6 +391,18 @@ void MainWindow::refreshLibrariesMenu()
     ui.menu_Libraries->insertMenu(ui.action_Lib_Refresh, &menu_lib_user);
 
     ui.menu_Libraries->insertSeparator(ui.action_Lib_Refresh);
+}
+
+void MainWindow::refreshTitle()
+{
+    QString title = QString("%0 - %1 (Arduino SDK %3)").arg(PROJECT_NAME, PROJECT_VERSION);
+
+    if (ideApp->settings())
+        title = title.arg(Toolkit::toolkitVersion(ideApp->settings()->arduinoPath()));
+    else
+        title = title.arg("");
+
+    setWindowTitle(title);
 }
 
 void MainWindow::openCommunityArduinoCC()

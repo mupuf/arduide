@@ -235,6 +235,8 @@ bool ConfigWidget::saveConfig()
                 QMessageBox::warning(this, tr("Invalid arduino path"), tr("This path does not contain a valid Arduino installation, please choose another."));
                 return false;
             }
+            if (path != settings->arduinoPath())
+                QMessageBox::information(this, tr("Please restart the ArduIDE"), tr("Please restart the ArduIDE to account for the Arduino SDK path change."));
             settings->setArduinoPath(path);
         }
         else if (field == uiPaths.sketchbookPathEdit)

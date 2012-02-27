@@ -4,42 +4,47 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="104"/>
+        <location filename="../build/ui_AboutDialog.h" line="110"/>
         <source>About %0</source>
         <translation>O %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="105"/>
+        <location filename="../build/ui_AboutDialog.h" line="111"/>
         <source>%0</source>
         <translation>%0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="106"/>
+        <location filename="../build/ui_AboutDialog.h" line="112"/>
         <source>&lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="107"/>
+        <location filename="../build/ui_AboutDialog.h" line="113"/>
         <source>Authors: %0</source>
         <translation>Autoři: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="108"/>
+        <location filename="../build/ui_AboutDialog.h" line="114"/>
         <source>License: %0</source>
         <translation>Licence: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="109"/>
+        <location filename="../build/ui_AboutDialog.h" line="115"/>
+        <source>Version: %0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/ui_AboutDialog.h" line="116"/>
         <source>&lt;hr /&gt;</source>
         <translation>&lt;hr /&gt;</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="110"/>
+        <location filename="../build/ui_AboutDialog.h" line="117"/>
         <source>&lt;p&gt;%0 is a Qt-based IDE for the open-source &lt;a href=&quot;http://arduino.cc&quot;&gt;Arduino&lt;/a&gt; electronics prototyping platform.&lt;/p&gt;
 
 &lt;div&gt;This project is an attempt to provide an alternative to the original Java IDE.&lt;/div&gt;
 &lt;div&gt;It is faster and provides a richer feature set for experienced developers.&lt;/div&gt;</source>
-        <translation type="unfinished">&lt;p&gt;%0 je Qt-based IDE pro open-source electronics prototyping platformu&lt;a href=&quot;http://arduino.cc&quot;&gt;Arduino&lt;/a&gt;.&lt;/p&gt;
+        <translation>&lt;p&gt;%0 je Qt-based IDE pro open-source electronics prototyping platformu&lt;a href=&quot;http://arduino.cc&quot;&gt;Arduino&lt;/a&gt;.&lt;/p&gt;
 
 &lt;div&gt;Tento projekt se snaží poskytnout alternativu k originálnímu Java IDE.&lt;/div&gt;
 &lt;div&gt;Je rychlejší a nabízí bohatší sadu funkcí zkušeným vývojářům.&lt;/div&gt;</translation>
@@ -68,7 +73,7 @@
         <translation>Vybraný příklad se nepodařilo otevřít.</translation>
     </message>
     <message>
-        <location filename="../gui/Browser.cpp" line="275"/>
+        <location filename="../gui/Browser.cpp" line="277"/>
         <source>No documentation found for %1.</source>
         <translation>Nenalezena dokumentace pro %1.</translation>
     </message>
@@ -103,8 +108,8 @@
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="161"/>
-        <location filename="../env/Builder.cpp" line="178"/>
-        <location filename="../env/Builder.cpp" line="212"/>
+        <location filename="../env/Builder.cpp" line="183"/>
+        <location filename="../env/Builder.cpp" line="217"/>
         <source>Compilation failed.</source>
         <translation>Překlad selhal.</translation>
     </message>
@@ -114,63 +119,63 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="187"/>
+        <location filename="../env/Builder.cpp" line="192"/>
         <source>Can&apos;t write the sketch to disk.</source>
         <translation>Nelze zapsat skeč na disk.</translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="199"/>
+        <location filename="../env/Builder.cpp" line="204"/>
         <source>Can&apos;t open main.cxx.</source>
         <translation>Nelze otevřít main.cxx.</translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="217"/>
+        <location filename="../env/Builder.cpp" line="222"/>
         <source>Linking...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="221"/>
+        <location filename="../env/Builder.cpp" line="226"/>
         <source>Link failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="226"/>
+        <location filename="../env/Builder.cpp" line="231"/>
         <source>Sizing...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="229"/>
+        <location filename="../env/Builder.cpp" line="234"/>
         <source>Sizing failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="235"/>
+        <location filename="../env/Builder.cpp" line="240"/>
         <source>Failed to extract EEPROM.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="243"/>
+        <location filename="../env/Builder.cpp" line="248"/>
         <source>Failed to extract HEX.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="249"/>
-        <location filename="../env/Builder.cpp" line="261"/>
+        <location filename="../env/Builder.cpp" line="254"/>
+        <location filename="../env/Builder.cpp" line="266"/>
         <source>Success.</source>
         <translation>Úspěch.</translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="254"/>
+        <location filename="../env/Builder.cpp" line="259"/>
         <source>Uploading to %0...</source>
         <translation>Nahrávání do %0...</translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="257"/>
+        <location filename="../env/Builder.cpp" line="262"/>
         <source>Uploading failed.</source>
         <translation>Nahrání selhalo.</translation>
     </message>
     <message>
-        <location filename="../env/Builder.cpp" line="301"/>
+        <location filename="../env/Builder.cpp" line="306"/>
         <source>Unknown source type: %0</source>
         <translation>Neznámý typ zdroje: %0</translation>
     </message>
@@ -196,7 +201,7 @@
 <context>
     <name>ConfigDialog</name>
     <message>
-        <location filename="../gui/ConfigDialog.cpp" line="265"/>
+        <location filename="../gui/ConfigDialog.cpp" line="267"/>
         <source>Configuration</source>
         <translation>Nastavení</translation>
     </message>
@@ -405,6 +410,16 @@
         <source>This path does not contain a valid Arduino installation, please choose another.</source>
         <translation>Tato cesta neobsahuje platnou instalaci arduina, prosím vyber jinou.</translation>
     </message>
+    <message>
+        <location filename="../gui/ConfigDialog.cpp" line="239"/>
+        <source>Please restart the ArduIDE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/ConfigDialog.cpp" line="239"/>
+        <source>Please restart the ArduIDE to account for the Arduino SDK path change.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DeviceChooser</name>
@@ -466,9 +481,8 @@
         <translation>Pro další práci potřebuji znát cestu k tvojí instalaci Arduina.</translation>
     </message>
     <message>
-        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
         <source>Existing installation</source>
-        <translation>Existující instalace</translation>
+        <translation type="obsolete">Existující instalace</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="315"/>
@@ -482,9 +496,18 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../build/ui_FirstTimeWizard.h" line="317"/>
         <source>Automatic installation</source>
-        <translation>Automatická instalace</translation>
+        <translation type="obsolete">Automatická instalace</translation>
+    </message>
+    <message>
+        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
+        <source>Existing installation (Arduino SDK 0023 or 1.0)</source>
+        <translation>Existující instalace(Arduino SDK 0023 or 1.0) </translation>
+    </message>
+    <message>
+        <location filename="../build/ui_FirstTimeWizard.h" line="317"/>
+        <source>Automatic installation (Arduino SDK 1.0)</source>
+        <translation>Automatická instalace(Arduino SDK 1.0) </translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="318"/>
@@ -564,59 +587,59 @@
         <translation>Více informací na: &lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="120"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="139"/>
         <source>Applications (*.app)</source>
         <translation>Aplikace (*.app)</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="164"/>
-        <location filename="../gui/FirstTimeWizard.cpp" line="175"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="183"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="194"/>
         <source>Invalid path</source>
         <translation>eplatná cesta</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="164"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="183"/>
         <source>Please enter a valid path to your Arduino installation.</source>
         <translation>Prosím zadej platnou cestu k tvé Arduino-instalaci.</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="175"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="194"/>
         <source>The sketchbook path could not be created. Please choose another.</source>
         <translation>Složka skečů nemohla být vytvořena. Prosím zvol jiné místo.</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="202"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="221"/>
         <source>Download error</source>
         <translation>Chyba stahování</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="203"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="222"/>
         <source>An error occured during the download:</source>
         <translation>Došlo k chybě během stahování:</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="263"/>
-        <location filename="../gui/FirstTimeWizard.cpp" line="277"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="282"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="296"/>
         <source>Installation error</source>
         <translation>Chyba instalace</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="264"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="283"/>
         <source>An error occured during the extraction.</source>
         <translation>Došlo k chybě během rozbalování.</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="278"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="297"/>
         <source>The extracted Arduino package is not valid.</source>
         <translation>Rozbalený Arduino balíček je neplatný.</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="287"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="306"/>
         <source>Installation</source>
         <translation>Instalace</translation>
     </message>
     <message>
-        <location filename="../gui/FirstTimeWizard.cpp" line="288"/>
+        <location filename="../gui/FirstTimeWizard.cpp" line="307"/>
         <source>Arduino was successfully installed to:</source>
         <translation>Arduino bylo úspěšně nainstalováno do:</translation>
     </message>
@@ -624,431 +647,430 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="450"/>
         <source>Arduino IDE</source>
-        <translation>Arduino IDE</translation>
+        <translation type="obsolete">Arduino IDE</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="451"/>
+        <location filename="../build/ui_MainWindow.h" line="450"/>
         <source>&amp;Quit</source>
         <translation>&amp;Ukončit</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="452"/>
+        <location filename="../build/ui_MainWindow.h" line="451"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="453"/>
+        <location filename="../build/ui_MainWindow.h" line="452"/>
         <source>&amp;New</source>
         <translation>&amp;Nový</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="454"/>
+        <location filename="../build/ui_MainWindow.h" line="453"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="455"/>
+        <location filename="../build/ui_MainWindow.h" line="454"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopírovat</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="456"/>
+        <location filename="../build/ui_MainWindow.h" line="455"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="457"/>
+        <location filename="../build/ui_MainWindow.h" line="456"/>
         <source>&amp;Paste</source>
         <translation>&amp;Vložit</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="458"/>
+        <location filename="../build/ui_MainWindow.h" line="457"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="459"/>
+        <location filename="../build/ui_MainWindow.h" line="458"/>
         <source>&amp;Cut</source>
         <translation>&amp;Vyjmout</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="460"/>
+        <location filename="../build/ui_MainWindow.h" line="459"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="461"/>
+        <location filename="../build/ui_MainWindow.h" line="460"/>
         <source>&amp;Save</source>
         <translation>&amp;Uložit</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="462"/>
+        <location filename="../build/ui_MainWindow.h" line="461"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="463"/>
+        <location filename="../build/ui_MainWindow.h" line="462"/>
         <source>&amp;Open</source>
         <translation>&amp;Otevřít</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="464"/>
+        <location filename="../build/ui_MainWindow.h" line="463"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="465"/>
+        <location filename="../build/ui_MainWindow.h" line="464"/>
         <source>&amp;Close</source>
         <translation>&amp;Zavřít</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="466"/>
+        <location filename="../build/ui_MainWindow.h" line="465"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="467"/>
+        <location filename="../build/ui_MainWindow.h" line="466"/>
         <source>&amp;Build (verify)</source>
         <translation>&amp;Sestavit (ověřit)</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="468"/>
+        <location filename="../build/ui_MainWindow.h" line="467"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="469"/>
+        <location filename="../build/ui_MainWindow.h" line="468"/>
         <source>&amp;Utilities</source>
         <translation>&amp;Nástroje</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="471"/>
+        <location filename="../build/ui_MainWindow.h" line="470"/>
         <source>Utilities</source>
         <translation>Nástroje</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="473"/>
+        <location filename="../build/ui_MainWindow.h" line="472"/>
         <source>Ctrl+G</source>
         <translation>Ctrl+G</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="474"/>
+        <location filename="../build/ui_MainWindow.h" line="473"/>
         <source>&amp;Upload</source>
         <translation>&amp;Nahrát</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="475"/>
+        <location filename="../build/ui_MainWindow.h" line="474"/>
         <source>Ctrl+U</source>
         <translation>Ctrl+U</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="476"/>
+        <location filename="../build/ui_MainWindow.h" line="475"/>
         <source>Go to the next tab</source>
         <translation>Jít na následujícíí kartu</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="477"/>
+        <location filename="../build/ui_MainWindow.h" line="476"/>
         <source>Ctrl+PgDown</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="478"/>
+        <location filename="../build/ui_MainWindow.h" line="477"/>
         <source>Go to the previous tab</source>
         <translation>Jít na předchozí kartu</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="479"/>
+        <location filename="../build/ui_MainWindow.h" line="478"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="480"/>
+        <location filename="../build/ui_MainWindow.h" line="479"/>
         <source>&amp;Configure the IDE</source>
         <translation>&amp;Nastavit IDE</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="481"/>
+        <location filename="../build/ui_MainWindow.h" line="480"/>
         <source>&amp;About %0</source>
         <translation>&amp;O %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="482"/>
+        <location filename="../build/ui_MainWindow.h" line="481"/>
         <source>About &amp;Qt</source>
         <translation>O &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="483"/>
+        <location filename="../build/ui_MainWindow.h" line="482"/>
         <source>Undo</source>
         <translation>Zpět</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="484"/>
+        <location filename="../build/ui_MainWindow.h" line="483"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="485"/>
+        <location filename="../build/ui_MainWindow.h" line="484"/>
         <source>Redo</source>
         <translation>Znovu</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="486"/>
+        <location filename="../build/ui_MainWindow.h" line="485"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="487"/>
-        <location filename="../build/ui_MainWindow.h" line="489"/>
+        <location filename="../build/ui_MainWindow.h" line="486"/>
+        <location filename="../build/ui_MainWindow.h" line="488"/>
         <source>Previous</source>
         <translation>Předchozí</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="491"/>
-        <location filename="../build/ui_MainWindow.h" line="493"/>
+        <location filename="../build/ui_MainWindow.h" line="490"/>
+        <location filename="../build/ui_MainWindow.h" line="492"/>
         <source>Next</source>
         <translation>Další</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="495"/>
+        <location filename="../build/ui_MainWindow.h" line="494"/>
         <source>Contextual help</source>
         <translation>Kontextová nápověda</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="496"/>
+        <location filename="../build/ui_MainWindow.h" line="495"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="497"/>
+        <location filename="../build/ui_MainWindow.h" line="496"/>
         <source>The official arduino website</source>
         <translation>Oficiální stránky Arduina</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="498"/>
+        <location filename="../build/ui_MainWindow.h" line="497"/>
         <source>The arduino forums</source>
         <translation>Fóra o Arduinu</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="499"/>
+        <location filename="../build/ui_MainWindow.h" line="498"/>
         <source>Upload to pastebin</source>
         <translation>Nahrát na pastebin</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="500"/>
-        <location filename="../build/ui_MainWindow.h" line="515"/>
+        <location filename="../build/ui_MainWindow.h" line="499"/>
+        <location filename="../build/ui_MainWindow.h" line="514"/>
         <source>Find/Replace</source>
         <translation>Najít/Nahradit</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="502"/>
+        <location filename="../build/ui_MainWindow.h" line="501"/>
         <source>Refresh</source>
         <translation>Obnovit</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="509"/>
+        <location filename="../build/ui_MainWindow.h" line="508"/>
         <source>Libraries</source>
         <translation>Knihovny</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="516"/>
-        <location filename="../build/ui_MainWindow.h" line="518"/>
+        <location filename="../build/ui_MainWindow.h" line="515"/>
+        <location filename="../build/ui_MainWindow.h" line="517"/>
         <source>Find</source>
         <translation>Najít</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="501"/>
+        <location filename="../build/ui_MainWindow.h" line="500"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="503"/>
+        <location filename="../build/ui_MainWindow.h" line="502"/>
         <source>&amp;File</source>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="504"/>
+        <location filename="../build/ui_MainWindow.h" line="503"/>
         <source>&amp;Edit</source>
         <translation>&amp;Úpravy</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="505"/>
+        <location filename="../build/ui_MainWindow.h" line="504"/>
         <source>&amp;Settings</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="506"/>
+        <location filename="../build/ui_MainWindow.h" line="505"/>
         <source>&amp;Help</source>
         <translation>&amp;Nápověda</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="507"/>
+        <location filename="../build/ui_MainWindow.h" line="506"/>
         <source>Community</source>
         <translation>Komunita</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="508"/>
+        <location filename="../build/ui_MainWindow.h" line="507"/>
         <source>&amp;View</source>
         <translation>&amp;Pohled</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="510"/>
+        <location filename="../build/ui_MainWindow.h" line="509"/>
         <source>Edition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="511"/>
+        <location filename="../build/ui_MainWindow.h" line="510"/>
         <source>Hardware</source>
         <translation>Hardware</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="512"/>
+        <location filename="../build/ui_MainWindow.h" line="511"/>
         <source>Build tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="513"/>
+        <location filename="../build/ui_MainWindow.h" line="512"/>
         <source>Utility dock</source>
         <translation>Panel nástrojů</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="514"/>
+        <location filename="../build/ui_MainWindow.h" line="513"/>
         <source>Output</source>
         <translation>Výstup</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="517"/>
-        <location filename="../build/ui_MainWindow.h" line="519"/>
+        <location filename="../build/ui_MainWindow.h" line="516"/>
+        <location filename="../build/ui_MainWindow.h" line="518"/>
         <source>Replace</source>
         <translation>Nahradit</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="520"/>
+        <location filename="../build/ui_MainWindow.h" line="519"/>
         <source>Replace All</source>
         <translation>Nahradit vše</translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="521"/>
+        <location filename="../build/ui_MainWindow.h" line="520"/>
         <source>Reg. Exp.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="522"/>
+        <location filename="../build/ui_MainWindow.h" line="521"/>
         <source>Word only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_MainWindow.h" line="523"/>
+        <location filename="../build/ui_MainWindow.h" line="522"/>
         <source>Case sensitive</source>
         <translation>Rozlišuje velikost písmen</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="132"/>
+        <location filename="../gui/MainWindow.cpp" line="135"/>
         <source>Browser</source>
         <translation>Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="161"/>
+        <location filename="../gui/MainWindow.cpp" line="164"/>
         <source>Device</source>
         <translation>Zařízení</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="178"/>
+        <location filename="../gui/MainWindow.cpp" line="181"/>
         <source>Board</source>
         <translation>Deska</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="244"/>
+        <location filename="../gui/MainWindow.cpp" line="247"/>
         <source>Close project</source>
         <translation>Zavřít projekt</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="245"/>
+        <location filename="../gui/MainWindow.cpp" line="248"/>
         <source>This project has unsaved changes.&lt;br /&gt;Are you sure you want to close it?</source>
         <translation>V tomto projektu jsou neuložené změny.&lt;br/&gt;Skutečně ho chceš zavřít?</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="357"/>
-        <location filename="../gui/MainWindow.cpp" line="377"/>
+        <location filename="../gui/MainWindow.cpp" line="360"/>
+        <location filename="../gui/MainWindow.cpp" line="380"/>
         <source>Arduino Libraries</source>
         <translation>Arduino knihovny</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="367"/>
+        <location filename="../gui/MainWindow.cpp" line="370"/>
         <source>ArduIDE Libraries</source>
         <translation>ArduIDE knihovny</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="386"/>
+        <location filename="../gui/MainWindow.cpp" line="389"/>
         <source>Install new libraries?</source>
         <translation>Instalovat nové knihovny?</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="411"/>
+        <location filename="../gui/MainWindow.cpp" line="426"/>
         <source>Pastebin error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="411"/>
+        <location filename="../gui/MainWindow.cpp" line="426"/>
         <source>The pastebin upload failed with code:
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="449"/>
+        <location filename="../gui/MainWindow.cpp" line="466"/>
         <source>Arduide - No occurence found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="450"/>
+        <location filename="../gui/MainWindow.cpp" line="467"/>
         <source>No occurence of &apos;%1&apos; found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="486"/>
+        <location filename="../gui/MainWindow.cpp" line="503"/>
         <source>Arduide - Replace All</source>
         <translation>Arduide - Nahradit vše</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="487"/>
+        <location filename="../gui/MainWindow.cpp" line="504"/>
         <source>The Replace All feature replaced %1 occurences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="523"/>
+        <location filename="../gui/MainWindow.cpp" line="540"/>
         <source>To install a new library, just extract it in this directory.
 
 More information at http://arduino.cc/en/Guide/Environment#libraries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="537"/>
+        <location filename="../gui/MainWindow.cpp" line="554"/>
         <source>Open project</source>
         <translation>Otevřít projekt</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="537"/>
+        <location filename="../gui/MainWindow.cpp" line="554"/>
         <source>Arduino sketches (*.ino *.pde)</source>
         <translation>Arduino skeče (*.ino *.pde)</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="545"/>
+        <location filename="../gui/MainWindow.cpp" line="562"/>
         <source>Open error</source>
         <translation>Chyba otvírání</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="545"/>
+        <location filename="../gui/MainWindow.cpp" line="562"/>
         <source>The file could not be opened for reading.</source>
         <translation>Soubor se nepodařilo otevřít pro čtení.</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="658"/>
+        <location filename="../gui/MainWindow.cpp" line="677"/>
         <source>Quit</source>
         <translation>Ukončit</translation>
     </message>
     <message>
-        <location filename="../gui/MainWindow.cpp" line="659"/>
+        <location filename="../gui/MainWindow.cpp" line="678"/>
         <source>Some projects in your workspace have unsaved changes.&lt;br /&gt;Are you sure you want to quit?</source>
         <translation type="unfinished"></translation>
     </message>

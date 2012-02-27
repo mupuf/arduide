@@ -76,7 +76,7 @@ void IDEApplication::initializeSettings()
     {
         FirstTimeWizard w;
         if (w.exec() == QWizard::Rejected)
-            exit(1);
+            ::exit(1);
     }
 
     mProjectHistory = new ProjectHistory(this);

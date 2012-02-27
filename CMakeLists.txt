@@ -210,7 +210,6 @@ file(GLOB arduino_MOCS
 set(arduino_TS
     "translations/template_arduide_xx.ts"
     "translations/arduide_fr.ts"
-    "translations/arduide_es.ts"
     "translations/arduide_cs.ts")
 
 set(arduino_QRCS

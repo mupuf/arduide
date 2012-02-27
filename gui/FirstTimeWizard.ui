@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>320</height>
+    <width>562</width>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,7 @@
     <item>
      <widget class="QRadioButton" name="existingInstallButton">
       <property name="text">
-       <string>Existing installation</string>
+       <string>Existing installation (Arduino SDK 0023 or 1.0)</string>
       </property>
      </widget>
     </item>
@@ -92,7 +92,7 @@
     <item>
      <widget class="QRadioButton" name="automaticInstallButton">
       <property name="text">
-       <string>Automatic installation</string>
+       <string>Automatic installation (Arduino SDK 1.0)</string>
       </property>
      </widget>
     </item>
@@ -358,8 +358,6 @@
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="../resources/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
