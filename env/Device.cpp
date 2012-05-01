@@ -22,6 +22,8 @@
 #include <QDBusInterface>
 #endif
 
+#include <unistd.h>
+
 #include <QStringList>
 #include <QDebug>
 
