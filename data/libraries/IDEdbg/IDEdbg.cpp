@@ -220,7 +220,7 @@ void DbgSendChar(char c)
 	else if(c == '>')
 		Serial.print("&gt;");
 	else
-		Serial.print(c, BYTE);
+		Serial.write(c);
 }
 
 void DbgSendString(const char* s)
@@ -274,7 +274,7 @@ static void _DbgPrintf(const char* format, bool escapeFormat, va_list list)
 			}
 			else //if(format[i]=='%')
 			{
-				Serial.print(format[i], BYTE);
+				Serial.write(format[i]);
 				++i;
 			}
 		}
@@ -283,7 +283,7 @@ static void _DbgPrintf(const char* format, bool escapeFormat, va_list list)
             if (escapeFormat)
                 DbgSendChar(format[i]);
             else
-                Serial.print(format[i], BYTE);
+                Serial.write(format[i]);
 			++i;
 		}
 	}

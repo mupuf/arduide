@@ -139,12 +139,12 @@ void print_variable(variable* var)
 		}
 		case _char:
 		{
-			Serial.print(*((char*)var->data), BYTE);
+			Serial.write(*((char*)var->data));
 			break;
 		}
 		case _unsigned_char:
 		{
-			Serial.print(*((unsigned char*)var->data), BYTE);
+			Serial.write(*((unsigned char*)var->data));
 			break;
 		}
 		case _float:
