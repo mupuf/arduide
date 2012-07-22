@@ -67,9 +67,25 @@ QString Toolkit::hardwarePath()
     return QDir(ideApp->settings()->arduinoPath()).filePath("hardware");
 }
 
-QString Toolkit::boardsFileName()
+QStringList Toolkit::boardsFileNames()
 {
-    return QDir(hardwarePath()).filePath("arduino/boards.txt");
+    QStringList userHwList;
+
+    userHwList << QDir(hardwarePath()).filePath("arduino/boards.txt");
+
+    QDir sketchDir = QDir(ideApp->settings()->sketchPath());
+    if (sketchDir.cd("hardware"))
+    {
+        sketchDir.setFilter(QDir::AllDirs);
+        QStringList hwList = sketchDir.entryList();
+        foreach(QString dir, hwList)
+        {
+            if (QDir(sketchDir.filePath(dir)).exists("boards.txt"))
+                userHwList.push_back(sketchDir.filePath(dir + "/boards.txt"));
+        }
+    }
+
+    return userHwList;
 }
 
 QString Toolkit::keywordsFileName()
@@ -200,7 +216,7 @@ QStringList Toolkit::avrSizeFlags(const Board *board)
 
 QString Toolkit::corePath(const Board *board)
 {
-    return QDir(hardwarePath()).filePath(QString("arduino/cores/%0").arg(board->attribute("build.core")));
+    return QDir(board->hardwarePath()).filePath(QString("cores/%0").arg(board->attribute("build.core")));
 }
 
 QStringList Toolkit::IDELibraries()

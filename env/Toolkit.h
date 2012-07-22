@@ -19,7 +19,7 @@ public:
     static QString exampleFileName(const QString &category, const QString &example);
     static QString referencePath();
     static QString hardwarePath();
-    static QString boardsFileName();
+    static QStringList boardsFileNames();
     static QString keywordsFileName();
     static QString toolkitVersion(const QString &path);
     static bool isValidArduinoPath(const QString &path);

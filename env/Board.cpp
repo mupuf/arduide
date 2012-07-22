@@ -30,29 +30,32 @@ void Board::listBoards()
 {
     if (! mListed)
     {
-        QFile boardsFile(Toolkit::boardsFileName());
-        boardsFile.open(QFile::ReadOnly);
+        foreach(QString boardFile, Toolkit::boardsFileNames()) {
+            QFile boardsFile(boardFile);
+            boardsFile.open(QFile::ReadOnly);
 
-        while (! boardsFile.atEnd())
-        {
-            QString line = QString::fromLocal8Bit(boardsFile.readLine()).trimmed();
-            if (line.isEmpty() || line[0] == '#')
-                continue;
+            while (! boardsFile.atEnd())
+            {
+                QString line = QString::fromLocal8Bit(boardsFile.readLine()).trimmed();
+                if (line.isEmpty() || line[0] == '#')
+                    continue;
 
-            QString attrName = line.section('=', 0, 0);
-            QString attrValue = line.section('=', 1);
+                QString attrName = line.section('=', 0, 0);
+                QString attrValue = line.section('=', 1);
 
-            // attrName = <product>.<attrName>
-            QString productId = attrName.section('.', 0, 0);
-            attrName = attrName.section('.', 1);
+                // attrName = <product>.<attrName>
+                QString productId = attrName.section('.', 0, 0);
+                attrName = attrName.section('.', 1);
 
-            Board &board = mBoards[productId];
-            board.mAttributes[attrName] = attrValue;
+                Board &board = mBoards[productId];
+                board.mAttributes[attrName] = attrValue;
+                board.mHardwarePath = QFileInfo(boardFile).dir().absolutePath();
+            }
+
+            boardsFile.close();
+
+            mListed = true;
         }
-
-        boardsFile.close();
-
-        mListed = true;
     }
 }
 
