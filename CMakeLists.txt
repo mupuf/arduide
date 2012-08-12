@@ -26,8 +26,10 @@ add_definitions(-DPROJECT_LICENSE="${PROJECT_LICENSE}")
 add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 
 # Compatible version of the Arduino SDK (don't forget to update Toolkit.h)
-set(ARDUINO_SDK_VERSION "100")
+set(ARDUINO_SDK_VERSION "101")
+set(ARDUINO_SDK_VERSION_NAME "1.0.1")
 add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
+add_definitions(-DARDUINO_SDK_VERSION_NAME="${ARDUINO_SDK_VERSION_NAME}")
 
 # Compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -360,7 +362,7 @@ include(CPack)
 #Messages
 message("")
 message("-- Summary:")
-message("* Arduino SDK compatible version: ${ARDUINO_SDK_VERSION}")
+message("* Arduino SDK compatible version: ${ARDUINO_SDK_VERSION_NAME} (${ARDUINO_SDK_VERSION})")
 message("* Device listing method: ${DEV_LISTING} ")
 message("* Use the Filesystem Hierarchy Standard: USE_FHS_PATHS=${USE_FHS_PATHS}")
 message(" OFF: the software is installed in a single directory, good for binary distributions")

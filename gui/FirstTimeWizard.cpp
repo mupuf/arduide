@@ -51,11 +51,11 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     QString applicationPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 
     defaultArduinoPaths
-        << QDir(applicationPath).filePath("arduino-" ARDUINO_SDK_VERSION)
+        << QDir(applicationPath).filePath("arduino-" ARDUINO_SDK_VERSION_NAME)
         << QDir(applicationPath).filePath("arduino")
-        << "/usr/local/share/arduino-" ARDUINO_SDK_VERSION
+        << "/usr/local/share/arduino-" ARDUINO_SDK_VERSION_NAME
         << "/usr/local/share/arduino"
-        << "/usr/share/arduino-" ARDUINO_SDK_VERSION
+        << "/usr/share/arduino-" ARDUINO_SDK_VERSION_NAME
         << "/usr/share/arduino";
 #endif
 
@@ -78,29 +78,29 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     projectLabel->setText(projectLabel->text().arg(PROJECT_NAME).arg(PROJECT_AUTHORS));
     urlLabel->setText(urlLabel->text().arg(PROJECT_URL));
 
-    url = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION;
+    url = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION_NAME;
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
     mDownloadOs = "Windows";
-    if (QString(ARDUINO_SDK_VERSION) == "1.0")
+    if (QString(ARDUINO_SDK_VERSION_NAME) == "1.0.1")
         url += "-windows.zip";
     else
         url += ".zip";
 #elif defined(Q_OS_DARWIN) // MacOSX
     #warn TODO: platform not supported yet
     mDownloadOs = "MacOSX";
-    //mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION ".dmg" ;
+    //mDownloadUrl = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION_NAME ".dmg" ;
 #else // Linux, other Unix
     #if defined(__x86_64__) // 64-bit Unix
         mDownloadOs = "64-bit Linux";
-        if (QString(ARDUINO_SDK_VERSION) == "1.0")
+        if (QString(ARDUINO_SDK_VERSION_NAME) == "1.0.1")
             url += "-linux64.tgz";
         else
             url += "-64.tgz";
     #elif defined(__i386__) // 32-bit Unix
         mDownloadOs = "32-bit Linux";
-        if (QString(ARDUINO_SDK_VERSION) == "1.0")
+        if (QString(ARDUINO_SDK_VERSION_NAME) == "1.0.1")
             url += "-linux.tgz";
         else
             url += ".tgz";
@@ -111,7 +111,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 
     mDownloadUrl = url;
 
-    downloadLabel->setText(downloadLabel->text().arg(ARDUINO_SDK_VERSION).arg(mDownloadOs));
+    downloadLabel->setText(downloadLabel->text().arg(ARDUINO_SDK_VERSION_NAME).arg(mDownloadOs));
 
     mDownloadManager = new QNetworkAccessManager(this);
     QNetworkDiskCache *downloadCache = new QNetworkDiskCache(mDownloadManager);
@@ -288,7 +288,7 @@ bool FirstTimeWizard::validateCurrentPage()
 
         installStatusLabel->setPixmap(QPixmap(":/images/16x16/task-complete.png"));
 
-        QString arduinoPath = QDir(destinationPath).filePath("arduino-" ARDUINO_SDK_VERSION);
+        QString arduinoPath = QDir(destinationPath).filePath("arduino-" ARDUINO_SDK_VERSION_NAME);
         if (! Toolkit::isValidArduinoPath(arduinoPath))
         {
             QMessageBox::warning(

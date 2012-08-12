@@ -500,14 +500,22 @@
         <translation type="obsolete">Installation automatique</translation>
     </message>
     <message>
-        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
         <source>Existing installation (Arduino SDK 0023 or 1.0)</source>
-        <translation>Installation existante (Arduino SDK 0023 or 1.0)</translation>
+        <translation type="obsolete">Installation existante (Arduino SDK 0023 or 1.0)</translation>
+    </message>
+    <message>
+        <source>Automatic installation (Arduino SDK 1.0)</source>
+        <translation type="obsolete">Installation automatique (Arduino SDK 1.0)</translation>
+    </message>
+    <message>
+        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
+        <source>Existing installation (Arduino SDK 0023, 1.0 or 1.0.1)</source>
+        <translation>Installation existante (Arduino SDK 0023, 1.0 ou 1.0.1)</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="317"/>
-        <source>Automatic installation (Arduino SDK 1.0)</source>
-        <translation>Installation automatique (Arduino SDK 1.0)</translation>
+        <source>Automatic installation (Arduino SDK 1.0.1)</source>
+        <translation>Installation automatique (Arduino SDK 1.0.1)</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="318"/>
@@ -1180,12 +1188,12 @@ Plus d&apos;informations à l&apos;adresse http://arduino.cc/en/Guide/Environmen
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../env/Device.cpp" line="95"/>
+        <location filename="../env/Device.cpp" line="97"/>
         <source>Serial callout</source>
         <translation>Serial callout</translation>
     </message>
     <message>
-        <location filename="../env/Device.cpp" line="109"/>
+        <location filename="../env/Device.cpp" line="111"/>
         <source>Serial dialin</source>
         <translation>Serial dialin</translation>
     </message>

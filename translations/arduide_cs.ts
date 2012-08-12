@@ -500,14 +500,22 @@
         <translation type="obsolete">Automatická instalace</translation>
     </message>
     <message>
-        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
         <source>Existing installation (Arduino SDK 0023 or 1.0)</source>
-        <translation>Existující instalace(Arduino SDK 0023 or 1.0) </translation>
+        <translation type="obsolete">Existující instalace(Arduino SDK 0023 or 1.0) </translation>
+    </message>
+    <message>
+        <source>Automatic installation (Arduino SDK 1.0)</source>
+        <translation type="obsolete">Automatická instalace(Arduino SDK 1.0) </translation>
+    </message>
+    <message>
+        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
+        <source>Existing installation (Arduino SDK 0023, 1.0 or 1.0.1)</source>
+        <translation>Existující instalace(Arduino SDK 0023, 1.0 or 1.0.1)</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="317"/>
-        <source>Automatic installation (Arduino SDK 1.0)</source>
-        <translation>Automatická instalace(Arduino SDK 1.0) </translation>
+        <source>Automatic installation (Arduino SDK 1.0.1)</source>
+        <translation>Automatická instalace(Arduino SDK 1.0.1)</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="318"/>
@@ -1169,12 +1177,12 @@ More information at http://arduino.cc/en/Guide/Environment#libraries</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../env/Device.cpp" line="95"/>
+        <location filename="../env/Device.cpp" line="97"/>
         <source>Serial callout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Device.cpp" line="109"/>
+        <location filename="../env/Device.cpp" line="111"/>
         <source>Serial dialin</source>
         <translation type="unfinished"></translation>
     </message>

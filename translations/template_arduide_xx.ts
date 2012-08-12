@@ -478,6 +478,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
+        <source>Existing installation (Arduino SDK 0023, 1.0 or 1.0.1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="315"/>
         <source>Arduino path:</source>
         <translation type="unfinished"></translation>
@@ -489,13 +494,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
-        <source>Existing installation (Arduino SDK 0023 or 1.0)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="317"/>
-        <source>Automatic installation (Arduino SDK 1.0)</source>
+        <source>Automatic installation (Arduino SDK 1.0.1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1154,12 +1154,12 @@ More information at http://arduino.cc/en/Guide/Environment#libraries</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../env/Device.cpp" line="95"/>
+        <location filename="../env/Device.cpp" line="97"/>
         <source>Serial callout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Device.cpp" line="109"/>
+        <location filename="../env/Device.cpp" line="111"/>
         <source>Serial dialin</source>
         <translation type="unfinished"></translation>
     </message>
