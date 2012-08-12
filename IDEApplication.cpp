@@ -21,7 +21,8 @@ void IDEApplication::registerMetaTypes()
 }
 
 IDEApplication::IDEApplication(int& argc, char **argv)
-    : QApplication(argc, argv)
+    : QApplication(argc, argv),
+      mSettings(NULL)
 {
     setOrganizationName(PROJECT_ORGANIZATION);
     setApplicationName(PROJECT_NAME);
