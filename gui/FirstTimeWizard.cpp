@@ -101,9 +101,9 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     #elif defined(__i386__) // 32-bit Unix
         mDownloadOs = "32-bit Linux";
         if (QString(ARDUINO_SDK_VERSION) == "1.0")
-            mDownloadUrl += "-linux.tgz";
+            url += "-linux.tgz";
         else
-            mDownloadUrl += ".tgz";
+            url += ".tgz";
     #else // other
         #error unsupported architecture
     #endif
