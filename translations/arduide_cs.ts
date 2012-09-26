@@ -31,7 +31,7 @@
     <message>
         <location filename="../build/ui_AboutDialog.h" line="115"/>
         <source>Version: %0</source>
-        <translation type="unfinished"></translation>
+        <translation>Verze: %0</translation>
     </message>
     <message>
         <location filename="../build/ui_AboutDialog.h" line="116"/>
@@ -83,13 +83,13 @@
     <message>
         <location filename="../env/Builder.cpp" line="42"/>
         <source>Cannot read file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze číst soubor &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="70"/>
         <location filename="../env/Builder.cpp" line="98"/>
         <source>Failed to create build directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se vytvořit adresář sestavení.</translation>
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="127"/>
@@ -116,7 +116,7 @@
     <message>
         <location filename="../env/Builder.cpp" line="168"/>
         <source>Archiving failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivace se nezdařila.</translation>
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="192"/>
@@ -131,12 +131,12 @@
     <message>
         <location filename="../env/Builder.cpp" line="222"/>
         <source>Linking...</source>
-        <translation type="unfinished"></translation>
+        <translation>Propojení ...</translation>
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="226"/>
         <source>Link failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Propojení se nezdařilo.</translation>
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="231"/>
@@ -151,12 +151,12 @@
     <message>
         <location filename="../env/Builder.cpp" line="240"/>
         <source>Failed to extract EEPROM.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se extrahovat EEPROM.</translation>
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="248"/>
         <source>Failed to extract HEX.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se extrahovat HEX.</translation>
     </message>
     <message>
         <location filename="../env/Builder.cpp" line="254"/>
@@ -278,7 +278,7 @@
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="94"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="95"/>
@@ -303,42 +303,42 @@
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="99"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Klíčové slovo</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="100"/>
         <source>DoubleQuotedString</source>
-        <translation type="unfinished"></translation>
+        <translation>Dvojitá uvozovka</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="101"/>
         <source>SingleQuotedString</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednoduchá uvozovka</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="102"/>
         <source>UUID</source>
-        <translation type="unfinished"></translation>
+        <translation>UUID</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="103"/>
         <source>PreProcessor</source>
-        <translation type="unfinished"></translation>
+        <translation>PreProcesor</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="104"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operátor</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="105"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikátor</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="106"/>
         <source>UnclosedString</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuzavřený řetězec</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="107"/>
@@ -348,7 +348,7 @@
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="108"/>
         <source>Regex</source>
-        <translation type="unfinished"></translation>
+        <translation>Regex</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="109"/>
@@ -373,7 +373,7 @@
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="113"/>
         <source>GlobalClass</source>
-        <translation type="unfinished"></translation>
+        <translation>Globální třída</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="114"/>
@@ -413,12 +413,12 @@
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="239"/>
         <source>Please restart the ArduIDE</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosím, restartujte ArduIDE</translation>
     </message>
     <message>
         <location filename="../gui/ConfigDialog.cpp" line="239"/>
         <source>Please restart the ArduIDE to account for the Arduino SDK path change.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosím, restartujte ArduIDE, aby bylo možné zohlednit změnu cesty k Arduino SDK.</translation>
     </message>
 </context>
 <context>
@@ -500,22 +500,14 @@
         <translation type="obsolete">Automatická instalace</translation>
     </message>
     <message>
-        <source>Existing installation (Arduino SDK 0023 or 1.0)</source>
-        <translation type="obsolete">Existující instalace(Arduino SDK 0023 or 1.0) </translation>
-    </message>
-    <message>
-        <source>Automatic installation (Arduino SDK 1.0)</source>
-        <translation type="obsolete">Automatická instalace(Arduino SDK 1.0) </translation>
-    </message>
-    <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
-        <source>Existing installation (Arduino SDK 0023, 1.0 or 1.0.1)</source>
-        <translation>Existující instalace(Arduino SDK 0023, 1.0 or 1.0.1)</translation>
+        <source>Existing installation (Arduino SDK 0023 or 1.0)</source>
+        <translation>Existující instalace(Arduino SDK 0023 or 1.0) </translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="317"/>
-        <source>Automatic installation (Arduino SDK 1.0.1)</source>
-        <translation>Automatická instalace(Arduino SDK 1.0.1)</translation>
+        <source>Automatic installation (Arduino SDK 1.0)</source>
+        <translation>Automatická instalace(Arduino SDK 1.0) </translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="318"/>
@@ -966,7 +958,7 @@
     <message>
         <location filename="../build/ui_MainWindow.h" line="521"/>
         <source>Word only</source>
-        <translation type="unfinished"></translation>
+        <translation>Pouze slovo</translation>
     </message>
     <message>
         <location filename="../build/ui_MainWindow.h" line="522"/>
@@ -1050,7 +1042,8 @@
         <source>To install a new library, just extract it in this directory.
 
 More information at http://arduino.cc/en/Guide/Environment#libraries</source>
-        <translation type="unfinished"></translation>
+        <translation>Chcete-li nainstalovat novou knihovnu, stačí ji extrahovat v tomto adresáři. 
+Více informací na http://arduino.cc/en/Guide/Environment#libraries</translation>
     </message>
     <message>
         <location filename="../gui/MainWindow.cpp" line="554"/>
@@ -1080,7 +1073,7 @@ More information at http://arduino.cc/en/Guide/Environment#libraries</source>
     <message>
         <location filename="../gui/MainWindow.cpp" line="678"/>
         <source>Some projects in your workspace have unsaved changes.&lt;br /&gt;Are you sure you want to quit?</source>
-        <translation type="unfinished"></translation>
+        <translation>Některé projekty ve vašem pracovním prostoru mají neuložené změny. &lt;br/&gt; Jste si jisti, že chcete skončit?</translation>
     </message>
 </context>
 <context>
@@ -1177,12 +1170,12 @@ More information at http://arduino.cc/en/Guide/Environment#libraries</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../env/Device.cpp" line="97"/>
+        <location filename="../env/Device.cpp" line="95"/>
         <source>Serial callout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Device.cpp" line="111"/>
+        <location filename="../env/Device.cpp" line="109"/>
         <source>Serial dialin</source>
         <translation type="unfinished"></translation>
     </message>
