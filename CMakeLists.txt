@@ -245,9 +245,6 @@ else (UPDATE_TRANSLATIONS)
 endif (UPDATE_TRANSLATIONS)
 add_custom_target (translations_target DEPENDS ${arduino_QM})
 
-install(FILES ${arduino_QM} DESTINATION
-${CMAKE_INSTALL_PREFIX}/translations)
-
 set(arduino_LINK_LIBRARIES ${Qt4_LINK_LIBRARIES} ${Grantlee_CORE_LIBRARIES} ${QScintilla_LIBRARY} ${CoreFoundation_LIBRARY} ${IOKit_LIBRARY} ${Win32_LIBRARIES} ${UDEV_LIBRARIES})
 
 add_executable(arduino-ide
@@ -296,6 +293,7 @@ endif()
 
 # Install
 if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
+  install(FILES ${arduino_QM} DESTINATION "${arduino_TRANSLATION_PATH}")
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${arduino_DATA_PATH}")
   if(USE_FHS_PATHS)
     install(TARGETS arduino-ide DESTINATION bin)
@@ -310,8 +308,6 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
   #     PATTERN "*.dll")
   endif()
 endif()
-
-install(FILES ${arduino_QM} DESTINATION "${arduino_TRANSLATION_PATH}")
 
 ### Packages
 set(CPACK_SET_DESTDIR ON)
