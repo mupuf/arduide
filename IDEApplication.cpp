@@ -27,7 +27,7 @@ IDEApplication::IDEApplication(int& argc, char **argv)
     setOrganizationName(PROJECT_ORGANIZATION);
     setApplicationName(PROJECT_NAME);
     setApplicationVersion(PROJECT_VERSION);
-    setWindowIcon(QIcon(":/images/arduino.png"));
+    setWindowIcon(QIcon(":/images/arduide.png"));
 
     // translation support
     initializeTranslator();

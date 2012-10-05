@@ -291,6 +291,24 @@ else()
   endif()
 endif()
 
+# Desktop file
+if( UNIX AND NOT APPLE )
+  if( NOT DESKTOP_ENTRY )
+    set( DESKTOP_ENTRY arduino-ide.desktop )
+  endif( NOT DESKTOP_ENTRY )
+  set( APP_ICON "${CMAKE_SOURCE_DIR}/resources/images/arduide.png" )
+
+  add_custom_command(OUTPUT ${DESKTOP_ENTRY}
+    COMMAND touch ${DESKTOP_ENTRY}
+    COMMAND sh "${CMAKE_SOURCE_DIR}/arduide-desktop.sh" ${CMAKE_INSTALL_PREFIX} >${DESKTOP_ENTRY}
+    DEPENDS "${CMAKE_SOURCE_DIR}/arduide-desktop.sh"
+    COMMENT "Generating desktop entry file"
+    )
+  add_custom_target(desktop_entry_file ALL
+    DEPENDS ${DESKTOP_ENTRY}
+    )
+endif( UNIX AND NOT APPLE )
+
 # Install
 if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
   install(FILES ${arduino_QM} DESTINATION "${arduino_TRANSLATION_PATH}")
@@ -307,6 +325,11 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
   #     PATTERN "*.dylib"
   #     PATTERN "*.dll")
   endif()
+
+  if(UNIX AND NOT APPLE)
+    install(FILES "${CMAKE_BINARY_DIR}/${DESKTOP_ENTRY}" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/application/")
+    install(FILES ${APP_ICON} DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/" )
+  endif(UNIX AND NOT APPLE)
 endif()
 
 ### Packages

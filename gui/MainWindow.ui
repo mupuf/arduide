@@ -78,7 +78,7 @@
      </property>
      <property name="icon">
       <iconset resource="../resources/images.qrc">
-       <normaloff>:/images/arduino.png</normaloff>:/images/arduino.png</iconset>
+       <normaloff>:/images/arduide.png</normaloff>:/images/arduide.png</iconset>
      </property>
      <addaction name="actionCommunityArduinoCC"/>
      <addaction name="actionCommunityArduinoForums"/>
@@ -593,7 +593,7 @@
   <action name="actionCommunityArduinoCC">
    <property name="icon">
     <iconset resource="../resources/images.qrc">
-     <normaloff>:/images/arduino.png</normaloff>:/images/arduino.png</iconset>
+     <normaloff>:/images/arduide.png</normaloff>:/images/arduide.png</iconset>
    </property>
    <property name="text">
     <string>The official arduino website</string>
@@ -602,7 +602,7 @@
   <action name="actionCommunityArduinoForums">
    <property name="icon">
     <iconset resource="../resources/images.qrc">
-     <normaloff>:/images/arduino.png</normaloff>:/images/arduino.png</iconset>
+     <normaloff>:/images/arduide.png</normaloff>:/images/arduide.png</iconset>
    </property>
    <property name="text">
     <string>The arduino forums</string>
