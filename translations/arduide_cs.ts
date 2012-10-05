@@ -4,42 +4,47 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="110"/>
+        <location filename="../build/ui_AboutDialog.h" line="117"/>
         <source>About %0</source>
         <translation>O %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="111"/>
+        <location filename="../build/ui_AboutDialog.h" line="118"/>
         <source>%0</source>
         <translation>%0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="112"/>
+        <location filename="../build/ui_AboutDialog.h" line="119"/>
         <source>&lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="113"/>
+        <location filename="../build/ui_AboutDialog.h" line="120"/>
         <source>Authors: %0</source>
         <translation>Autoři: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="114"/>
+        <location filename="../build/ui_AboutDialog.h" line="121"/>
         <source>License: %0</source>
         <translation>Licence: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="115"/>
+        <location filename="../build/ui_AboutDialog.h" line="122"/>
         <source>Version: %0</source>
         <translation>Verze: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="116"/>
+        <location filename="../build/ui_AboutDialog.h" line="123"/>
+        <source>Internationalization : &lt;a href=&quot;%0&quot;&gt;You can help us translate on transifex.com&lt;/a&gt;</source>
+        <translation type="unfinished">Internationalization : &lt;a href=&quot;%0&quot;&gt;You can help us translate on transifex.com&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../build/ui_AboutDialog.h" line="124"/>
         <source>&lt;hr /&gt;</source>
         <translation>&lt;hr /&gt;</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="117"/>
+        <location filename="../build/ui_AboutDialog.h" line="125"/>
         <source>&lt;p&gt;%0 is a Qt-based IDE for the open-source &lt;a href=&quot;http://arduino.cc&quot;&gt;Arduino&lt;/a&gt; electronics prototyping platform.&lt;/p&gt;
 
 &lt;div&gt;This project is an attempt to provide an alternative to the original Java IDE.&lt;/div&gt;
@@ -500,14 +505,22 @@
         <translation type="obsolete">Automatická instalace</translation>
     </message>
     <message>
-        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
         <source>Existing installation (Arduino SDK 0023 or 1.0)</source>
-        <translation>Existující instalace(Arduino SDK 0023 or 1.0) </translation>
+        <translation type="obsolete">Existující instalace(Arduino SDK 0023 or 1.0) </translation>
+    </message>
+    <message>
+        <source>Automatic installation (Arduino SDK 1.0)</source>
+        <translation type="obsolete">Automatická instalace(Arduino SDK 1.0) </translation>
+    </message>
+    <message>
+        <location filename="../build/ui_FirstTimeWizard.h" line="314"/>
+        <source>Existing installation (Arduino SDK 0023, 1.0 or 1.0.1)</source>
+        <translation type="unfinished">Existující instalace(Arduino SDK 0023 or 1.0)  {0023, 1.0 ?} {1.0.1)?}</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="317"/>
-        <source>Automatic installation (Arduino SDK 1.0)</source>
-        <translation>Automatická instalace(Arduino SDK 1.0) </translation>
+        <source>Automatic installation (Arduino SDK 1.0.1)</source>
+        <translation type="unfinished">Automatická instalace(Arduino SDK 1.0)  {1.0.1)?}</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="318"/>
@@ -1042,7 +1055,7 @@
         <source>To install a new library, just extract it in this directory.
 
 More information at http://arduino.cc/en/Guide/Environment#libraries</source>
-        <translation>Chcete-li nainstalovat novou knihovnu, stačí ji extrahovat v tomto adresáři. 
+        <translation type="unfinished">Chcete-li nainstalovat novou knihovnu, stačí ji extrahovat v tomto adresáři. 
 Více informací na http://arduino.cc/en/Guide/Environment#libraries</translation>
     </message>
     <message>
@@ -1170,12 +1183,12 @@ Více informací na http://arduino.cc/en/Guide/Environment#libraries</translatio
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../env/Device.cpp" line="95"/>
+        <location filename="../env/Device.cpp" line="97"/>
         <source>Serial callout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../env/Device.cpp" line="109"/>
+        <location filename="../env/Device.cpp" line="111"/>
         <source>Serial dialin</source>
         <translation type="unfinished"></translation>
     </message>

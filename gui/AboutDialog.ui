@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>488</width>
-    <height>233</height>
+    <width>532</width>
+    <height>241</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,6 +60,16 @@ font-size: 24px;
     <widget class="QLabel" name="versionLabel">
      <property name="text">
       <string>Version: %0</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="translationLabel">
+     <property name="text">
+      <string>Internationalization : &lt;a href=&quot;%0&quot;&gt;You can help us translate on transifex.com&lt;/a&gt;</string>
+     </property>
+     <property name="openExternalLinks">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

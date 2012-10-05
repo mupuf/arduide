@@ -762,6 +762,7 @@ void MainWindow::about()
     ui.authorsLabel->setText(ui.authorsLabel->text().arg(PROJECT_AUTHORS));
     ui.licenseLabel->setText(ui.licenseLabel->text().arg(PROJECT_LICENSE));
     ui.descriptionLabel->setText(ui.descriptionLabel->text().arg(PROJECT_NAME));
+    ui.translationLabel->setText(ui.translationLabel->text().arg(PROJECT_TRANSLATION_URL));
     dialog->exec();
     delete dialog;
 }

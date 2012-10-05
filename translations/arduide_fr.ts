@@ -4,42 +4,47 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="110"/>
+        <location filename="../build/ui_AboutDialog.h" line="117"/>
         <source>About %0</source>
         <translation>À Propos %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="111"/>
+        <location filename="../build/ui_AboutDialog.h" line="118"/>
         <source>%0</source>
         <translation>%0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="112"/>
+        <location filename="../build/ui_AboutDialog.h" line="119"/>
         <source>&lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</source>
         <translation>&lt;a href=&quot;%0&quot;&gt;%0&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="113"/>
+        <location filename="../build/ui_AboutDialog.h" line="120"/>
         <source>Authors: %0</source>
         <translation>Auteurs: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="114"/>
+        <location filename="../build/ui_AboutDialog.h" line="121"/>
         <source>License: %0</source>
         <translation>Licence: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="115"/>
+        <location filename="../build/ui_AboutDialog.h" line="122"/>
         <source>Version: %0</source>
         <translation>Version: %0</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="116"/>
+        <location filename="../build/ui_AboutDialog.h" line="123"/>
+        <source>Internationalization : &lt;a href=&quot;%0&quot;&gt;You can help us translate on transifex.com&lt;/a&gt;</source>
+        <translation>Internationalisation : &lt;a href=&quot;%0&quot;&gt;Vous pouvez nous aider à traduire sur transifex.com&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../build/ui_AboutDialog.h" line="124"/>
         <source>&lt;hr /&gt;</source>
         <translation>&lt;hr /&gt;</translation>
     </message>
     <message>
-        <location filename="../build/ui_AboutDialog.h" line="117"/>
+        <location filename="../build/ui_AboutDialog.h" line="125"/>
         <source>&lt;p&gt;%0 is a Qt-based IDE for the open-source &lt;a href=&quot;http://arduino.cc&quot;&gt;Arduino&lt;/a&gt; electronics prototyping platform.&lt;/p&gt;
 
 &lt;div&gt;This project is an attempt to provide an alternative to the original Java IDE.&lt;/div&gt;
