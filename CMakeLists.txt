@@ -327,7 +327,7 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL Debug)
   endif()
 
   if(UNIX AND NOT APPLE)
-    install(FILES "${CMAKE_BINARY_DIR}/${DESKTOP_ENTRY}" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/application/")
+    install(FILES "${CMAKE_BINARY_DIR}/${DESKTOP_ENTRY}" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications/")
     install(FILES ${APP_ICON} DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/" )
   endif(UNIX AND NOT APPLE)
 endif()
