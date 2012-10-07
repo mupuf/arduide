@@ -171,6 +171,12 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
         << QString("-DARDUINO=%0").arg(ARDUINO_SDK_VERSION);
 
+    if (!board->attribute("build.vid").isEmpty())
+        cflags << QString("-DUSB_VID=%0").arg(board->attribute("build.vid"));
+
+    if (!board->attribute("build.pid").isEmpty())
+        cflags << QString("-DUSB_PID=%0").arg(board->attribute("build.pid"));
+
     QString arduinoPinDirName = QString("arduino/variants/%0").arg(board->attribute("build.variant"));
     QString arduinoPinDirPath = QDir(hardwarePath()).filePath(arduinoPinDirName);
     if (QDir(arduinoPinDirPath).exists())
