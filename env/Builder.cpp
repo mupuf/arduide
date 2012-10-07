@@ -18,6 +18,7 @@
 #include "../env/Toolkit.h"
 
 #include "../utils/Serial.h"
+#include "../utils/Compat.h"
 
 Builder::Builder(QObject *parent)
     : QObject(parent)
@@ -452,6 +453,15 @@ bool Builder::uploadViaBootloader(const QString &hexFileName)
         ser.open(QIODevice::ReadWrite);
         ser.flushBuffer();
         ser.close();
+    }
+
+    // software reset for Arduino Leonardo
+    if (board()->name() == "Arduino Leonardo")
+    {
+        Serial ser(device(), 1200);
+        ser.open(QIODevice::ReadOnly);
+        ser.close();
+        Compat::sleep_ms(1000);
     }
 
     return runCommand(command) == 0;
