@@ -31,7 +31,7 @@ This program is free software; you can redistribute it and/or modify
 #include <QStringList>
 #include <QDir>
 #include <QFile>
-#include <QDebug>
+#include <QProcess>
 
 #include "../env/Board.h"
 #include "IDEApplication.h"
@@ -342,7 +342,10 @@ QString Toolkit::avrdudePath()
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
     return QDir(hardwarePath()).filePath("tools/avr/bin/avrdude");
 #else
-    return QDir(hardwarePath()).filePath("tools/avrdude");
+    if(avrdudeSystem())
+      return(QString("avrdude"));
+    else
+      return QDir(hardwarePath()).filePath("tools/avrdude");
 #endif
 }
 
@@ -353,14 +356,28 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
         flags << "-v" << "-v" << "-v" << "-v";
     else
         flags << "-q" << "-q";
-    flags
-        << "-C"
+
+    flags << "-C";
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
-        << QDir(hardwarePath()).filePath("tools/avr/etc/avrdude.conf")
+    flags << QDir(hardwarePath()).filePath("tools/avr/etc/avrdude.conf");
 #else
-        << QDir(hardwarePath()).filePath("tools/avrdude.conf")
+    if(avrdudeSystem())
+        flags << "/etc/avrdude.conf";
+    else
+        flags << QDir(hardwarePath()).filePath("tools/avrdude.conf");
 #endif
-        << QString("-p%0").arg(board->attribute("build.mcu"));
+    flags << QString("-p%0").arg(board->attribute("build.mcu"));
+
     return flags;
 }
 
+bool Toolkit::avrdudeSystem()
+{
+  QProcess proc;
+  
+  proc.start(QString("avrdude"));
+  if(proc.waitForStarted())
+    return true;
+  
+  return false;
+}

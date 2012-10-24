@@ -76,6 +76,7 @@ public:
     static QString libraryExampleFileName(const QString &library, const QString &example);
     static QString avrdudePath();
     static QStringList avrdudeFlags(const Board *board);
+    static bool avrdudeSystem();
 };
 
 #endif // TOOLKIT_H
