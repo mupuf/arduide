@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2012
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -45,6 +45,7 @@ public:
     static QStringList boardsFileNames();
     static QString keywordsFileName();
     static QString toolkitVersion(const QString &path);
+    static int toolkitVersionInt(const QString &path);
     static bool isValidArduinoPath(const QString &path);
     static QString avrPath();
 

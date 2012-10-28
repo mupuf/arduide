@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2012
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -133,6 +133,11 @@ QString Toolkit::toolkitVersion(const QString &path)
     return QString();
 }
 
+int Toolkit::toolkitVersionInt(const QString &path)
+{
+    return Toolkit::toolkitVersion(path).remove('.').toInt();
+}
+
 bool Toolkit::isValidArduinoPath(const QString &path)
 {
     QString version = toolkitVersion(path);
@@ -145,8 +150,12 @@ QString Toolkit::avrPath()
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
     return QDir(hardwarePath()).filePath("tools/avr/bin");
 #else
-    // the AVR toolchain should be already present in the PATH
-    return QString();
+    if (toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 100)
+        return QDir(hardwarePath()).filePath("tools/avr/bin");
+    else {
+        // the AVR toolchain should be already present in the PATH
+        return QString();
+    }
 #endif
 }
 QString Toolkit::avrTool(Toolkit::AVRTool tool)
@@ -186,19 +195,24 @@ QStringList Toolkit::avrCFlags(const Board *board)
     cflags
         << "-g"
         << "-Os"
-        << "-w"
+        << "-Wall"
         << "-fno-exceptions"
         << "-ffunction-sections"
         << "-fdata-sections"
         << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
         << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
-        << QString("-DARDUINO=%0").arg(toolkitVersion(ideApp->settings()->arduinoPath()));
+        << QString("-MMD")
+        << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
 
     if (!board->attribute("build.vid").isEmpty())
         cflags << QString("-DUSB_VID=%0").arg(board->attribute("build.vid"));
+    else
+        cflags << QString("-DUSB_VID=null");
 
     if (!board->attribute("build.pid").isEmpty())
         cflags << QString("-DUSB_PID=%0").arg(board->attribute("build.pid"));
+    else
+        cflags << QString("-DUSB_PID=null");
 
     QString arduinoPinDirName = QString("arduino/variants/%0").arg(board->attribute("build.variant"));
     QString arduinoPinDirPath = QDir(hardwarePath()).filePath(arduinoPinDirName);
@@ -220,8 +234,9 @@ QStringList Toolkit::avrSFlags(const Board *board)
         << "-g"
         << "-assembler-with-cpp"
         << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
+        << QString("-MMD")
         << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
-        << QString("-DARDUINO=%0").arg(toolkitVersion(ideApp->settings()->arduinoPath()));
+        << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
     return sflags;
 }
 
@@ -374,10 +389,10 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
 bool Toolkit::avrdudeSystem()
 {
   QProcess proc;
-  
+
   proc.start(QString("avrdude"));
   if(proc.waitForStarted())
     return true;
-  
+
   return false;
 }
