@@ -346,6 +346,8 @@ int FirstTimeWizard::nextId() const
 
 void FirstTimeWizard::onDownloadProgress(qint64 received, qint64 total)
 {
-    int percent = 100 * received / total;
+    int percent = 0;
+    if(total)
+       percent = 100 * received / total;
     downloadProgressBar->setValue(percent);
 }
