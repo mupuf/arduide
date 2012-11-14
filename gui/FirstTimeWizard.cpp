@@ -107,7 +107,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
     mDownloadOs = "Windows";
-    if (QString(ARDUINO_SDK_VERSION_NAME) == "1.0.1")
+    if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
         url += "-windows.zip";
     else
         url += ".zip";
@@ -118,13 +118,13 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 #else // Linux, other Unix
     #if defined(__x86_64__) // 64-bit Unix
         mDownloadOs = "64-bit Linux";
-        if (QString(ARDUINO_SDK_VERSION_NAME) == "1.0.1")
+        if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
             url += "-linux64.tgz";
         else
             url += "-64.tgz";
     #elif defined(__i386__) // 32-bit Unix
         mDownloadOs = "32-bit Linux";
-        if (QString(ARDUINO_SDK_VERSION_NAME) == "1.0.1")
+        if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
             url += "-linux.tgz";
         else
             url += ".tgz";
