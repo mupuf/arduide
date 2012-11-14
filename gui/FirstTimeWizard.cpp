@@ -230,25 +230,15 @@ bool FirstTimeWizard::validateCurrentPage()
         QNetworkReply *reply = mDownloadManager->get(request);
         QxtSignalWaiter downloadWaiter(reply, SIGNAL(finished()));
         connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(onDownloadProgress(qint64, qint64)));
+        connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onDownloadError(QNetworkReply::NetworkError)));
         QList<QAbstractButton *> buttons = QList<QAbstractButton *>()
             << button(BackButton)
             << button(NextButton)
             << button(CancelButton);
         foreach (QAbstractButton *button, buttons)
             button->setEnabled(false);
+
         downloadWaiter.wait();
-
-        if (reply->error() != QNetworkReply::NoError)
-        {
-            QMessageBox::warning(
-                this,
-                tr("Download error"),
-                tr("An error occured during the download:") + " " + reply->errorString());
-            foreach (QAbstractButton *button, buttons)
-                button->setEnabled(true);
-            return false;
-        }
-
         downloadStatusLabel->setPixmap(QPixmap(":/images/16x16/task-complete.png"));
 
         // extract the archive
@@ -350,4 +340,19 @@ void FirstTimeWizard::onDownloadProgress(qint64 received, qint64 total)
     if(total)
        percent = 100 * received / total;
     downloadProgressBar->setValue(percent);
+}
+
+void FirstTimeWizard::onDownloadError(QNetworkReply::NetworkError)
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+    QList<QAbstractButton *> buttons = QList<QAbstractButton *>()
+            << button(BackButton)
+            << button(NextButton)
+            << button(CancelButton);
+    QMessageBox::warning(
+                this,
+                tr("Download error"),
+                tr("An error occured during the download:") + " " + reply->errorString());
+    foreach (QAbstractButton *button, buttons)
+        button->setEnabled(true);
 }

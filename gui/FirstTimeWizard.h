@@ -31,6 +31,7 @@ This program is free software; you can redistribute it and/or modify
 
 #include <QUrl>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include <ui_FirstTimeWizard.h>
 
@@ -48,6 +49,7 @@ private slots:
     void chooseArduinoPath();
     void chooseSketchbookPath();
     void onDownloadProgress(qint64 received, qint64 total);
+    void onDownloadError(QNetworkReply::NetworkError);
 
 private:
     void setupActions();
