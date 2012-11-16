@@ -86,6 +86,7 @@ void ConfigWidget::resetPage(int index)
         uiEditor.colorBox->setCurrentIndex(0);
         setColorAtIndex(0);
         uiEditor.caretColorButton->setColor(mEditor->caretForegroundColor());
+        uiEditor.caretWidthSpin->setValue(mEditor->caretWidth());
         uiEditor.selectionColorButton->setColor(mEditor->selectionBackgroundColor());
         break;
     case PathsIndex:
@@ -154,6 +155,7 @@ void ConfigWidget::setupUi()
     connect(uiEditor.fgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setFgColor(const QColor &)));
     connect(uiEditor.bgColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setBgColor(const QColor &)));
     connect(uiEditor.caretColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setCaretColor(const QColor &)));
+    connect(uiEditor.caretWidthSpin, SIGNAL(valueChanged(int)), this, SLOT(setCaretWidth(int)));
     connect(uiEditor.selectionColorButton, SIGNAL(colorChosen(const QColor &)), this, SLOT(setSelectionColor(const QColor &)));
     connect(uiPaths.arduinoPathButton, SIGNAL(clicked()), this, SLOT(chooseArduinoPath()));
     connect(uiPaths.sketchbookPathButton, SIGNAL(clicked()), this, SLOT(chooseSketchbookPath()));
@@ -193,6 +195,11 @@ void ConfigWidget::setBgColor(const QColor &color)
 void ConfigWidget::setCaretColor(const QColor &color)
 {
     mEditor->setCaretForegroundColor(color);
+}
+
+void ConfigWidget::setCaretWidth(int width)
+{
+    mEditor->setCaretWidth(width);
 }
 
 void ConfigWidget::setSelectionColor(const QColor &color)

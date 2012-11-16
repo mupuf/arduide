@@ -46,7 +46,9 @@ public:
     void setLexerFont(const QFont &font);
 
     void setCaretForegroundColor(const QColor &col);
+    void setCaretWidth(int width);
     const QColor &caretForegroundColor() { return mCaretForegroundColor; }
+    int &caretWidth() { return mCaretWidth; }
     void setSelectionBackgroundColor(const QColor &col);
     const QColor &selectionBackgroundColor() { return mSelectionBackgroundColor; }
 
@@ -76,6 +78,7 @@ private:
     QList<EditorShortcut> mCustomShortcuts;
 
     QColor mCaretForegroundColor, mSelectionBackgroundColor;
+    int mCaretWidth;
 
 private slots:
     void findPreviousParagraph(int *line, int *index);

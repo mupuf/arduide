@@ -210,6 +210,12 @@ void Editor::setCaretForegroundColor(const QColor &col)
     QsciScintilla::setCaretForegroundColor(col);
 }
 
+void Editor::setCaretWidth(int width)
+{
+    mCaretWidth = width;
+    QsciScintilla::setCaretWidth(width);
+}
+
 void Editor::setSelectionBackgroundColor(const QColor &col)
 {
     mSelectionBackgroundColor = col;

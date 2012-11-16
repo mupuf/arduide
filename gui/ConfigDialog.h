@@ -56,6 +56,7 @@ private slots:
     void setFgColor(const QColor &);
     void setBgColor(const QColor &);
     void setCaretColor(const QColor &);
+    void setCaretWidth(int width);
     void setSelectionColor(const QColor &);
     void fieldChange();
 
