@@ -70,6 +70,7 @@ public slots:
     void newProject(const QString &code = QString(), const QString &name = QString(), Editor **pEditor = NULL);
     void open(const QString &fileName = QString());
     void save();
+    void save_as();
     void uploadToPastebin();
     void chooseDevice();
     void chooseBoard();
@@ -100,6 +101,7 @@ private slots:
     void pastebinUploadDone(QNetworkReply* reply);
     void finishedBuilding();
     void showFindBox(bool show);
+    void save_generic(bool saveas);
     bool find();
     bool replace();
     bool replaceAll();

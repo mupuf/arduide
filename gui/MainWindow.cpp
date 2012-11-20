@@ -97,6 +97,7 @@ void MainWindow::setupActions()
     connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newProject()));
     connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui.action_Save, SIGNAL(triggered()), this, SLOT(save()));
+    connect(ui.action_Saveas, SIGNAL(triggered()), this, SLOT(save_as()));
     connect(ui.action_Close, SIGNAL(triggered()), this, SLOT(closeTab()));
     connect(ui.actionUpPastebin, SIGNAL(triggered()), this, SLOT(uploadToPastebin()));
     connect(ui.actionUndo, SIGNAL(triggered()), this, SLOT(undo()));
@@ -608,21 +609,29 @@ void MainWindow::open(const QString &_fileName)
 
 void MainWindow::save()
 {
+    this->save_generic(false);
+}
+
+void MainWindow::save_as()
+{
+    save_generic(true);
+}
+
+void MainWindow::save_generic(bool saveas)
+{
     Editor *e = currentEditor();
     if (e)
     {
         QString fileName = e->fileName();
         int index;
-        e->save();
-        // systematically update the tab text, as the title has been changed if the text has changed
-        index = ui.tabWidget->currentIndex();
-        QString tabText = ui.tabWidget->tabText(index);
-        if (tabText.endsWith('*'))
+        e->save(saveas);
+        if (fileName != e->fileName())
         {
-            tabText.resize(tabText.size()-1);
+            // the file name changed, update the tab text
+            index = ui.tabWidget->currentIndex();
+            names.removeOne(ui.tabWidget->tabText(index));
+            ui.tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
         }
-        names.removeOne(tabText);
-        ui.tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
 
         // update the history
         ideApp->projectHistory()->updateHistory(e->fileName());

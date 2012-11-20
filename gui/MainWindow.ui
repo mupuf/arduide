@@ -43,6 +43,7 @@
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
     <addaction name="action_Save"/>
+    <addaction name="action_Saveas"/>
     <addaction name="action_Close"/>
     <addaction name="separator"/>
     <addaction name="actionUpPastebin"/>
@@ -639,6 +640,11 @@
    </property>
    <property name="text">
     <string>Refresh</string>
+   </property>
+  </action>
+  <action name="action_Saveas">
+   <property name="text">
+    <string>Save as</string>
    </property>
   </action>
  </widget>

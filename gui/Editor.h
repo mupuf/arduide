@@ -56,7 +56,7 @@ public:
     bool removeCustomShortcut(const QKeySequence &key);
 
 public slots:
-    void save();
+    void save(bool saveas);
     void showContextualHelp();
 
 private:
