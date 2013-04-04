@@ -66,10 +66,12 @@ void OutputView::logError(const QString &text)
 void OutputView::logCommand(const QString &command)
 {
     static const QString format = tr(">>>> %0");
+    setTextColor(Qt::gray);
     log(format.arg(command));
 }
 
 void OutputView::logCommand(const QStringList &command)
 {
+    setTextColor(Qt::gray);
     logCommand(command.join(" "));
 }
