@@ -125,6 +125,7 @@ QString Toolkit::toolkitVersion(const QString &path)
             return QString();
 
         QByteArray arduinoVersion = file.readLine();
+        while (arduinoVersion == "\n" && ! file.atEnd()) { arduinoVersion = file.readLine();}
         QList<QByteArray> list = arduinoVersion.split(' ');
         if (list.size() >= 2)
             return  list.at(1).trimmed();
@@ -142,7 +143,7 @@ bool Toolkit::isValidArduinoPath(const QString &path)
 {
     QString version = toolkitVersion(path);
 
-    return version == "1.0.2" || version == "1.0.1" || version == "1.0" || version == "0023";
+    return version == "1.0.3" || version == "1.0.2" || version == "1.0.1" || version == "1.0" || version == "0023";
 }
 
 QString Toolkit::avrPath()
