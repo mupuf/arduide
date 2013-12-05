@@ -125,7 +125,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     #elif defined(__i386__) // 32-bit Unix
         mDownloadOs = "32-bit Linux";
         if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
-            url += "-linux.tgz";
+            url += "-linux32.tgz";
         else
             url += ".tgz";
     #else // other
