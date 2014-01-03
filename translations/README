@@ -1,4 +1,4 @@
 If you want to translate the arduide into another language:
 - rename template_arduide_xx.ts to arduide_xx.ts with xx=locale (de, nl, es, ...)
 - run linguist on it
-- send the new file to martin.peres@ensi-bourges.fr
+- send the new file to martin.peres@free.fr
