@@ -184,10 +184,11 @@ QString Toolkit::avrTool(Toolkit::AVRTool tool)
         return QString();
     }
 
-    if (path.isNull())
-        return toolName;
+    QString toolPath = QDir(path).filePath(toolName);
+    if (QFile::exists(toolPath))
+	return toolPath;
     else
-        return QDir(path).filePath(toolName);
+        return toolName;
 }
 
 QStringList Toolkit::avrCFlags(const Board *board)
