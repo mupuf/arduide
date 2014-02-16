@@ -87,6 +87,7 @@ public slots:
     void about();
     void configureEditors();
     void tabContentHasChanged();
+    void editorModificationChanged(bool m);
     void tabHasChanged();
     void contextualHelp();
     bool docHelpRequested(QString);

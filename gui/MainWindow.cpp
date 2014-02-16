@@ -338,6 +338,16 @@ void MainWindow::tabContentHasChanged()
     ui.action_Prev->setEnabled(previousAvail);
     ui.action_Next->setEnabled(forwardAvail);
     ui.action_Contextual_help->setEnabled(contextualHelpAvail);
+    
+}
+
+void MainWindow::editorModificationChanged(bool m)
+{
+  int index = ui.tabWidget->currentIndex();
+  if (index != -1 && !ui.tabWidget->tabText(index).endsWith("*"))
+  {
+    ui.tabWidget->setTabText(index, ui.tabWidget->tabText(index)+"*");
+  }
 }
 
 void MainWindow::tabHasChanged()
@@ -604,13 +614,15 @@ void MainWindow::save()
         QString fileName = e->fileName();
         int index;
         e->save();
-        if (fileName != e->fileName())
+        // systematically update the tab text, as the title has been changed if the text has changed
+        index = ui.tabWidget->currentIndex();
+        QString tabText = ui.tabWidget->tabText(index);
+        if (tabText.endsWith('*'))
         {
-            // the file name changed, update the tab text
-            index = ui.tabWidget->currentIndex();
-            names.removeOne(ui.tabWidget->tabText(index));
-            ui.tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
+            tabText.resize(tabText.size()-1);
         }
+        names.removeOne(tabText);
+        ui.tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
 
         // update the history
         ideApp->projectHistory()->updateHistory(e->fileName());
@@ -719,6 +731,10 @@ void MainWindow::build()
         ui.dockWidget->show();
         ui.outputView->clear();
 
+        if (editor->isModified())
+        {
+            save();
+        }
         BackgroundBuilder *builder = new BackgroundBuilder(ui.outputView);
         builder->setRelatedActions(buildActions);
         connect(builder, SIGNAL(buildFinished(bool)), builder, SLOT(deleteLater()));
@@ -742,6 +758,10 @@ void MainWindow::upload()
         ui.dockWidget->show();
         ui.outputView->clear();
 
+        if (editor->isModified())
+        {
+            save();
+        }
         BackgroundBuilder *builder = new BackgroundBuilder(ui.outputView);
         builder->setRelatedActions(buildActions);
         connect(builder, SIGNAL(buildFinished(bool)), builder, SLOT(deleteLater()));
