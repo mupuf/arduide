@@ -171,7 +171,7 @@ DeviceList Device::listDevices(bool filterDevices)
                     is_serial = true;
                     is_modem = false;
                 }
-                else if (strncmp(devnode, "/dev/ttyACM", 11) == 0)
+                else if (strncmp(devnode, "/dev/ttyACM", 11) == 0 || strncmp(devnode, "/dev/ttyUSB", 11) == 0)
                 {
                     is_serial = true;
                     is_modem = true;
