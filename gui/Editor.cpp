@@ -48,7 +48,7 @@ Editor::Editor(QWidget *parent)
 
 void Editor::save(bool saveas)
 {
-    if (mFileName.isEmpty() or saveas==1)
+    if (mFileName.isEmpty() or saveas)
     {
         QString dirName = QFileDialog::getSaveFileName(this, tr("Save project"), ideApp->settings()->sketchPath(), tr("Directories (*)"), NULL, QFileDialog::DontConfirmOverwrite);
         if (dirName.isEmpty())
