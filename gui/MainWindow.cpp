@@ -622,16 +622,18 @@ void MainWindow::save_generic(bool saveas)
     Editor *e = currentEditor();
     if (e)
     {
-        QString fileName = e->fileName();
-        int index;
         e->save(saveas);
-        if (fileName != e->fileName())
-        {
-            // the file name changed, update the tab text
-            index = ui.tabWidget->currentIndex();
+
+        // the file name changed, update the tab text
+        int index = ui.tabWidget->currentIndex();
+        QString tabText = ui.tabWidget->tabText(index);
+        if (tabText.endsWith('*'))
+            tabText.resize(tabText.size()-1);
+        if (saveas) {
             names.removeOne(ui.tabWidget->tabText(index));
-            ui.tabWidget->setTabText(index, createUniqueName(QFileInfo(e->fileName()).fileName()));
+            tabText = createUniqueName(QFileInfo(e->fileName()).fileName());
         }
+        ui.tabWidget->setTabText(index, tabText);
 
         // update the history
         ideApp->projectHistory()->updateHistory(e->fileName());
