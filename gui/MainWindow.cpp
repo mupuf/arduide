@@ -630,7 +630,7 @@ void MainWindow::save_generic(bool saveas)
         if (tabText.endsWith('*'))
             tabText.resize(tabText.size()-1);
         if (saveas) {
-            names.removeOne(ui.tabWidget->tabText(index));
+            names.removeOne(tabText);
             tabText = createUniqueName(QFileInfo(e->fileName()).fileName());
         }
         ui.tabWidget->setTabText(index, tabText);
