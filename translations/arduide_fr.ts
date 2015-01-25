@@ -522,13 +522,13 @@
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="313"/>
-        <source>Existing installation (Arduino SDK 0023, 1.0, 1.0.1 to 1.0.5)</source>
+        <source>Existing installation (Arduino SDK 0023, 1.0, 1.0.1 to 1.0.6)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="316"/>
-        <source>Automatic installation (Arduino SDK 1.0.5)</source>
-        <translation type="unfinished">Installation automatique (Arduino SDK 1.0.1) {1.0.5)?}</translation>
+        <source>Automatic installation (Arduino SDK 1.0.6)</source>
+        <translation type="unfinished">Installation automatique (Arduino SDK 1.0.1) {1.0.6)?}</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="317"/>

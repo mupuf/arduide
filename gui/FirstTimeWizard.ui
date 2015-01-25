@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
-    <height>318</height>
+    <width>615</width>
+    <height>330</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,7 @@
     <item>
      <widget class="QRadioButton" name="existingInstallButton">
       <property name="text">
-       <string>Existing installation (Arduino SDK 0023, 1.0, 1.0.1 to 1.0.5)</string>
+       <string>Existing installation (Arduino SDK &amp;0023, 1.0, 1.0.1 to 1.0.6)</string>
       </property>
      </widget>
     </item>
@@ -64,7 +64,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Arduino path:</string>
+           <string>Ard&amp;uino path:</string>
           </property>
           <property name="buddy">
            <cstring>arduinoPathEdit</cstring>
@@ -92,7 +92,7 @@
     <item>
      <widget class="QRadioButton" name="automaticInstallButton">
       <property name="text">
-       <string>Automatic installation (Arduino SDK 1.0.5)</string>
+       <string>Automatic installation (Arduino SDK &amp;1.0.6)</string>
       </property>
      </widget>
     </item>
@@ -145,7 +145,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Sketchbook path:</string>
+         <string>S&amp;ketchbook path:</string>
         </property>
         <property name="buddy">
          <cstring>sketchbookPathEdit</cstring>
