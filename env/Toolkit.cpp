@@ -143,7 +143,7 @@ bool Toolkit::isValidArduinoPath(const QString &path)
 {
     QString version = toolkitVersion(path);
 
-    return version == "1.0.6" || version == "1.0.5" || version == "1.0.4" || version == "1.0.3" || version == "1.0.2" || version == "1.0.1" || version == "1.0" || version == "0023";
+    return version == "1.0.5" || version == "1.0.4" || version == "1.0.3" || version == "1.0.2" || version == "1.0.1" || version == "1.0" || version == "0023";
 }
 
 QString Toolkit::avrPath()
