@@ -32,7 +32,7 @@ This program is free software; you can redistribute it and/or modify
 #include <QRegExp>
 #include <QDebug>
 
-#include "../env/Toolkit.h"
+#include "env/Toolkit.h"
 
 std::string LexerArduino::mKeywords[3];
 

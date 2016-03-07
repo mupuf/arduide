@@ -48,8 +48,8 @@ This program is free software; you can redistribute it and/or modify
 #include <shlobj.h>
 #endif
 
-#include "../env/Settings.h"
-#include "../env/Toolkit.h"
+#include "env/Settings.h"
+#include "env/Toolkit.h"
 #include "IDEApplication.h"
 
 FirstTimeWizard::FirstTimeWizard(QWidget *parent)

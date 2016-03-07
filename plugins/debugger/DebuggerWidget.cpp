@@ -27,7 +27,7 @@ This program is free software; you can redistribute it and/or modify
  */
 
 #include "DebuggerWidget.h"
-#include "../../utils/Serial.h"
+#include "utils/Serial.h"
 
 #include <QLineEdit>
 #include <QCompleter>

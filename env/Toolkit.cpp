@@ -33,7 +33,7 @@ This program is free software; you can redistribute it and/or modify
 #include <QFile>
 #include <QProcess>
 
-#include "../env/Board.h"
+#include "Board.h"
 #include "IDEApplication.h"
 
 QStringList Toolkit::findSketchesInDirectory(const QString &directory)

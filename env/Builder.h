@@ -32,7 +32,7 @@ This program is free software; you can redistribute it and/or modify
 #include <QScopedPointer>
 #include <qxttemporarydir.h>
 
-#include "../env/ILogger.h"
+#include "ILogger.h"
 
 class Board;
 

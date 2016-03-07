@@ -32,8 +32,8 @@ This program is free software; you can redistribute it and/or modify
 #include "plugins/IDEPluginInterface.h"
 
 #include "DebuggerWidget.h"
-#include "../../utils/Serial.h"
-#include "../../gui/Editor.h"
+#include "utils/Serial.h"
+#include "gui/Editor.h"
 
 #include <QScopedPointer>
 #include <QTime>

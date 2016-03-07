@@ -43,8 +43,8 @@ This program is free software; you can redistribute it and/or modify
 
 #include "IDEApplication.h"
 #include "PageRenderer.h"
-#include "../env/Toolkit.h"
-#include "../env/ProjectHistory.h"
+#include "env/Toolkit.h"
+#include "env/ProjectHistory.h"
 
 Browser::Browser(QWidget *parent)
     : QWebView(parent), history_curr(0)
