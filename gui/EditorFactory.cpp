@@ -31,7 +31,7 @@ This program is free software; you can redistribute it and/or modify
 #include <QDebug>
 
 #include "LexerArduino.h"
-#include "../env/Settings.h"
+#include "env/Settings.h"
 #include "IDEApplication.h"
 
 Editor *EditorFactory::createEditor(const QString &text, QWidget *parent)

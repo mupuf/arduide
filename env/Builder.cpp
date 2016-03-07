@@ -37,11 +37,11 @@ This program is free software; you can redistribute it and/or modify
 
 #include "IDEApplication.h"
 
-#include "../env/Board.h"
-#include "../env/Toolkit.h"
+#include "Board.h"
+#include "Toolkit.h"
 
-#include "../utils/Serial.h"
-#include "../utils/Compat.h"
+#include "utils/Serial.h"
+#include "utils/Compat.h"
 
 Builder::Builder(QObject *parent)
     : QObject(parent)
