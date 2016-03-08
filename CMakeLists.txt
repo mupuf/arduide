@@ -28,8 +28,8 @@ add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 add_definitions(-DPROJECT_TRANSLATION_URL="${PROJECT_TRANSLATION_URL}")
 
 # Compatible version of the Arduino SDK (don't forget to update Toolkit.h)
-set(ARDUINO_SDK_VERSION "105")
-set(ARDUINO_SDK_VERSION_NAME "1.0.5")
+set(ARDUINO_SDK_VERSION "160")
+set(ARDUINO_SDK_VERSION_NAME "1.6.0")
 add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
 add_definitions(-DARDUINO_SDK_VERSION_NAME="${ARDUINO_SDK_VERSION_NAME}")
 

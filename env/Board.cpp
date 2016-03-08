@@ -73,6 +73,8 @@ void Board::listBoards()
                 Board &board = mBoards[productId];
                 board.mAttributes[attrName] = attrValue;
                 board.mHardwarePath = QFileInfo(boardFile).dir().absolutePath();
+		
+		qDebug() << attrName << "\t" << attrValue << "\t" << productId;
             }
 
             boardsFile.close();

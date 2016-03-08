@@ -511,8 +511,8 @@
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="316"/>
-        <source>Automatic installation (Arduino SDK 1.0.5)</source>
-        <translation type="unfinished">Instal·lació automàtica (Arduino SDK 1.0.1) {1.0.5)?}</translation>
+        <source>Automatic installation (Arduino SDK 1.6.0)</source>
+        <translation type="unfinished">Instal·lació automàtica (Arduino SDK 1.0.1) {1.6.0)?}</translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="317"/>

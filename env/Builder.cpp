@@ -195,8 +195,9 @@ bool Builder::build(const QString &code, bool upload)
     objects.clear();
 
     // compile the libraries
-    QString path = Toolkit::hardwarePath()+"/arduino/cores/arduino/Arduino.h";
-    if (QFileInfo(path).exists())
+    QString path1 = Toolkit::hardwarePath()+"/arduino/avr/cores/arduino/Arduino.h";
+    QString path2 = Toolkit::hardwarePath()+"/arduino/cores/arduino/Arduino.h";
+    if (QFileInfo(path1).exists() || QFileInfo(path2).exists())
         cxxflags << "-include" << "Arduino.h";
     else
         cxxflags << "-include" << "WProgram.h";
@@ -299,6 +300,7 @@ bool Builder::compile(QStringList &objects, const QStringList &sources, const QS
     QStringList includeFlags;
     foreach (const QString &path, includePaths)
         includeFlags << QString("-I%0").arg(path);
+    qDebug() << includeFlags;
 
     foreach (const QString &source, sources)
     {

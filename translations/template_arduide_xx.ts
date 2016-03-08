@@ -495,12 +495,12 @@
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="313"/>
-        <source>Existing installation (Arduino SDK 0023, 1.0, 1.0.1 to 1.0.5)</source>
+        <source>Existing installation (Arduino SDK 0023, 1.0, 1.0.1 to 1.0.5, 1.6.0)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../build/ui_FirstTimeWizard.h" line="316"/>
-        <source>Automatic installation (Arduino SDK 1.0.5)</source>
+        <source>Automatic installation (Arduino SDK 1.6.0)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
