@@ -60,9 +60,9 @@ void BoardChooser::refresh()
             foreach(const QString &cpu, cpus)
             {    
                 action = new QAction(cpu, actionGroup);
-                action->setData(boardId);
+                action->setData(boardId+","+cpu);
                 action->setCheckable(true);
-                if (boardId == defaultBoard)
+                if (boardId+","+cpu == defaultBoard)
                     action->setChecked(true);
                 chkBox->addAction(action);
                 chkBox->setTitle(board->name());
@@ -86,5 +86,6 @@ void BoardChooser::refresh()
 
 void BoardChooser::onActionTriggered(QAction *action)
 {
+    qDebug() << action->data().toString();
     emit boardChosen(action->data().toString());
 }
