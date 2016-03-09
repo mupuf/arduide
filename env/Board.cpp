@@ -60,6 +60,7 @@ void Board::listBoards()
             while (! boardsFile.atEnd())
             {
                 QString line = QString::fromLocal8Bit(boardsFile.readLine()).trimmed();
+	        //QString line = QString::fromLocal8Bit(boardsFile.readLine().simplified());
                 if (line.isEmpty() || line[0] == '#')
                     continue;
 
@@ -73,12 +74,23 @@ void Board::listBoards()
                 Board &board = mBoards[productId];
                 board.mAttributes[attrName] = attrValue;
                 board.mHardwarePath = QFileInfo(boardFile).dir().absolutePath();
-		
-		qDebug() << attrName << "\t" << attrValue << "\t" << productId;
+                if((attrName == "menu.cpu.atmega8" or attrName == "menu.cpu.atmega168" or attrName == "menu.cpu.atmega328" or attrName == "menu.cpu.atmega1280" or attrName == "menu.cpu.atmega2560") and !board.mAttributes.contains("menu.cpu"))
+                {
+                    if(attrName == "menu.cpu.atmega8")
+                        board.mAttributes["menu.cpu"] = "atmega168,atmega8";
+                    else if(attrName == "menu.cpu.atmega328")
+                        board.mAttributes["menu.cpu"] = "atmega328,atmega168";
+                    else if(attrName == "menu.cpu.atmega2560")
+                        board.mAttributes["menu.cpu"] = "atmega2560,atmega1280";
+                }
+                
+                qDebug() << line;
+                qDebug() << attrName << "\t" << attrValue << "\t" << productId <<  board.mAttributes.contains("menu.cpu.atmega328");
+                qDebug() << board.name();
             }
 
             boardsFile.close();
-
+            mBoards.erase(mBoards.find("menu"));
             mListed = true;
         }
     }

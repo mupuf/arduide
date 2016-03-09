@@ -38,6 +38,7 @@ class Board
 {
 public:
     const QString& name() const;
+    const QString& mcu() const;
 
     static QStringList boardIds();
     static const Board *boardInfo(const QString &name);
@@ -45,15 +46,14 @@ public:
     QString hardwarePath() const { return mHardwarePath; };
 
     QString attribute(const QString &attr) const;
-
+    
+    QHash<QString, QString> mAttributes;
 private:
     static QMap<QString, Board> mBoards;
     static void listBoards();
     static bool mListed;
 
     QString mHardwarePath;
-
-    QHash<QString, QString> mAttributes;
 };
 
 #endif // BOARD_H

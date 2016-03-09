@@ -30,7 +30,9 @@ This program is free software; you can redistribute it and/or modify
 #define BOARDCHOOSER_H
 
 #include <QMenu>
+#include <QDebug>
 #include <QActionGroup>
+#include <QWidgetAction>
 
 class BoardChooser : public QMenu
 {

@@ -25,7 +25,6 @@ This program is free software; you can redistribute it and/or modify
  * \file BoardChooser.cpp
  * \author Denis Martinez
  */
-
 #include "BoardChooser.h"
 
 #include "env/Settings.h"
@@ -52,14 +51,36 @@ void BoardChooser::refresh()
 
     QAction *action;
     foreach(const QString &boardId, Board::boardIds())
-    {
+    {  
         const Board *board = Board::boardInfo(boardId);
-        action = new QAction(board->name(), actionGroup);
-        action->setData(boardId);
-        action->setCheckable(true);
-        if (boardId == defaultBoard)
-            action->setChecked(true);
-        addAction(action);
+        QStringList cpus = board->attribute("menu.cpu").split(",");
+        if(cpus.size() > 1)
+        {
+            QMenu *chkBox = new QMenu;
+            foreach(const QString &cpu, cpus)
+            {    
+                action = new QAction(cpu, actionGroup);
+                action->setData(boardId);
+                action->setCheckable(true);
+                if (boardId == defaultBoard)
+                    action->setChecked(true);
+                chkBox->addAction(action);
+                chkBox->setTitle(board->name());
+                this->addMenu(chkBox);
+                qDebug() << board->name() << cpu << cpus;
+            }
+        }
+        else
+        {
+            action = new QAction(board->name(), actionGroup);
+            action->setData(boardId);
+            action->setCheckable(true);
+            if (boardId == defaultBoard)
+                action->setChecked(true);
+            addAction(action);
+            qDebug() << board->name() << board->attribute("menu.cpu");
+        }
+
     }
 }
 
