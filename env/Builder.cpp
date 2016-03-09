@@ -50,7 +50,17 @@ Builder::Builder(QObject *parent)
 
 const Board *Builder::board() const
 {
-    return Board::boardInfo(ideApp->settings()->board());
+    QString name;
+    if(ideApp->settings()->board().split(",").size() > 1)
+    {
+        name = ideApp->settings()->board().split(",")[0];
+        Board::mBoards[name].mAttributes["build.mcu"]=ideApp->settings()->board().split(",")[1];
+    }        
+    else
+        name = ideApp->settings()->board();
+    
+    qDebug() << name << Board::mBoards[name].mAttributes["build.mcu"] << "Board Builder <<";
+    return Board::boardInfo(name);
 }
 
 const QString Builder::device() const
@@ -146,6 +156,7 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
 
 bool Builder::build(const QString &code, bool upload)
 {
+    qDebug() << board() << "<<<<<<<<<<<<<<<<<<<<<<<";
     if (board() == NULL)
     {
         emit logError(tr("No board selected."));

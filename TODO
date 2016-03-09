@@ -1,7 +1,5 @@
 General:
- * Arduino NG or older, Arduino BT, Arduino Duemilanove, Arduino Lilypad, 
-Arduino Mega, SPACE, Arduino Mini, Arduino Nano, Arduino Pro 
-Mini, compiling not working
+ * Arduino Pro Mini, compiling not working.
  * Put UTF-8
  * have a configuration dialog (Qxt provides a nice one)
    - output verbosity

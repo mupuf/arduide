@@ -207,7 +207,7 @@ QStringList Toolkit::avrCFlags(const Board *board)
     if(board->mAttributes.contains("menu.cpu.atmega2560"))
         typeMCU="menu.cpu.atmega2560";
     
-    qDebug() << buildMCU << typeMCU << board->attribute(typeMCU+"."+buildMCU);
+    qDebug() << buildMCU << typeMCU << board->attribute(buildMCU);
     QStringList cflags;
     cflags
         << "-g"
@@ -216,7 +216,7 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << "-fno-exceptions"
         << "-ffunction-sections"
         << "-fdata-sections"
-        << QString("-mmcu=%0").arg(board->attribute(typeMCU+"."+buildMCU))
+        << QString("-mmcu=%0").arg(board->attribute(buildMCU))
         << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
         << QString("-MMD")
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
