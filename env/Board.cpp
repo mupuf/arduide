@@ -56,10 +56,13 @@ void Board::listBoards()
         foreach(QString boardFile, Toolkit::boardsFileNames()) {
             QFile boardsFile(boardFile);
             boardsFile.open(QFile::ReadOnly);
+            
+            QTextStream boardsFileUTF8(&boardsFile);
+            boardsFileUTF8.setCodec("UTF-8");
 
-            while (! boardsFile.atEnd())
+            while (! boardsFileUTF8.atEnd())
             {
-                QString line = QString::fromLocal8Bit(boardsFile.readLine()).trimmed();
+                QString line = boardsFileUTF8.readLine().trimmed();
                 
                 if (line.isEmpty() || line[0] == '#')
                     continue;
