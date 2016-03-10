@@ -53,7 +53,7 @@ void BoardChooser::refresh()
     foreach(const QString &boardId, Board::boardIds())
     {  
         const Board *board = Board::boardInfo(boardId);
-        QStringList cpus = board->attribute("menu.cpu").split(",");
+        QStringList cpus = board->attribute("build.mcu").split(",");
         QStringList freqs = board->attribute("build.f_cpu").split(",");
         if(cpus.size() > 1)
         {
@@ -72,7 +72,6 @@ void BoardChooser::refresh()
                 }
                 else
                 {
-                    qDebug() << "FREQS > 1";
                     QMenu *menu2 = new QMenu;
                     foreach(const QString &freq, freqs)
                     {    
@@ -84,12 +83,10 @@ void BoardChooser::refresh()
                         menu2->addAction(action2);
                         menu2->setTitle(cpu);
                         menu1->addMenu(menu2);
-                        qDebug() << freqs << freq;
                     }
                 }
                 
                 this->addMenu(menu1);
-                qDebug() << board->name() << cpu << cpus << freqs;
             }
         }
         else
@@ -100,7 +97,6 @@ void BoardChooser::refresh()
             if (boardId == defaultBoard)
                 action->setChecked(true);
             addAction(action);
-            qDebug() << board->name() << board->attribute("menu.cpu");
         }
 
     }
@@ -108,6 +104,5 @@ void BoardChooser::refresh()
 
 void BoardChooser::onActionTriggered(QAction *action)
 {
-    qDebug() << action->data().toString();
     emit boardChosen(action->data().toString());
 }

@@ -1,5 +1,5 @@
 General:
- * Arduino Pro Mini, compiling not working.
+ * Test upload process with all boards
  * Put UTF-8
  * have a configuration dialog (Qxt provides a nice one)
    - output verbosity
@@ -57,6 +57,7 @@ Packaging:
    -> adapt CMakeLists.txt
 
 DONE:
+ * compatibility with Arduino 1.6.0
  * have a configuration dialog (Qxt provides a nice one)
    - possibility to change arduino, sketchbook paths [DONE]
  * functionality as plugins [DONE]

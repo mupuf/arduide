@@ -138,8 +138,8 @@ void IDEApplication::initializePlugins()
 void IDEApplication::initializeTranslator()
 {
     if(! mTranslator.load("arduide_" + QLocale::system().name(), TRANSLATION_PATH))
-     {
-      qDebug() << "loading translator failed.";
-     }
+    {
+        qDebug() << "loading translator failed.";
+    }
     installTranslator(&mTranslator);
 }

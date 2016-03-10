@@ -167,6 +167,7 @@ QString Toolkit::avrPath()
     }
 #endif
 }
+
 QString Toolkit::avrTool(Toolkit::AVRTool tool)
 {
     QString path = avrPath();
@@ -201,13 +202,6 @@ QString Toolkit::avrTool(Toolkit::AVRTool tool)
 
 QStringList Toolkit::avrCFlags(const Board *board)
 {
-    qDebug() << board->attribute("build.mcu");
-    QString buildMCU="build.mcu";
-    QString typeMCU="";
-    if(board->mAttributes.contains("menu.cpu.atmega2560"))
-        typeMCU="menu.cpu.atmega2560";
-    
-    qDebug() << buildMCU << typeMCU << board->attribute(buildMCU);
     QStringList cflags;
     cflags
         << "-g"
@@ -216,8 +210,8 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << "-fno-exceptions"
         << "-ffunction-sections"
         << "-fdata-sections"
-        << QString("-mmcu=%0").arg(board->attribute(buildMCU))
-        << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
+        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"))
+        << QString("-DF_CPU=%0").arg(board->attribute("builder.f_cpu"))
         << QString("-MMD")
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
 	
@@ -257,9 +251,9 @@ QStringList Toolkit::avrSFlags(const Board *board)
     sflags
         << "-g"
         << "-assembler-with-cpp"
-        << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
+        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"))
         << QString("-MMD")
-        << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
+        << QString("-DF_CPU=%0").arg(board->attribute("builder.f_cpu"))
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
     return sflags;
 }
@@ -270,7 +264,7 @@ QStringList Toolkit::avrLdFlags(const Board *board)
     ldflags
         << "-Os"
         << "-Wl,--gc-sections"
-        << QString("-mmcu=%0").arg(board->attribute("build.mcu"));
+        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"));
     return ldflags;
 }
 
@@ -405,7 +399,7 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
     else
         flags << QDir(hardwarePath()).filePath("tools/avrdude.conf");
 #endif
-    flags << QString("-p%0").arg(board->attribute("build.mcu"));
+    flags << QString("-p%0").arg(board->attribute("builder.mcu"));
 
     return flags;
 }

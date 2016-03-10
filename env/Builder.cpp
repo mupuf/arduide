@@ -51,15 +51,36 @@ Builder::Builder(QObject *parent)
 const Board *Builder::board() const
 {
     QString name;
-    if(ideApp->settings()->board().split(",").size() > 1)
-    {
-        name = ideApp->settings()->board().split(",")[0];
-        Board::mBoards[name].mAttributes["build.mcu"]=ideApp->settings()->board().split(",")[1];
-    }        
-    else
-        name = ideApp->settings()->board();
+    QString mcu;
+    QString freq;
     
-    qDebug() << name << Board::mBoards[name].mAttributes["build.mcu"] << "Board Builder <<";
+    name = ideApp->settings()->board().split(",")[0];
+    
+    if(ideApp->settings()->board().split(",").size()>1)
+    {
+        mcu = ideApp->settings()->board().split(",")[1];
+        Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
+        
+        if(ideApp->settings()->board().split(",").size()>2)
+        {
+            freq = ideApp->settings()->board().split(",")[2];
+            Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
+        }
+        else
+        {
+            freq = Board::mBoards[name].mAttributes["build.f_cpu"];
+            Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
+        }
+    }
+    else
+    {
+        mcu = Board::mBoards[name].mAttributes["build.mcu"];
+        Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
+        
+        freq = Board::mBoards[name].mAttributes["build.f_cpu"];
+        Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
+    }
+    
     return Board::boardInfo(name);
 }
 

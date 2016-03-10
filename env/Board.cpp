@@ -60,31 +60,32 @@ void Board::listBoards()
             while (! boardsFile.atEnd())
             {
                 QString line = QString::fromLocal8Bit(boardsFile.readLine()).trimmed();
-	        //QString line = QString::fromLocal8Bit(boardsFile.readLine().simplified());
+                
                 if (line.isEmpty() || line[0] == '#')
                     continue;
 
                 QString attrName = line.section('=', 0, 0);
                 QString attrValue = line.section('=', 1);
-
+                
                 // attrName = <product>.<attrName>
                 QString productId = attrName.section('.', 0, 0);
                 attrName = attrName.section('.', 1);
-
                 Board &board = mBoards[productId];
-                board.mAttributes[attrName] = attrValue;
+                
+                //it does seem pretty odd that they have build.mcu as atmegang which isn't a valid mcu, and then the cpu submenu is being used as the mcu.
+                if(!attrValue.contains("atmegang"))
+                    board.mAttributes[attrName] = attrValue;
                 board.mHardwarePath = QFileInfo(boardFile).dir().absolutePath();
-                //if((attrName == "menu.cpu.atmega8" or attrName == "menu.cpu.atmega168" or attrName == "menu.cpu.atmega328" or attrName == "menu.cpu.atmega1280" or attrName == "menu.cpu.atmega2560") and !board.mAttributes.contains("menu.cpu"))
-                // We have a board that 
+                
                 if(attrName.contains("menu.cpu") and attrName.contains("build.mcu"))
                 {
-                    if(board.mAttributes.contains("menu.cpu"))
+                    if(board.mAttributes.contains("build.mcu"))
                     {
-                        if(!board.mAttributes["menu.cpu"].contains(attrValue))
-                            board.mAttributes["menu.cpu"]=board.mAttributes["menu.cpu"]+","+attrValue;
+                        if(!board.mAttributes["build.mcu"].contains(attrValue))
+                            board.mAttributes["build.mcu"]=board.mAttributes["build.mcu"]+","+attrValue;
                     }
                     else
-                        board.mAttributes["menu.cpu"]=attrValue;
+                        board.mAttributes["build.mcu"]=attrValue;
                 }
                 
                 if(attrName.contains("menu.cpu") and attrName.contains("build.f_cpu"))
@@ -96,17 +97,7 @@ void Board::listBoards()
                     }
                     else
                         board.mAttributes["build.f_cpu"]=attrValue;
-                }
-                    
-                    /*
-                if(board.mAttributes.contains("menu.cpu"))
-                    if(board.mAttributes.contains("build.f_cpu"))
-                    {
-                qDebug() << line;
-                qDebug() << board.mAttributes["menu.cpu"] << board.mAttributes["build.f_cpu"];
-                qDebug() << board.name();
-                    }
-                    */
+                }   
             }
 
             boardsFile.close();
