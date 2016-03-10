@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2012
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -56,30 +56,30 @@ void Board::listBoards()
         foreach(QString boardFile, Toolkit::boardsFileNames()) {
             QFile boardsFile(boardFile);
             boardsFile.open(QFile::ReadOnly);
-            
+
             QTextStream boardsFileUTF8(&boardsFile);
             boardsFileUTF8.setCodec("UTF-8");
 
             while (! boardsFileUTF8.atEnd())
             {
                 QString line = boardsFileUTF8.readLine().trimmed();
-                
+
                 if (line.isEmpty() || line[0] == '#')
                     continue;
 
                 QString attrName = line.section('=', 0, 0);
                 QString attrValue = line.section('=', 1);
-                
+
                 // attrName = <product>.<attrName>
                 QString productId = attrName.section('.', 0, 0);
                 attrName = attrName.section('.', 1);
                 Board &board = mBoards[productId];
-                
+
                 //it does seem pretty odd that they have build.mcu as atmegang which isn't a valid mcu, and then the cpu submenu is being used as the mcu.
                 if(!attrValue.contains("atmegang"))
                     board.mAttributes[attrName] = attrValue;
                 board.mHardwarePath = QFileInfo(boardFile).dir().absolutePath();
-                
+
                 if(attrName.contains("menu.cpu") and attrName.contains("build.mcu"))
                 {
                     if(board.mAttributes.contains("build.mcu"))
@@ -90,7 +90,7 @@ void Board::listBoards()
                     else
                         board.mAttributes["build.mcu"]=attrValue;
                 }
-                
+
                 if(attrName.contains("menu.cpu") and attrName.contains("build.f_cpu"))
                 {
                     if(board.mAttributes.contains("build.f_cpu"))
@@ -100,7 +100,7 @@ void Board::listBoards()
                     }
                     else
                         board.mAttributes["build.f_cpu"]=attrValue;
-                }   
+                }
             }
 
             boardsFile.close();
