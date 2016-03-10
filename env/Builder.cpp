@@ -177,7 +177,6 @@ bool Builder::compileDependencies(QStringList &objects, const QString& code, QSt
 
 bool Builder::build(const QString &code, bool upload)
 {
-    qDebug() << board() << "<<<<<<<<<<<<<<<<<<<<<<<";
     if (board() == NULL)
     {
         emit logError(tr("No board selected."));
@@ -332,7 +331,6 @@ bool Builder::compile(QStringList &objects, const QStringList &sources, const QS
     QStringList includeFlags;
     foreach (const QString &path, includePaths)
         includeFlags << QString("-I%0").arg(path);
-    qDebug() << includeFlags;
 
     foreach (const QString &source, sources)
     {

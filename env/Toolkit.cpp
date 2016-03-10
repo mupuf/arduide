@@ -110,7 +110,7 @@ QStringList Toolkit::boardsFileNames()
                 userHwList.push_back(sketchDir.filePath(dir + "/boards.txt"));
         }
     }
-    qDebug() << userHwList;
+    
     return userHwList;
 }
 
@@ -214,8 +214,6 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << QString("-DF_CPU=%0").arg(board->attribute("builder.f_cpu"))
         << QString("-MMD")
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
-	
-    qDebug() << cflags;
 
     if (!board->attribute("build.vid").isEmpty())
         cflags << QString("-DUSB_VID=%0").arg(board->attribute("build.vid"));
