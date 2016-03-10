@@ -54,20 +54,42 @@ void BoardChooser::refresh()
     {  
         const Board *board = Board::boardInfo(boardId);
         QStringList cpus = board->attribute("menu.cpu").split(",");
+        QStringList freqs = board->attribute("build.f_cpu").split(",");
         if(cpus.size() > 1)
         {
-            QMenu *chkBox = new QMenu;
+            QMenu *menu1 = new QMenu;
             foreach(const QString &cpu, cpus)
-            {    
-                action = new QAction(cpu, actionGroup);
-                action->setData(boardId+","+cpu);
-                action->setCheckable(true);
-                if (boardId+","+cpu == defaultBoard)
-                    action->setChecked(true);
-                chkBox->addAction(action);
-                chkBox->setTitle(board->name());
-                this->addMenu(chkBox);
-                qDebug() << board->name() << cpu << cpus;
+            {   
+                menu1->setTitle(board->name());
+                if(freqs.size() == 1)
+                {
+                    action = new QAction(cpu, actionGroup);
+                    action->setData(boardId+","+cpu);
+                    action->setCheckable(true);
+                    if(boardId+","+cpu == defaultBoard)
+                        action->setChecked(true);
+                    menu1->addAction(action);
+                }
+                else
+                {
+                    qDebug() << "FREQS > 1";
+                    QMenu *menu2 = new QMenu;
+                    foreach(const QString &freq, freqs)
+                    {    
+                        QAction *action2 = new QAction(QString::number(freq.left(freq.lastIndexOf("0")+1).toInt()/1e6)+"MHz", actionGroup);
+                        action2->setData(boardId+","+cpu+","+freq);
+                        action2->setCheckable(true);
+                        if (boardId+","+cpu+","+freq == defaultBoard)
+                            action2->setChecked(true);
+                        menu2->addAction(action2);
+                        menu2->setTitle(cpu);
+                        menu1->addMenu(menu2);
+                        qDebug() << freqs << freq;
+                    }
+                }
+                
+                this->addMenu(menu1);
+                qDebug() << board->name() << cpu << cpus << freqs;
             }
         }
         else

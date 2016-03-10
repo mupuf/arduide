@@ -74,19 +74,39 @@ void Board::listBoards()
                 Board &board = mBoards[productId];
                 board.mAttributes[attrName] = attrValue;
                 board.mHardwarePath = QFileInfo(boardFile).dir().absolutePath();
-                if((attrName == "menu.cpu.atmega8" or attrName == "menu.cpu.atmega168" or attrName == "menu.cpu.atmega328" or attrName == "menu.cpu.atmega1280" or attrName == "menu.cpu.atmega2560") and !board.mAttributes.contains("menu.cpu"))
+                //if((attrName == "menu.cpu.atmega8" or attrName == "menu.cpu.atmega168" or attrName == "menu.cpu.atmega328" or attrName == "menu.cpu.atmega1280" or attrName == "menu.cpu.atmega2560") and !board.mAttributes.contains("menu.cpu"))
+                // We have a board that 
+                if(attrName.contains("menu.cpu") and attrName.contains("build.mcu"))
                 {
-                    if(attrName == "menu.cpu.atmega8")
-                        board.mAttributes["menu.cpu"] = "atmega168,atmega8";
-                    else if(attrName == "menu.cpu.atmega328")
-                        board.mAttributes["menu.cpu"] = "atmega328,atmega168";
-                    else if(attrName == "menu.cpu.atmega2560")
-                        board.mAttributes["menu.cpu"] = "atmega2560,atmega1280";
+                    if(board.mAttributes.contains("menu.cpu"))
+                    {
+                        if(!board.mAttributes["menu.cpu"].contains(attrValue))
+                            board.mAttributes["menu.cpu"]=board.mAttributes["menu.cpu"]+","+attrValue;
+                    }
+                    else
+                        board.mAttributes["menu.cpu"]=attrValue;
                 }
                 
+                if(attrName.contains("menu.cpu") and attrName.contains("build.f_cpu"))
+                {
+                    if(board.mAttributes.contains("build.f_cpu"))
+                    {
+                        if(!board.mAttributes["build.f_cpu"].contains(attrValue))
+                            board.mAttributes["build.f_cpu"]=board.mAttributes["build.f_cpu"]+","+attrValue;
+                    }
+                    else
+                        board.mAttributes["build.f_cpu"]=attrValue;
+                }
+                    
+                    /*
+                if(board.mAttributes.contains("menu.cpu"))
+                    if(board.mAttributes.contains("build.f_cpu"))
+                    {
                 qDebug() << line;
-                qDebug() << attrName << "\t" << attrValue << "\t" << productId <<  board.mAttributes.contains("menu.cpu.atmega328");
+                qDebug() << board.mAttributes["menu.cpu"] << board.mAttributes["build.f_cpu"];
                 qDebug() << board.name();
+                    }
+                    */
             }
 
             boardsFile.close();
