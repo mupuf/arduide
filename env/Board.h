@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -34,23 +34,81 @@ This program is free software; you can redistribute it and/or modify
 #include <QHash>
 #include <QMap>
 
+/**
+ * @brief A class to help deal with boards.txt
+ * 
+ */
+
 class Board
 {
 public:
+    
+    /**
+    * @brief Return the name of the board
+    * e.g: uno.name="Arduino Uno"
+    * 
+    * @return const QString&
+    */
     const QString& name() const;
 
+    
+    /**
+     * @brief Return all Ids of the boards in boards.txt
+     * 
+     * @return QStringList
+     */
     static QStringList boardIds();
+    
+    
+    /**
+     * @brief Return a pointer to Board class with the board information.
+     * 
+     * @param name The board name. e.g: "uno" (uno.name=Arduino Uno)
+     * @return const Board*
+     */
     static const Board *boardInfo(const QString &name);
 
+    /**
+     * @brief Return the path of hardware directory
+     * 
+     * @return QString
+     */
     QString hardwarePath() const { return mHardwarePath; };
 
+    /**
+     * @brief Return the value of an attribute
+     * 
+     * @param attr attribute name. e.g: "name" (uno.name=Arduino Uno)
+     * @return QString
+     */
     QString attribute(const QString &attr) const;
     
+    /**
+     * @brief Stores all board's attribute
+     * 
+     */
     QHash<QString, QString> mAttributes;
+    
+    /**
+     * @brief save all boards in mBoards
+     * 
+     */
     static QMap<QString, Board> mBoards;
     
 private:
+    
+    /**
+    * @brief Function that read boards.txt to identify all compatible boards 
+    * 
+    * @return void
+    */
     static void listBoards();
+    
+    
+    /**
+     * @brief Check if boards.txt has already been read
+     * 
+     */
     static bool mListed;
 
     QString mHardwarePath;
