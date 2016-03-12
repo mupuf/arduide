@@ -567,7 +567,7 @@ void MainWindow::createAndOpenUserLibDir()
         userLibDir.mkdir(userLib);
 
     /* create a readme file to explain what to do */
-    QFile readme(userLib+"/README");
+    QFile readme(userLib+"/README.md");
     if (readme.open(QIODevice::WriteOnly))
     {
         QTextStream ts(&readme);

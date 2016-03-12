@@ -100,7 +100,13 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   endif()
 
   # add grantlee's default directory on Linux systems
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee")
+  if(IS_DIRECTORY "/usr/lib/grantlee/0.5")
+    message("[GRANTLEE] 0.5 folder")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee/0.5")
+  else()
+    message("[GRANTLEE] default folder")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee")
+  endif()
 endif()
 
 # Qt
@@ -339,7 +345,7 @@ set(CPACK_SET_DESTDIR ON)
 
 # General
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};ALL;/")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} is a Qt-based IDE for the open-source Arduino electronics prototyping platform.")
 set(CPACK_PACKAGE_EXECUTABLES "arduino-ide;The Qt Arduino IDE.")
 set(CPACK_PACKAGE_FILE_NAME "${PROJECT_SHORT_NAME}-${PROJECT_VERSION}")
@@ -356,7 +362,7 @@ set(CPACK_GENERATOR "TGZ;DEB;RPM")
 
 set(CPACK_CMAKE_GENERATOR "Unix Makefiles")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
 
 # Debian
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin PERES <martin.peres@ensi-bourges.fr>")
@@ -384,8 +390,7 @@ include(CPack)
 
 #doxygen
 find_package(Doxygen)
-option(BUILD_DOCUMENTATION "Create and install the HTML based API 
-documentation (requires Doxygen)" ${DOXYGEN_FOUND})
+option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
 
 if(NOT DOXYGEN_FOUND)
     message(FATAL_ERROR "Doxygen is needed to build the documentation.")
