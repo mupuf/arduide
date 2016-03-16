@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -33,19 +33,58 @@ This program is free software; you can redistribute it and/or modify
 #include <QList>
 
 class Device;
+
+/**
+ * @brief List of all upload devices possibly connected
+ * 
+ */
 typedef QList<Device> DeviceList;
 
 class Device
 {
 public:
+    
+    /**
+     * @brief Class to manage devices for upload
+     * 
+     * @param description A description about the device
+     * @param port Port of connected device
+     */
     Device(const QString &description, const QString &port);
+    
+    /**
+     * @brief Function that return a description about the device
+     * 
+     * @return const QString&
+     */
     const QString &description() const { return mDescription; }
+    
+    /**
+     * @brief Return the port of connected device
+     * 
+     * @return const QString&
+     */
     const QString &port() const { return mPort; }
 
+    /**
+     * @brief Return all possible devices
+     * 
+     * @param filterDevices If true realize the filter process
+     * @return DeviceList
+     */
     static DeviceList listDevices(bool filterDevices=true);
 
 private:
+    /**
+     * @brief A description message
+     * 
+     */
     QString mDescription;
+    
+    /**
+     * @brief Name of device's port 
+     * 
+     */
     QString mPort;
 };
 

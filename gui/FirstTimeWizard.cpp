@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -102,7 +102,10 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     projectLabel->setText(projectLabel->text().arg(PROJECT_NAME).arg(PROJECT_AUTHORS));
     urlLabel->setText(urlLabel->text().arg(PROJECT_URL));
 
-    url = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION_NAME;
+    if(QString(ARDUINO_SDK_VERSION_NAME) >= "1.6.0")
+        url = "https://downloads.arduino.cc/arduino-" ARDUINO_SDK_VERSION_NAME;
+    else
+        url = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION_NAME;
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
@@ -118,13 +121,17 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
 #else // Linux, other Unix
     #if defined(__x86_64__) // 64-bit Unix
         mDownloadOs = "64-bit Linux";
-        if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
-            url += "-linux64.tgz";
+        if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.6.0")
+            url += "-linux64.tar.xz";
+	else if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
+	    url += "-linux64.tgz";
         else
             url += "-64.tgz";
     #elif defined(__i386__) // 32-bit Unix
         mDownloadOs = "32-bit Linux";
-        if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
+	if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.6.0")
+            url += "-linux64.tar.xz";
+        else if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.0.1")
             url += "-linux32.tgz";
         else
             url += ".tgz";
@@ -277,9 +284,14 @@ bool FirstTimeWizard::validateCurrentPage()
     #warn TODO: platform not supported yet
 #else // Linux, other Unix
             extractCommand = "tar";
-            extractArgs = QStringList()
-                << "-x" << "-z" << "-f" << archive.fileName()
-                << "-C" << destinationPath;
+            if (QString(ARDUINO_SDK_VERSION_NAME) >= "1.6.0")
+                extractArgs = QStringList()
+                    << "-x" << "-J" << "-f" << archive.fileName()
+                    << "-C" << destinationPath;
+            else
+                extractArgs = QStringList()
+                    << "-x" << "-z" << "-f" << archive.fileName()
+                    << "-C" << destinationPath;
 #endif
             QFutureWatcher<int> extractWatcher;
             QxtSignalWaiter extractWaiter(&extractWatcher, SIGNAL(finished()));

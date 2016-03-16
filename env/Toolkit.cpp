@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012
+  Copyright (C) 2010-2016
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -32,6 +32,7 @@ This program is free software; you can redistribute it and/or modify
 #include <QDir>
 #include <QFile>
 #include <QProcess>
+#include <QDebug>
 
 #include "Board.h"
 #include "IDEApplication.h"
@@ -93,8 +94,10 @@ QString Toolkit::hardwarePath()
 QStringList Toolkit::boardsFileNames()
 {
     QStringList userHwList;
-
-    userHwList << QDir(hardwarePath()).filePath("arduino/boards.txt");
+    if(toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 160)
+        userHwList << QDir(hardwarePath()).filePath("arduino/avr/boards.txt");
+    else
+        userHwList << QDir(hardwarePath()).filePath("arduino/boards.txt");
 
     QDir sketchDir = QDir(ideApp->settings()->sketchPath());
     if (sketchDir.cd("hardware"))
@@ -107,7 +110,7 @@ QStringList Toolkit::boardsFileNames()
                 userHwList.push_back(sketchDir.filePath(dir + "/boards.txt"));
         }
     }
-
+    
     return userHwList;
 }
 
@@ -118,7 +121,7 @@ QString Toolkit::keywordsFileName()
 
 QString Toolkit::toolkitVersion(const QString &path)
 {
-    if(QFileInfo(QDir(path).filePath("hardware/arduino/boards.txt")).isReadable())
+    if(QFileInfo(QDir(path).filePath("hardware/arduino/boards.txt")).isReadable() || (QFileInfo(QDir(path).filePath("hardware/arduino/avr/boards.txt")).isReadable() && QFileInfo(QDir(path).filePath("hardware/arduino/sam/boards.txt")).isReadable()))
     {
         QFile file(QDir(path).filePath("revisions.txt"));
         if(!file.open(QFile::ReadOnly))
@@ -143,15 +146,20 @@ bool Toolkit::isValidArduinoPath(const QString &path)
 {
     QString version = toolkitVersion(path);
 
-    return version == "1.0.5" || version == "1.0.4" || version == "1.0.3" || version == "1.0.2" || version == "1.0.1" || version == "1.0" || version == "0023";
+    return version == "1.6.0" || version == "1.0.5" || version == "1.0.4" || version == "1.0.3" || version == "1.0.2" || version == "1.0.1" || version == "1.0" || version == "0023";
 }
 
 QString Toolkit::avrPath()
 {
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) || defined(Q_OS_DARWIN)
-    return QDir(hardwarePath()).filePath("tools/avr/bin");
+    if(toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 160)
+        return QDir(hardwarePath()).filePath("/hardware/tools/avr/bin");
+    else if (toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 100)
+        return QDir(hardwarePath()).filePath("tools/avr/bin");
 #else
-    if (toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 100)
+    if(toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 160)
+        return QDir(hardwarePath()).filePath("/hardware/tools/avr/bin");
+    else if (toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 100)
         return QDir(hardwarePath()).filePath("tools/avr/bin");
     else {
         // the AVR toolchain should be already present in the PATH
@@ -159,6 +167,7 @@ QString Toolkit::avrPath()
     }
 #endif
 }
+
 QString Toolkit::avrTool(Toolkit::AVRTool tool)
 {
     QString path = avrPath();
@@ -201,8 +210,8 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << "-fno-exceptions"
         << "-ffunction-sections"
         << "-fdata-sections"
-        << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
-        << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
+        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"))
+        << QString("-DF_CPU=%0").arg(board->attribute("builder.f_cpu"))
         << QString("-MMD")
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
 
@@ -215,8 +224,13 @@ QStringList Toolkit::avrCFlags(const Board *board)
         cflags << QString("-DUSB_PID=%0").arg(board->attribute("build.pid"));
     else
         cflags << QString("-DUSB_PID=null");
-
-    QString arduinoPinDirName = QString("arduino/variants/%0").arg(board->attribute("build.variant"));
+    
+    QString arduinoPinDirName;
+    if(toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 160)
+        arduinoPinDirName = QString("arduino/avr/variants/%0").arg(board->attribute("build.variant"));
+    else
+        arduinoPinDirName = QString("arduino/variants/%0").arg(board->attribute("build.variant"));
+    
     QString arduinoPinDirPath = QDir(hardwarePath()).filePath(arduinoPinDirName);
     if (QDir(arduinoPinDirPath).exists())
         cflags << QString("-I%0").arg(arduinoPinDirPath);
@@ -235,9 +249,9 @@ QStringList Toolkit::avrSFlags(const Board *board)
     sflags
         << "-g"
         << "-assembler-with-cpp"
-        << QString("-mmcu=%0").arg(board->attribute("build.mcu"))
+        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"))
         << QString("-MMD")
-        << QString("-DF_CPU=%0").arg(board->attribute("build.f_cpu"))
+        << QString("-DF_CPU=%0").arg(board->attribute("builder.f_cpu"))
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
     return sflags;
 }
@@ -248,7 +262,7 @@ QStringList Toolkit::avrLdFlags(const Board *board)
     ldflags
         << "-Os"
         << "-Wl,--gc-sections"
-        << QString("-mmcu=%0").arg(board->attribute("build.mcu"));
+        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"));
     return ldflags;
 }
 
@@ -383,7 +397,7 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
     else
         flags << QDir(hardwarePath()).filePath("tools/avrdude.conf");
 #endif
-    flags << QString("-p%0").arg(board->attribute("build.mcu"));
+    flags << QString("-p%0").arg(board->attribute("builder.mcu"));
 
     return flags;
 }

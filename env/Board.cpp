@@ -2,8 +2,7 @@
   Board.cpp
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
-
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -57,9 +56,13 @@ void Board::listBoards()
             QFile boardsFile(boardFile);
             boardsFile.open(QFile::ReadOnly);
 
-            while (! boardsFile.atEnd())
+            QTextStream boardsFileUTF8(&boardsFile);
+            boardsFileUTF8.setCodec("UTF-8");
+
+            while (! boardsFileUTF8.atEnd())
             {
-                QString line = QString::fromLocal8Bit(boardsFile.readLine()).trimmed();
+                QString line = boardsFileUTF8.readLine().trimmed();
+
                 if (line.isEmpty() || line[0] == '#')
                     continue;
 
@@ -69,14 +72,38 @@ void Board::listBoards()
                 // attrName = <product>.<attrName>
                 QString productId = attrName.section('.', 0, 0);
                 attrName = attrName.section('.', 1);
-
                 Board &board = mBoards[productId];
-                board.mAttributes[attrName] = attrValue;
+
+                //it does seem pretty odd that they have build.mcu as atmegang which isn't a valid mcu, and then the cpu submenu is being used as the mcu.
+                if(!attrValue.contains("atmegang"))
+                    board.mAttributes[attrName] = attrValue;
                 board.mHardwarePath = QFileInfo(boardFile).dir().absolutePath();
+
+                if(attrName.contains("menu.cpu") and attrName.contains("build.mcu"))
+                {
+                    if(board.mAttributes.contains("build.mcu"))
+                    {
+                        if(!board.mAttributes["build.mcu"].contains(attrValue))
+                            board.mAttributes["build.mcu"]=board.mAttributes["build.mcu"]+","+attrValue;
+                    }
+                    else
+                        board.mAttributes["build.mcu"]=attrValue;
+                }
+
+                if(attrName.contains("menu.cpu") and attrName.contains("build.f_cpu"))
+                {
+                    if(board.mAttributes.contains("build.f_cpu"))
+                    {
+                        if(!board.mAttributes["build.f_cpu"].contains(attrValue))
+                            board.mAttributes["build.f_cpu"]=board.mAttributes["build.f_cpu"]+","+attrValue;
+                    }
+                    else
+                        board.mAttributes["build.f_cpu"]=attrValue;
+                }
             }
 
             boardsFile.close();
-
+            mBoards.erase(mBoards.find("menu"));
             mListed = true;
         }
     }

@@ -28,8 +28,8 @@ add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
 add_definitions(-DPROJECT_TRANSLATION_URL="${PROJECT_TRANSLATION_URL}")
 
 # Compatible version of the Arduino SDK (don't forget to update Toolkit.h)
-set(ARDUINO_SDK_VERSION "105")
-set(ARDUINO_SDK_VERSION_NAME "1.0.5")
+set(ARDUINO_SDK_VERSION "160")
+set(ARDUINO_SDK_VERSION_NAME "1.6.0")
 add_definitions(-DARDUINO_SDK_VERSION="${ARDUINO_SDK_VERSION}")
 add_definitions(-DARDUINO_SDK_VERSION_NAME="${ARDUINO_SDK_VERSION_NAME}")
 
@@ -100,7 +100,13 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   endif()
 
   # add grantlee's default directory on Linux systems
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee")
+  if(IS_DIRECTORY "/usr/lib/grantlee/0.5")
+    message("[GRANTLEE] 0.5 folder")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee/0.5")
+  else()
+    message("[GRANTLEE] default folder")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/usr/lib/grantlee")
+  endif()
 endif()
 
 # Qt
@@ -216,7 +222,8 @@ set(arduino_TS
     "translations/arduide_fr.ts"
     "translations/arduide_cs.ts"
     "translations/arduide_de.ts"
-    "translations/arduide_ca.ts")
+    "translations/arduide_ca.ts"
+    "translations/arduide_pt.ts")
 
 set(arduino_QRCS
   "resources/css.qrc"
@@ -339,7 +346,7 @@ set(CPACK_SET_DESTDIR ON)
 
 # General
 set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};ALL;/")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME} is a Qt-based IDE for the open-source Arduino electronics prototyping platform.")
 set(CPACK_PACKAGE_EXECUTABLES "arduino-ide;The Qt Arduino IDE.")
 set(CPACK_PACKAGE_FILE_NAME "${PROJECT_SHORT_NAME}-${PROJECT_VERSION}")
@@ -356,7 +363,7 @@ set(CPACK_GENERATOR "TGZ;DEB;RPM")
 
 set(CPACK_CMAKE_GENERATOR "Unix Makefiles")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
 
 # Debian
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin PERES <martin.peres@ensi-bourges.fr>")
@@ -381,6 +388,27 @@ set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_SHORT_NAME}-${PROJECT_VERSION}.tar
 set(CPACK_SOURCE_STRIP_FILES "")
 
 include(CPack)
+
+#doxygen
+find_package(Doxygen)
+option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
+
+if(NOT DOXYGEN_FOUND)
+    message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+endif()
+
+if(DOXYGEN_FOUND)
+    set(docdirectory ${CMAKE_CURRENT_SOURCE_DIR}/doc)
+    file(MAKE_DIRECTORY ${docdirectory})
+    set(doxyfile ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
+    configure_file(${doxyfile} @ONLY)
+    message("Doxygen build started.")
+    add_custom_target(doc
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                      COMMENT "Generating API documentation with Doxygen"
+                      VERBATIM)
+endif()
 
 #Messages
 message("")

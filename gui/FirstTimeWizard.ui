@@ -37,7 +37,7 @@
     <item>
      <widget class="QRadioButton" name="existingInstallButton">
       <property name="text">
-       <string>Existing installation (Arduino SDK &amp;0023, 1.0, 1.0.1 to 1.0.5)</string>
+       <string>Existing installation (Arduino SDK &amp;0023, 1.0, 1.0.1 to 1.0.5, 1.6.0)</string>
       </property>
      </widget>
     </item>
@@ -92,7 +92,7 @@
     <item>
      <widget class="QRadioButton" name="automaticInstallButton">
       <property name="text">
-       <string>Automatic installation (Arduino SDK &amp;1.0.5)</string>
+       <string>Automatic installation (Arduino SDK &amp;1.6.0)</string>
       </property>
      </widget>
     </item>

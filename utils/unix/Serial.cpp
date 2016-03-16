@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -117,7 +117,6 @@ void Serial::close()
 qint64 Serial::readData(char *data, qint64 maxSize)
 {
     ssize_t n = ::read(mSerial, data, maxSize);
-    //qDebug() << n;
     if (n > 0)
         return n;
 

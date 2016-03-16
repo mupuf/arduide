@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -25,7 +25,6 @@ This program is free software; you can redistribute it and/or modify
  * \file BoardChooser.cpp
  * \author Denis Martinez
  */
-
 #include "BoardChooser.h"
 
 #include "env/Settings.h"
@@ -52,14 +51,54 @@ void BoardChooser::refresh()
 
     QAction *action;
     foreach(const QString &boardId, Board::boardIds())
-    {
+    {  
         const Board *board = Board::boardInfo(boardId);
-        action = new QAction(board->name(), actionGroup);
-        action->setData(boardId);
-        action->setCheckable(true);
-        if (boardId == defaultBoard)
-            action->setChecked(true);
-        addAction(action);
+        QStringList cpus = board->attribute("build.mcu").split(",");
+        QStringList freqs = board->attribute("build.f_cpu").split(",");
+        if(cpus.size() > 1)
+        {
+            QMenu *menu1 = new QMenu;
+            foreach(const QString &cpu, cpus)
+            {   
+                menu1->setTitle(board->name());
+                if(freqs.size() == 1)
+                {
+                    action = new QAction(cpu, actionGroup);
+                    action->setData(boardId+","+cpu);
+                    action->setCheckable(true);
+                    if(boardId+","+cpu == defaultBoard)
+                        action->setChecked(true);
+                    menu1->addAction(action);
+                }
+                else
+                {
+                    QMenu *menu2 = new QMenu;
+                    foreach(const QString &freq, freqs)
+                    {    
+                        QAction *action2 = new QAction(QString::number(freq.left(freq.lastIndexOf("0")+1).toInt()/1e6)+"MHz", actionGroup);
+                        action2->setData(boardId+","+cpu+","+freq);
+                        action2->setCheckable(true);
+                        if (boardId+","+cpu+","+freq == defaultBoard)
+                            action2->setChecked(true);
+                        menu2->addAction(action2);
+                        menu2->setTitle(cpu);
+                        menu1->addMenu(menu2);
+                    }
+                }
+                
+                this->addMenu(menu1);
+            }
+        }
+        else
+        {
+            action = new QAction(board->name(), actionGroup);
+            action->setData(boardId);
+            action->setCheckable(true);
+            if (boardId == defaultBoard)
+                action->setChecked(true);
+            addAction(action);
+        }
+
     }
 }
 

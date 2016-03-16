@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -50,7 +50,38 @@ Builder::Builder(QObject *parent)
 
 const Board *Builder::board() const
 {
-    return Board::boardInfo(ideApp->settings()->board());
+    QString name;
+    QString mcu;
+    QString freq;
+    
+    name = ideApp->settings()->board().split(",")[0];
+    
+    if(ideApp->settings()->board().split(",").size()>1)
+    {
+        mcu = ideApp->settings()->board().split(",")[1];
+        Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
+        
+        if(ideApp->settings()->board().split(",").size()>2)
+        {
+            freq = ideApp->settings()->board().split(",")[2];
+            Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
+        }
+        else
+        {
+            freq = Board::mBoards[name].mAttributes["build.f_cpu"];
+            Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
+        }
+    }
+    else
+    {
+        mcu = Board::mBoards[name].mAttributes["build.mcu"];
+        Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
+        
+        freq = Board::mBoards[name].mAttributes["build.f_cpu"];
+        Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
+    }
+    
+    return Board::boardInfo(name);
 }
 
 const QString Builder::device() const
@@ -195,8 +226,9 @@ bool Builder::build(const QString &code, bool upload)
     objects.clear();
 
     // compile the libraries
-    QString path = Toolkit::hardwarePath()+"/arduino/cores/arduino/Arduino.h";
-    if (QFileInfo(path).exists())
+    QString path1 = Toolkit::hardwarePath()+"/arduino/avr/cores/arduino/Arduino.h";
+    QString path2 = Toolkit::hardwarePath()+"/arduino/cores/arduino/Arduino.h";
+    if (QFileInfo(path1).exists() || QFileInfo(path2).exists())
         cxxflags << "-include" << "Arduino.h";
     else
         cxxflags << "-include" << "WProgram.h";

@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -567,7 +567,7 @@ void MainWindow::createAndOpenUserLibDir()
         userLibDir.mkdir(userLib);
 
     /* create a readme file to explain what to do */
-    QFile readme(userLib+"/README");
+    QFile readme(userLib+"/README.md");
     if (readme.open(QIODevice::WriteOnly))
     {
         QTextStream ts(&readme);

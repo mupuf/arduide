@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2012 
+  Copyright (C) 2010-2016 
   Authors : Denis Martinez
 	    Martin Peres
   Copyright (C) 2011 
@@ -138,8 +138,8 @@ void IDEApplication::initializePlugins()
 void IDEApplication::initializeTranslator()
 {
     if(! mTranslator.load("arduide_" + QLocale::system().name(), TRANSLATION_PATH))
-     {
-      qDebug() << "loading translator failed.";
-     }
+    {
+        qDebug() << "loading translator failed.";
+    }
     installTranslator(&mTranslator);
 }
