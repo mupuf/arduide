@@ -390,24 +390,23 @@ set(CPACK_SOURCE_STRIP_FILES "")
 include(CPack)
 
 #doxygen
-find_package(Doxygen)
-option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
-
-if(NOT DOXYGEN_FOUND)
-    message("Doxygen is needed to build the documentation.")
-endif()
-
-if(DOXYGEN_FOUND)
+option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ON)
+if (BUILD_DOCUMENTATION)
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
     set(docdirectory ${CMAKE_CURRENT_SOURCE_DIR}/doc)
     file(MAKE_DIRECTORY ${docdirectory})
     set(doxyfile ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
     configure_file(${doxyfile} @ONLY)
-    message("Doxygen build started.")
     add_custom_target(doc
                       COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                       COMMENT "Generating API documentation with Doxygen"
                       VERBATIM)
+  else()
+    message("Doxygen is needed to build the documentation.")
+    set(BUILD_DOCUMENTATION OFF)
+  endif()
 endif()
 
 #Messages
@@ -425,4 +424,5 @@ message(" Release/Other: you must install the application before you can run it"
 message("* Update translations: UPDATE_TRANSLATIONS=${UPDATE_TRANSLATIONS}")
 message("    WARNING: Do not run \"make clean\" when in update translation mode!")
 message("    Run \"make translations_target\" to re-generate translations")
+message("* Build documentation: BUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}")
 message("")
