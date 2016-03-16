@@ -102,7 +102,7 @@ FirstTimeWizard::FirstTimeWizard(QWidget *parent)
     projectLabel->setText(projectLabel->text().arg(PROJECT_NAME).arg(PROJECT_AUTHORS));
     urlLabel->setText(urlLabel->text().arg(PROJECT_URL));
 
-    url = "http://arduino.googlecode.com/files/arduino-" ARDUINO_SDK_VERSION_NAME;
+    url = "http://downloads.arduino.cc/arduino-" ARDUINO_SDK_VERSION_NAME;
 
     // set up the download page
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64) // Windows
