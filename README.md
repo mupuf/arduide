@@ -41,7 +41,7 @@ $ sudo pacman -S qt4 qtwebkit qscintilla grantlee udev cmake git doxygen
 $ sudo apt-get install libqscintilla2-dev libudev-dev libgrantlee-dev libgrantlee-core0 qt4-qmake cmake git doxygen
 ```
 
-### Instalation
+### Installation
 
 ```
 $ git clone https://git.gitorious.org/arduide/arduide.git
@@ -50,6 +50,17 @@ $ cmake -DCMAKE_INSTALL_PREFIX=/usr -DUSE_FHS_PATHS=ON -DCMAKE_BUILD_TYPE=Releas
 $ make
 # make install
 ```
+
+### Internal documentation
+
+Provided that you have doxygen installed, you may generate the documentation by
+running the following command:
+
+```
+$ make doc
+```
+
+The documentation will then be available under multiple formats in /doc/.
 
 ## Contributing
 
