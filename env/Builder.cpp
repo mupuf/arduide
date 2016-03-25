@@ -494,6 +494,17 @@ bool Builder::uploadViaBootloader(const QString &hexFileName)
     if (protocol == "stk500")
         protocol = "stk500v1";
 
+    if(board()->attribute("upload.speed")=="")
+    {
+        QString name = ideApp->settings()->board().split(",")[0];
+
+        QString subName = board()->attribute("builder.mcu");
+        if(subName.right(1)=="p")
+            subName = subName.left(subName.length() -1);
+        QString uploadSpeed = board()->attribute("menu.cpu."+subName+".upload.speed");
+        Board::mBoards[name].mAttributes["upload.speed"]= uploadSpeed;
+    }
+
     QStringList command;
     command
         << Toolkit::avrdudePath()

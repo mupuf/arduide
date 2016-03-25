@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2016 
+  Copyright (C) 2010-2016
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -152,6 +152,7 @@ DeviceList Device::listDevices(bool filterDevices)
     bool is_serial;
     bool is_modem;
     int fd;
+
     udev_list_entry_foreach(list_entry_current, list_entry)
     {
         udev_device *device = udev_device_new_from_syspath(udev,
