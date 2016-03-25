@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2016 
+  Copyright (C) 2010-2016
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -53,14 +53,14 @@ const Board *Builder::board() const
     QString name;
     QString mcu;
     QString freq;
-    
+
     name = ideApp->settings()->board().split(",")[0];
-    
+
     if(ideApp->settings()->board().split(",").size()>1)
     {
         mcu = ideApp->settings()->board().split(",")[1];
         Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
-        
+
         if(ideApp->settings()->board().split(",").size()>2)
         {
             freq = ideApp->settings()->board().split(",")[2];
@@ -76,11 +76,14 @@ const Board *Builder::board() const
     {
         mcu = Board::mBoards[name].mAttributes["build.mcu"];
         Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
-        
+
         freq = Board::mBoards[name].mAttributes["build.f_cpu"];
         Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
     }
-    
+
+    if(name=="" or mcu =="")
+        return NULL;
+
     return Board::boardInfo(name);
 }
 
