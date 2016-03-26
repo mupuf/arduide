@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2016 
+  Copyright (C) 2010-2016
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -53,14 +53,14 @@ const Board *Builder::board() const
     QString name;
     QString mcu;
     QString freq;
-    
+
     name = ideApp->settings()->board().split(",")[0];
-    
+
     if(ideApp->settings()->board().split(",").size()>1)
     {
         mcu = ideApp->settings()->board().split(",")[1];
         Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
-        
+
         if(ideApp->settings()->board().split(",").size()>2)
         {
             freq = ideApp->settings()->board().split(",")[2];
@@ -76,11 +76,14 @@ const Board *Builder::board() const
     {
         mcu = Board::mBoards[name].mAttributes["build.mcu"];
         Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
-        
+
         freq = Board::mBoards[name].mAttributes["build.f_cpu"];
         Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
     }
-    
+
+    if(name=="" or mcu =="")
+        return NULL;
+
     return Board::boardInfo(name);
 }
 
@@ -490,6 +493,17 @@ bool Builder::uploadViaBootloader(const QString &hexFileName)
     QString protocol = board()->attribute("upload.protocol");
     if (protocol == "stk500")
         protocol = "stk500v1";
+
+    if(board()->attribute("upload.speed")=="")
+    {
+        QString name = ideApp->settings()->board().split(",")[0];
+
+        QString subName = board()->attribute("builder.mcu");
+        if(subName.right(1)=="p")
+            subName = subName.left(subName.length() -1);
+        QString uploadSpeed = board()->attribute("menu.cpu."+subName+".upload.speed");
+        Board::mBoards[name].mAttributes["upload.speed"]= uploadSpeed;
+    }
 
     QStringList command;
     command
