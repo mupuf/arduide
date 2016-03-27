@@ -50,41 +50,67 @@ Builder::Builder(QObject *parent)
 
 const Board *Builder::board() const
 {
-    QString name;
-    QString mcu;
-    QString freq;
+    Board::mBoards[name()].setSelectedBoard(name(), mcu(), freq());
 
-    name = ideApp->settings()->board().split(",")[0];
+    if(name()=="" or mcu() =="")
+        return NULL;
 
+    return Board::boardInfo(name());
+}
+
+const QString Builder::name() const
+{
+    return ideApp->settings()->board().split(",")[0];
+}
+
+const QString Builder::mcu() const
+{
     if(ideApp->settings()->board().split(",").size()>1)
     {
-        mcu = ideApp->settings()->board().split(",")[1];
-        Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
-
-        if(ideApp->settings()->board().split(",").size()>2)
-        {
-            freq = ideApp->settings()->board().split(",")[2];
-            Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
-        }
-        else
-        {
-            freq = Board::mBoards[name].mAttributes["build.f_cpu"];
-            Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
-        }
+        return ideApp->settings()->board().split(",")[1];
     }
     else
     {
-        mcu = Board::mBoards[name].mAttributes["build.mcu"];
-        Board::mBoards[name].mAttributes["builder.mcu"]= mcu;
-
-        freq = Board::mBoards[name].mAttributes["build.f_cpu"];
-        Board::mBoards[name].mAttributes["builder.f_cpu"]= freq;
+        return Board::mBoards[name()].mAttributes["build.mcu"];
     }
+}
 
-    if(name=="" or mcu =="")
-        return NULL;
+const QString Builder::freq() const
+{
+    if(ideApp->settings()->board().split(",").size()>2)
+        return ideApp->settings()->board().split(",")[2];
 
-    return Board::boardInfo(name);
+    return Board::mBoards[name()].mAttributes["build.f_cpu"];
+}
+
+const QString Builder::uploadSpeed() const
+{
+    // if we have more than one mcu
+    if(board()->attribute("upload.speed")=="")
+    {
+        QString subName = board()->selectedMcu();
+        if(subName.right(1)=="p")
+            subName = subName.left(subName.length() -1);
+
+        // arduino pro mini use other nomenclature for subName
+        if(name() == "pro")
+        {
+            QString subFreq = freq().left(freq().length()-7)+"MHz";
+            subName = subFreq + subName;
+        }
+
+        return board()->attribute("menu.cpu."+subName+".upload.speed");
+    }
+    else
+        return board()->attribute("upload.speed");
+}
+
+const QString Builder::uploadProtocol() const
+{
+    QString protocol = board()->attribute("upload.protocol");
+    if (protocol == "stk500")
+        protocol = "stk500v1";
+    return protocol;
 }
 
 const QString Builder::device() const
@@ -192,7 +218,7 @@ bool Builder::build(const QString &code, bool upload)
         return false;
     }
 
-    emit logImportant(tr("Compiling for %0...").arg(board()->name()));
+    emit logImportant(tr("Compiling for %0...").arg(name()));
     mBuildDir.reset(new QxtTemporaryDir(QDir(QDir::tempPath()).filePath("arduino-build")));
     QString buildPath = mBuildDir->path();
 
@@ -490,28 +516,13 @@ bool Builder::extractHEX(const QString &input, const QString &output)
 
 bool Builder::uploadViaBootloader(const QString &hexFileName)
 {
-    QString protocol = board()->attribute("upload.protocol");
-    if (protocol == "stk500")
-        protocol = "stk500v1";
-
-    if(board()->attribute("upload.speed")=="")
-    {
-        QString name = ideApp->settings()->board().split(",")[0];
-
-        QString subName = board()->attribute("builder.mcu");
-        if(subName.right(1)=="p")
-            subName = subName.left(subName.length() -1);
-        QString uploadSpeed = board()->attribute("menu.cpu."+subName+".upload.speed");
-        Board::mBoards[name].mAttributes["upload.speed"]= uploadSpeed;
-    }
-
     QStringList command;
     command
         << Toolkit::avrdudePath()
         << Toolkit::avrdudeFlags(board())
-        << "-c" << protocol
+        << "-c" << uploadProtocol()
         << "-P" << device()
-        << "-b" << board()->attribute("upload.speed")
+        << "-b" << uploadSpeed()
         << "-D"
         << QString("-Uflash:w:%0:i").arg(hexFileName);
 

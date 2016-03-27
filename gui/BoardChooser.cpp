@@ -3,7 +3,7 @@
 
   This file is part of arduide, The Qt-based IDE for the open-source Arduino electronics prototyping platform.
 
-  Copyright (C) 2010-2016 
+  Copyright (C) 2010-2016
   Authors : Denis Martinez
 	    Martin Peres
 
@@ -51,7 +51,7 @@ void BoardChooser::refresh()
 
     QAction *action;
     foreach(const QString &boardId, Board::boardIds())
-    {  
+    {
         const Board *board = Board::boardInfo(boardId);
         QStringList cpus = board->attribute("build.mcu").split(",");
         QStringList freqs = board->attribute("build.f_cpu").split(",");
@@ -59,7 +59,7 @@ void BoardChooser::refresh()
         {
             QMenu *menu1 = new QMenu;
             foreach(const QString &cpu, cpus)
-            {   
+            {
                 menu1->setTitle(board->name());
                 if(freqs.size() == 1)
                 {
@@ -74,7 +74,7 @@ void BoardChooser::refresh()
                 {
                     QMenu *menu2 = new QMenu;
                     foreach(const QString &freq, freqs)
-                    {    
+                    {
                         QAction *action2 = new QAction(QString::number(freq.left(freq.lastIndexOf("0")+1).toInt()/1e6)+"MHz", actionGroup);
                         action2->setData(boardId+","+cpu+","+freq);
                         action2->setCheckable(true);
@@ -85,7 +85,7 @@ void BoardChooser::refresh()
                         menu1->addMenu(menu2);
                     }
                 }
-                
+
                 this->addMenu(menu1);
             }
         }
