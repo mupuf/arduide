@@ -110,7 +110,7 @@ QStringList Toolkit::boardsFileNames()
                 userHwList.push_back(sketchDir.filePath(dir + "/boards.txt"));
         }
     }
-    
+
     return userHwList;
 }
 
@@ -210,8 +210,8 @@ QStringList Toolkit::avrCFlags(const Board *board)
         << "-fno-exceptions"
         << "-ffunction-sections"
         << "-fdata-sections"
-        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"))
-        << QString("-DF_CPU=%0").arg(board->attribute("builder.f_cpu"))
+        << QString("-mmcu=%0").arg(board->selectedMcu())
+        << QString("-DF_CPU=%0").arg(board->selectedFreq())
         << QString("-MMD")
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
 
@@ -224,13 +224,13 @@ QStringList Toolkit::avrCFlags(const Board *board)
         cflags << QString("-DUSB_PID=%0").arg(board->attribute("build.pid"));
     else
         cflags << QString("-DUSB_PID=null");
-    
+
     QString arduinoPinDirName;
     if(toolkitVersionInt(ideApp->settings()->arduinoPath()) >= 160)
         arduinoPinDirName = QString("arduino/avr/variants/%0").arg(board->attribute("build.variant"));
     else
         arduinoPinDirName = QString("arduino/variants/%0").arg(board->attribute("build.variant"));
-    
+
     QString arduinoPinDirPath = QDir(hardwarePath()).filePath(arduinoPinDirName);
     if (QDir(arduinoPinDirPath).exists())
         cflags << QString("-I%0").arg(arduinoPinDirPath);
@@ -249,9 +249,9 @@ QStringList Toolkit::avrSFlags(const Board *board)
     sflags
         << "-g"
         << "-assembler-with-cpp"
-        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"))
+        << QString("-mmcu=%0").arg(board->selectedMcu())
         << QString("-MMD")
-        << QString("-DF_CPU=%0").arg(board->attribute("builder.f_cpu"))
+        << QString("-DF_CPU=%0").arg(board->selectedFreq())
         << QString("-DARDUINO=%0").arg(toolkitVersionInt(ideApp->settings()->arduinoPath()));
     return sflags;
 }
@@ -262,7 +262,7 @@ QStringList Toolkit::avrLdFlags(const Board *board)
     ldflags
         << "-Os"
         << "-Wl,--gc-sections"
-        << QString("-mmcu=%0").arg(board->attribute("builder.mcu"));
+        << QString("-mmcu=%0").arg(board->selectedMcu());
     return ldflags;
 }
 
@@ -397,7 +397,7 @@ QStringList Toolkit::avrdudeFlags(const Board *board)
     else
         flags << QDir(hardwarePath()).filePath("tools/avrdude.conf");
 #endif
-    flags << QString("-p%0").arg(board->attribute("builder.mcu"));
+    flags << QString("-p%0").arg(board->selectedMcu());
 
     return flags;
 }
